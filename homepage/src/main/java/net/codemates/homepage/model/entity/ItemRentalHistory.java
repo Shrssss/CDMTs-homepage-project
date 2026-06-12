@@ -32,5 +32,6 @@ public class ItemRentalHistory {
 	
 	private LocalDateTime rentedAt;
 	
-	private LocalDateTime rerturnedAT;
+	private LocalDateTime rerturnedAt;
+	
 }

@@ -42,4 +42,5 @@ public class News {
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
+	
 }
