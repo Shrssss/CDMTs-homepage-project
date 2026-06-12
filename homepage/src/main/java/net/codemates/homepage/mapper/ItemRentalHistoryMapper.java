@@ -1,6 +1,7 @@
 package net.codemates.homepage.mapper;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,17 +10,17 @@ import net.codemates.homepage.model.entity.ItemRentalHistory;
 @Mapper
 public interface ItemRentalHistoryMapper {
 	
-	ItemRentalHistory findByHistoryId(Long historyId);
+	List<ItemRentalHistory> findById(Long id);
 	
-	ItemRentalHistory findByItemId(Long itemId);
+	List<ItemRentalHistory> findByItemId(Long itemId);
 	
-	ItemRentalHistory findByRenterId(Long renterId);
+	List<ItemRentalHistory> findByRenterId(Long renterId);
 	
 	List<ItemRentalHistory> findAll();
 	
 	void insert(ItemRentalHistory history);
 	
-	void update(ItemRentalHistory history);
+	void updateReturningDayTime(LocalDateTime returnedAt);
 	
 	void deleteById(Long id);
 	

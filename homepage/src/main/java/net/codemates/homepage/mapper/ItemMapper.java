@@ -11,19 +11,21 @@ public interface ItemMapper {
 
 	Item findById(Long id);
 	
-	Item findByName(String name);
+	List<Item> findByName(String name);
 	
-	Item findByStorage(String storageLocation);
+	List<Item> findByStorage(String storageLocation);
 	
-	Item findByDisposable(Boolean isDisposable);
+	List<Item> findByDisposable(Boolean isDisposable);
 	
-	Item findByRentable(Boolean isRentable);
+	List<Item> findByRentable(Boolean isRentable);
 	
 	List<Item> findAll();
 	
 	void insert(Item item);
 	
 	void update(Item item);
+	
+	void updateRenterIdById(Long id,Long renterId);
 	
 	void deleteById(Long id);
 	

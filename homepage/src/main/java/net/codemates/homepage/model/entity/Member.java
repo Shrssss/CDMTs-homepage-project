@@ -24,7 +24,7 @@ public class Member {
 	 *  		├─ position (役職)					/VARCHAR(50)
 	 *  		├─ password_hash (パスワードのハッシュ値)	/VARCHAR(255)	/NOT NULL
 	 *  		├─ created_at (登録日時)				/TIMESTAMP
-	 *			└─ update_at (更新日時)				/TIMESTAMP
+	 *			└─ updated_at (更新日時)				/TIMESTAMP					/DEFAULT CURRENT_TIMESTAMP
 	 * 
 	 */
 	
@@ -44,6 +44,6 @@ public class Member {
 	
 	private LocalDateTime createdAt;
 	
-	private LocalDateTime updateAt;
+	private LocalDateTime updatedAt;
 	
 }

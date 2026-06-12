@@ -2,6 +2,82 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.codemates.homepage.mapper.MemberMapper">
 
-
+	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members WHERE id = #{id}
+	
+	</select>
+	
+	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members WHERE name = #{name}
+	
+	</select>
+	
+	<select id="findByGrade" parameterType="Short" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members WHERE grade = #{grade}
+	
+	</select>
+	
+	<select id="findByPosition" parameterType="String" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members WHERE position = #{position}
+	
+	</select>
+	
+	<select id="findAll" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members
+	
+	</select>
+	
+	
+	
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Item">
+	
+		INSERT INTO
+		members
+		(
+			name,
+			student_id,
+			email,
+			grade,
+			position,
+			password_hash
+		)
+		VALUES
+		(
+			#{name},
+			#{studentId},
+			#{email},
+			#{grade},
+			#{position},
+			#{passwordHash}
+		)
+	
+	</insert>
+	
+	
+	
+	<update id="update" parameterType="net.codemates.homepage.model.entity.Item">
+	
+		UPDATE members 
+		SET name = #{name},
+			student_id = #{studentId},
+			email = #{email},
+			grade = #{grade},
+			position = #{position}
+		WHERE id = #{id}
+	
+	</update>
+	
+	
+	
+	<delete id="deleteById" parameterType="Long">
+	
+		DELETE FROM members WHERE id = #{id}
+	
+	</delete>
 
 </mapper>

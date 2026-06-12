@@ -11,11 +11,11 @@ public interface MemberMapper {
 
 	Member findById(Long id);
 	
-	Member findByName(String name);
+	List<Member> findByName(String name);
 	
-	Member findByGrade(Short grade);
+	List<Member> findByGrade(Short grade);
 	
-	Member findByPosition(String Position);
+	List<Member> findByPosition(String Position);
 	
 	List<Member> findAll();
 	

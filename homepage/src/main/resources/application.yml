@@ -1,3 +1,7 @@
 spring:
    application:
       name:　homepage
+      
+mybatis:
+   configuration:
+      map-underscore-to-camel-case: true

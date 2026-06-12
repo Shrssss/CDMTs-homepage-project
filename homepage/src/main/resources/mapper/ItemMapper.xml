@@ -2,6 +2,97 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.codemates.homepage.mapper.ItemMapper">
 
-
+	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.Item">
+	
+		SELECT * FROM items WHERE id = #{id}
+	
+	</select>
+	
+	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.Item">
+	
+		SELECT * FROM items WHERE name = #{name}
+	
+	</select>
+	
+	<select id="findByStorage" parameterType="String" resultType="net.codemates.homepage.model.entity.Item">
+	
+		SELECT * FROM items WHERE storage_location = #{storageLocation}
+	
+	</select>
+	
+	<select id="findByDisposable" parameterType="Boolean" resultType="net.codemates.homepage.model.entity.Item">
+	
+		SELECT * FROM items WHERE is_disposable = #{isDisposable}
+	
+	</select>
+	
+	<select id="findByRentable" parameterType="Boolean" resultType="net.codemates.homepage.model.entity.Item">
+	
+		SELECT * FROM items WHERE is_rentable = #{isRentable}
+	
+	</select>
+	
+	<select id="findAll" resultType="net.codemates.homepage.model.entity.Item">
+	
+		SELECT * FROM items
+	
+	</select>
+	
+	
+	
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Item">
+	
+		INSERT INTO 
+		items
+		(
+			name,
+			description,
+			storage_location,
+			quantity,
+			is_disposable,
+			is_rentable
+		)
+		VALUES
+		(
+			#{name},
+			#{description},
+			#{storageLocation},
+			#{quantity},
+			#{isDisposable},
+			#{isRentable}
+		)
+	
+	</insert>
+	
+	
+	
+	<update id="update" parameterType="net.codemates.homepage.model.entity.Item">
+	
+		UPDATE items 
+		SET name = #{name},
+			description = #{description},
+			storage_location = #{storageLocation},
+			quantity = #{quantity},
+			is_disposable = #{isDisposable},
+			is_rentable = #{isRentable}
+		WHERE id = #{id}
+	
+	</update>
+	
+	<update id="updateRenterIdById" parameterType="net.codemates.homepage.model.entity.Item">
+	
+		UPDATE items 
+		SET renter_id = #{renterId}
+		WHERE id = #{id}
+	
+	</update>
+	
+	
+	
+	<delete id="deleteById" parameterType="Long">
+	
+		DELETE FROM items WHERE id = #{id}
+	
+	</delete>
 
 </mapper>

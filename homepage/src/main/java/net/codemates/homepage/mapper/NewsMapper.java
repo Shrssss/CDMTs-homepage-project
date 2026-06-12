@@ -13,13 +13,15 @@ public interface NewsMapper {
 	
 	News findByTitle(String title);
 	
-	News findBycontent(String content);
+	List<News> findByCategory(String category);
 	
 	List<News> findAll();
 	
 	void insert(News news);
 	
 	void update(News news);
+	
+	void updateIsPublishedById(Long id,Boolean isPublished);
 	
 	void deleteById(Long id);
 
