@@ -12,6 +12,9 @@ public class MemberUpdateRequest {
 	
 	/*	メンバー情報更新を行うためのObjectを定義するクラス */
 	
+	@NotNull
+	private Long id;
+	
 	@NotBlank
 	@Size(max=50)
 	private String name;
