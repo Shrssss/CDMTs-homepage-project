@@ -2,8 +2,8 @@
 * @Shrssss @tommy10092525
 
 #FrontReviewer
-/src/main/resources/static/** @tommy10092525 @Melting Sugar
-/src/main/resources/templates/** @tommy10092525 @Melting Sugar
+/src/main/resources/static/** @tommy10092525 @Melting-Sugar
+/src/main/resources/templates/** @tommy10092525 @Melting-Sugar
 
 #BackReviewer
 /src/main/java/** @Shrssss
