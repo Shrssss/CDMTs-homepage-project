@@ -18,7 +18,7 @@ public class Member {
 	 * 	テーブル members (メンバー)
 	 * 			├─ id (メンバーID)						/BIGSERIAL		/NOT NULL
 	 * 			├─ name (名前)						/VARCHAR(50)	/NOT NULL
-	 * 		 	├─ student_id (学生証番号)			/VARCHAR(50)	/NOT NULL	/UNIQUE
+	 * 		 	├─ student_id (学生証番号)			/VARCHAR(7)		/NOT NULL	/UNIQUE
 	 * 			├─ email (メールアドレス)				/VARCHAR(255)	/NOT NULL	/UNIQUE
 	 * 			├─ grade (学年)						/SMALLINT		/NOT NULL
 	 *  		├─ position (役職)					/VARCHAR(50)
