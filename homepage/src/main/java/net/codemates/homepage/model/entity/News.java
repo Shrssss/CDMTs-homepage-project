@@ -22,7 +22,7 @@ public class News {
 	 * 			├─ thumbnail_path　(サムネ画像のパス)	/VARCHAR(255)
 	 * 			├─ category　(記事のカテゴリ)				/VARCHAR(30)	/NOT NULL
 	 * 			├─ is_published　(公開されているかどうか)	/BOOLEAN		/NOT NULL	/DEFAULT FALSE
-	 *    		├─ created_at　(投稿日時)				/TIMESTAMP
+	 *    		├─ created_at　(投稿日時)				/TIMESTAMP					/DEFAULT CURRENT_TIMESTAMP
 	 *    		└─ updated_at　(更新日時)				/TIMESTAMP
 	 * 
 	 */
@@ -42,4 +42,5 @@ public class News {
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
+	
 }

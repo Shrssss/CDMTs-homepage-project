@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.codemates.homepage.mapper.ItemRentalHistoryMapper">
+
+	<select id="findByHistoryId" parameterType="Long" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+		SELECT * FROM item_rental_histories WHERE id = #{id}
+	
+	</select>
+	
+	<select id="findByItemId" parameterType="Long" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+		SELECT * FROM item_rental_histories WHERE item_id = #{itemId}
+	
+	</select>
+	
+	<select id="findByRenterId" parameterType="Long" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+		SELECT * FROM item_rental_histories WHERE renter_id = #{renterId}
+	
+	</select>
+	
+	<select id="findAll" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+		SELECT * FROM item_rental_histories
+	
+	</select>
+	
+	
+	
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+		INSERT INTO 
+		item_rental_histories
+		(
+			item_id,
+			renter_id
+		)
+		VALUES
+		(
+			#{itemId},
+			#{renterId}
+		)
+	
+	</insert>
+	
+	
+	
+	<update id="updateReturningDayTime" parameterType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+		UPDATE item_rental_histories 
+		SET returned_at = CURRENT_TIMESTAMP
+		WHERE id = #{id}
+	
+	</update>
+
+
+	
+	<delete id="deleteById" parameterType="Long">
+	
+		DELETE FROM item_rental_histories WHERE id = #{id}
+	
+	</delete>
+
+</mapper>

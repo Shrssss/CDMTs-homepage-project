@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.codemates.homepage.mapper.NewsMapper">
+
+	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.News">
+	
+		SELECT * FROM news WHERE id = #{id}
+	
+	</select>
+	
+	<select id="findByTitle" parameterType="String" resultType="net.codemates.homepage.model.entity.News">
+	
+		SELECT * FROM news WHERE title = #{title}
+	
+	</select>
+	
+	<select id="findByCategory" parameterType="String" resultType="net.codemates.homepage.model.entity.News">
+	
+		SELECT * FROM news WHERE category = #{category}
+	
+	</select>
+	
+	<select id="findAll" resultType="net.codemates.homepage.model.entity.News">
+	
+		SELECT * FROM news
+	
+	</select>
+	
+	
+	
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.News">
+	
+		INSERT INTO 
+		news
+		(
+			title,
+			content,
+			thumbnail_path,
+			category
+		)
+		VALUES
+		(
+			#{title},
+			#{content},
+			#{thumbnailPath},
+			#{category}
+		)
+	
+	</insert>
+	
+	
+	
+	<update id="update" parameterType="net.codemates.homepage.model.entity.News">
+	
+		UPDATE news 
+		SET title = #{title},
+			content = #{content},
+			thumbnail_path = #{thumbnailPath},
+			category = #{category},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE id = #{id}
+	
+	</update>
+	
+	<update id="updateIsPublishedById" parameterType="net.codemates.homepage.model.entity.News">
+	
+		UPDATE news 
+		SET is_published = #{isPublished}
+		WHERE id = #{id}
+	
+	</update>
+
+
+	
+	<delete id="deleteById" parameterType="Long">
+	
+		DELETE FROM news WHERE id = #{id}
+	
+	</delete>
+
+</mapper>
