@@ -1,17 +1,13 @@
 package net.codemates.homepage.model.dto.news;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class NewsResponse {
+public class NewsUpdateRequest {
 	
-	/*　全記事を表示するためのObjectを定義するクラス */
-	
+	/*　記事をアップデートするためのObjectを定義するクラス */
+
 	@NotNull
 	private Long id;
 
@@ -30,13 +26,5 @@ public class NewsResponse {
 	
 	@NotNull
 	private Boolean isPublished;
-	
-	@NotNull
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime createdAt;
-	
-	@NotNull
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime updatedAt;
 	
 }
