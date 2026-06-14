@@ -1,5 +1,10 @@
 package net.codemates.homepage.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/news")
 public class NewsController {
 
 	/*	必要な機能
