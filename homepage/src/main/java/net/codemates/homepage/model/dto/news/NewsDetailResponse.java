@@ -8,9 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class NewsResponse {
-	
-	/*　記事の詳細を表示するためのObjectを定義するクラス */
+public class NewsDetailResponse {
+
+/*　全記事を表示するためのObjectを定義するクラス */
 	
 	@NotNull
 	private Long id;
@@ -18,9 +18,6 @@ public class NewsResponse {
 	@NotBlank
 	@Size(max=100)
 	private String title;
-	
-	@NotBlank
-	private String content;
 	
 	private String thumbnail_path;
 	
@@ -34,9 +31,5 @@ public class NewsResponse {
 	@NotNull
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
-	
-	@NotNull
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime updatedAt;
 	
 }
