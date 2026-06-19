@@ -1,0 +1,21 @@
+package net.codemates.homepage.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import net.codemates.homepage.model.entity.Member;
+import net.codemates.homepage.model.entity.MemberTechnology;
+import net.codemates.homepage.model.entity.Technology;
+
+@Mapper
+public interface MemberTechnologyMapper {
+	
+	List<Technology> findByTechnologiesByMemberId(Long memberId);
+	
+	List<Member> findByMembersByTechnologyId(Long technologyId);
+	
+	void insert(MemberTechnology membertechnology);
+	
+	void delete(Long memberId,Long technologyId);
+}
