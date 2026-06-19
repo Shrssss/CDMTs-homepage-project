@@ -19,10 +19,10 @@ public interface MemberMapper {
 	
 	List<Member> findAll();
 	
-	void insert(Member member);
+	void insert(Member member);	//transactional
 	
-	void update(Member member);
+	void update(Member member);	//transactional
 	
-	void deleteById(Long id);
+	void deleteById(Long id);	//transactional
 	
 }

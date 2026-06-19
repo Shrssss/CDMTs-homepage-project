@@ -1,10 +1,8 @@
 package net.codemates.homepage.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class ItemService {
 
 	/*	必要な機能
@@ -20,5 +18,9 @@ public class ItemService {
 	 * 		備品貸し出し
 	 * 
 	 */
+	
+	//create finalized itemMapper field (interface)
+	
+	//define all method written in itemMapper
 	
 }

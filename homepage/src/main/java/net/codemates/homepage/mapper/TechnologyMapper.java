@@ -15,10 +15,10 @@ public interface TechnologyMapper {
 	
 	List<Technology> findAll();
 	
-	void insert(Technology technology);
+	void insert(Technology technology);	//transactional
 	
-	void update(Technology technology);
+	void update(Technology technology);	//transactional
 	
-	void deleteById(Long id);
+	void deleteById(Long id);	//transactional
 	
 }

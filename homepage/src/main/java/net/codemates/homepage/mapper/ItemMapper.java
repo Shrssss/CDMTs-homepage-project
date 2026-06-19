@@ -21,12 +21,12 @@ public interface ItemMapper {
 	
 	List<Item> findAll();
 	
-	void insert(Item item);
+	void insert(Item item); //transactional
 	
-	void update(Item item);
+	void update(Item item);	//transactional
 	
-	void updateRenterIdById(Long id,Long renterId);
+	void updateRenterIdById(Long id,Long renterId); //transactional
 	
-	void deleteById(Long id);
+	void deleteById(Long id); //transactional
 	
 }

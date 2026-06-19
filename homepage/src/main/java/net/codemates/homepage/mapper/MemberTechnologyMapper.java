@@ -15,7 +15,7 @@ public interface MemberTechnologyMapper {
 	
 	List<Member> findByMembersByTechnologyId(Long technologyId);
 	
-	void insert(MemberTechnology membertechnology);
+	void insert(MemberTechnology membertechnology);	//transactional
 	
-	void delete(Long memberId,Long technologyId);
+	void delete(Long memberId,Long technologyId);	//transactional
 }

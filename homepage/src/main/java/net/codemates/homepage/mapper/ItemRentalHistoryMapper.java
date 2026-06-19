@@ -18,10 +18,10 @@ public interface ItemRentalHistoryMapper {
 	
 	List<ItemRentalHistory> findAll();
 	
-	void insert(ItemRentalHistory history);
+	void insert(ItemRentalHistory history);		//transactional
 	
-	void updateReturningDayTime(LocalDateTime returnedAt);
-	
-	void deleteById(Long id);
+	void updateReturningDayTime(LocalDateTime returnedAt);	//transactional
+		
+	void deleteById(Long id);	//transactional
 	
 }

@@ -18,4 +18,8 @@ public class NewsService {
 	 * 
 	 */
 	
+	//create finalized newsMapper field (interface)
+	
+	//define all method written in newsMapper
+	
 }
