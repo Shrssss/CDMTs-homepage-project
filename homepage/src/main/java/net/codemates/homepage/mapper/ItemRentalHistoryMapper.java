@@ -4,17 +4,18 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import net.codemates.homepage.model.entity.ItemRentalHistory;
 
 @Mapper
 public interface ItemRentalHistoryMapper {
 	
-	List<ItemRentalHistory> findById(Long id);
+	List<ItemRentalHistory> findByIds(@Param("ids")List<Long> ids);
 	
-	List<ItemRentalHistory> findByItemId(Long itemId);
+	List<ItemRentalHistory> findByItemIds(@Param("itemIds")List<Long> itemIds);
 	
-	List<ItemRentalHistory> findByRenterId(Long renterId);
+	List<ItemRentalHistory> findByRenterIds(@Param("renterIds")List<Long> renterIds);
 	
 	List<ItemRentalHistory> findAll();
 	

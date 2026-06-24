@@ -2,21 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.codemates.homepage.mapper.ItemRentalHistoryMapper">
 
-	<select id="findByHistoryId" parameterType="Long" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	<select id="findByIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
 	
-		SELECT * FROM item_rental_histories WHERE id = #{id}
+		SELECT *
+		FROM item_rental_histories
+		WHERE id IN
+		
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			
+			#{id}
+			
+		</foreach>
 	
 	</select>
 	
-	<select id="findByItemId" parameterType="Long" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	<select id="findByItemIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
 	
-		SELECT * FROM item_rental_histories WHERE item_id = #{itemId}
+		SELECT *
+		FROM item_rental_histories
+		WHERE item_id IN
+		<foreach collection="itemIds" item="itemId" open="(" separator="," close=")">
+			
+			#{itemId}
+			
+		</foreach>
 	
 	</select>
 	
-	<select id="findByRenterId" parameterType="Long" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	<select id="findByRenterIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
 	
-		SELECT * FROM item_rental_histories WHERE renter_id = #{renterId}
+		SELECT *
+		FROM item_rental_histories
+		WHERE renter_id IN
+		<foreach collection="renterIds" item="renterId" open="(" separator="," close=")">
+			
+			#{renterId}
+			
+		</foreach>
 	
 	</select>
 	
