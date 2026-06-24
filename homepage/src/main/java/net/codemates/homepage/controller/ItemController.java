@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/item")
+@RequestMapping("/api/items")
 public class ItemController {
 
 	/*	必要な機能

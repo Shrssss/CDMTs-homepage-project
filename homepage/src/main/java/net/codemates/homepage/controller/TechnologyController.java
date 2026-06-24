@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/technology")
+@RequestMapping("/api/technologies")
 public class TechnologyController {
 
 	/*	必要な機能　(メンバーへの登録はメンバー更新から)
