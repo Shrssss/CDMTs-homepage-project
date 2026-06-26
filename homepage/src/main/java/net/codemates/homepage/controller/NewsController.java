@@ -27,8 +27,17 @@ import net.codemates.homepage.service.NewsService;
 @RequiredArgsConstructor
 public class NewsController {
 
+	//Serviceの注入(DI:Dependency Injection)
 	private final NewsService service;
 	
+    /*
+     * ニュース詳細取得	(記事を読むときに使用)
+     *
+     * 		GET /api/news/{id}
+     *
+     * 			URLに含まれるIDの記事を1件取得する。
+     * 
+     */
 	@GetMapping("/{id}")
 	public NewsDetailResponse getNewsDetail(@PathVariable Long id) {
 		
@@ -36,6 +45,16 @@ public class NewsController {
 		
 	}
 	
+    /*
+     * ニュース検索・一覧取得
+     *
+     * 		GET /api/news
+     *
+     * 			keyword     : キーワード検索（任意）
+     * 			categories  : カテゴリ検索（任意・複数指定可）
+     * 			page        : ページ番号（指定がなければ1ページ目）
+     * 
+     */
 	@GetMapping
 	public List<NewsResponse> searchNews(@RequestParam(required=false)String keyword,
 											@RequestParam(required=false)List<String> categories,
@@ -45,6 +64,14 @@ public class NewsController {
 		
 	}
 	
+    /*
+     * ニュース作成
+     *
+     * 		POST /api/news
+     *
+     * 			JSONをNewsCreateRequestへ変換する。
+     * 
+     */
 	@PostMapping
 	public Long createNews(@Valid @RequestBody NewsCreateRequest newsDto) {
 		
@@ -52,13 +79,32 @@ public class NewsController {
 		
 	}
 	
+    /*
+     * ニュース更新
+     *
+     * 		PUT /api/news/{id}
+     *
+     *		 指定されたIDの記事を更新する。
+     * 		 更新内容はJSONで受け取る。
+     * 
+     */
 	@PutMapping("/{id}")
-	public void updateNews(@Valid @RequestBody NewsUpdateRequest newsDto) {
+	public void updateNews(@PathVariable Long id,@Valid @RequestBody NewsUpdateRequest newsDto) {
+		
+		newsDto.setId(id);
 		
 		service.updateNews(newsDto);
 		
 	}
 	
+    /*
+     * 公開・非公開の切り替え
+     *
+     * 		PUT /api/news/{id}/published
+     *
+     * 			公開状態(isPublished)のみ更新する。
+     * 
+     */
 	@PutMapping("/{id}/published")
 	public void updateIspublishedById(@PathVariable Long id,@RequestParam Boolean isPublished) {
 		
@@ -66,6 +112,14 @@ public class NewsController {
 		
 	}
 	
+    /*
+     * ニュース削除
+     *
+     * 		DELETE /api/news/{id}
+     *
+     * 			指定されたIDの記事を削除する。
+     * 
+     */
 	@DeleteMapping("/{id}")
 	public void deleteNewsById(@PathVariable Long id) {
 		

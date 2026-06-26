@@ -30,7 +30,7 @@ public class NewsService {
      * 
      */
 	
-	//Mapperを注入する
+	//Mapperの注入(DI:Dependency Injection)
 	private final NewsMapper mapper;
 	
 	//ページサイズの定義
