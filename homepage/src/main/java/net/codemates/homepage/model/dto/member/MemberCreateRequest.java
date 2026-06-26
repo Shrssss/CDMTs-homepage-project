@@ -17,9 +17,9 @@ public class MemberCreateRequest {
 	
 	/* メンバー登録を行うためのObjectを定義するクラス */
 	
-	@NotBlank
-	@Size(max=50)
-	private String name;
+//	@NotBlank
+//	@Size(max=50)
+//	private String name;
 	
 	@NotBlank
 	@Email
@@ -28,14 +28,14 @@ public class MemberCreateRequest {
 	@NotBlank
 	@Pattern(regexp="^[0-9]{2}[A-Z]{1}[0-9]{4}$",message="StudentID must be in the format 12A3456")
 	private String studentId;
-	
-	@NotNull
-	@Min(1)
-	@Max(4)
-	private Short grade;
-	
-	@Size(max=50)
-	private String position;
+
+//	@NotNull
+//	@Min(1)
+//	@Max(4)
+//	private Short grade;
+//	
+//	@Size(max=50)
+//	private String position;
 	
 	@NotBlank
 	@Size(min=10,max=72)
