@@ -94,14 +94,7 @@ public class NewsService {
 	@Transactional
 	public Long createNews(NewsCreateRequest newsDto) {
 		
-		News newsEntity=new News(null,
-									newsDto.getTitle(),
-									newsDto.getContent(),
-									newsDto.getThumbnailPath(),
-									newsDto.getCategory(),
-									newsDto.getIsPublished(),
-									null,
-									null);
+		News newsEntity=newsDto.toEntity();
 		
 		int insertCount=mapper.insert(newsEntity);
 		
@@ -115,14 +108,7 @@ public class NewsService {
 	@Transactional
 	public int updateNews(NewsUpdateRequest newsDto) {
 		
-		News newsEntity=new News(newsDto.getId(),
-									newsDto.getTitle(),
-									newsDto.getContent(),
-									newsDto.getThumbnailPath(),
-									newsDto.getCategory(),
-									newsDto.getIsPublished(),
-									null,
-									null);
+		News newsEntity=newsDto.toEntity();
 		
 		int updateCount=mapper.update(newsEntity);
 		

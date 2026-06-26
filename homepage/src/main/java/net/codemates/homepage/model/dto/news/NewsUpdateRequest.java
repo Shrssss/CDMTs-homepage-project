@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.codemates.homepage.model.entity.News;
 
 @Getter
 @Setter
@@ -38,5 +39,18 @@ public class NewsUpdateRequest {
 	
 	@NotNull
 	private Boolean isPublished;
+	
+	public News toEntity() {
+		
+		return new News(id,
+						title,
+						content,
+						thumbnailPath,
+						category,
+						isPublished,
+						null,
+						null);
+		
+	}
 	
 }
