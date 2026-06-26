@@ -1,6 +1,7 @@
 package net.codemates.homepage.model.dto.item;
 
 import jakarta.validation.constraints.NotNull;
+import net.codemates.homepage.model.entity.Item;
 
 public class ItemRentRequest {
 	
@@ -20,5 +21,19 @@ public class ItemRentRequest {
 	
 	@NotNull
 	private Long renterId;
+	
+	public Item toEntity() {
+		
+		return new Item(id,
+						null,
+						null,
+						null,
+						quantity,
+						isDisposable,
+						isRentable,
+						renterId,
+						null);
+		
+	}
 	
 }
