@@ -10,20 +10,20 @@ import net.codemates.homepage.model.entity.News;
 @Mapper
 public interface NewsMapper {
 	
-	List<News> findByIds(@Param("ids")List<Long> ids);
+	News findById(Long id);
 	
-	News findByTitle(String title);
+	List<News> serchNews(@Param("keyword")String keyword,@Param("categoryId")Long categoryId);
 	
 	List<News> findByCategories(@Param("categories")List<String> categories);
 	
 	List<News> findAll();
 	
-	void insert(News news);	//transactional
+	int insert(News news);	//transactional
 	
-	void update(News news);	//transactional
+	int update(News news);	//transactional
 	
-	void updateIsPublishedById(Long id,Boolean isPublished);	//transactional
+	int updateIsPublishedById(Long id,Boolean isPublished);	//transactional
 	
-	void deleteById(Long id);	//transactional
+	int deleteById(Long id);	//transactional
 
 }
