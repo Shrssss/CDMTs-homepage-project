@@ -3,17 +3,18 @@ package net.codemates.homepage.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import net.codemates.homepage.model.entity.News;
 
 @Mapper
 public interface NewsMapper {
 	
-	News findById(Long id);
+	List<News> findByIds(@Param("ids")List<Long> ids);
 	
 	News findByTitle(String title);
 	
-	List<News> findByCategory(String category);
+	List<News> findByCategories(@Param("categories")List<String> categories);
 	
 	List<News> findAll();
 	

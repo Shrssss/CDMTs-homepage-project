@@ -3,13 +3,14 @@ package net.codemates.homepage.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import net.codemates.homepage.model.entity.Item;
 
 @Mapper
 public interface ItemMapper {
 
-	Item findById(Long id);
+	List<Item> findByIds(@Param("ids")List<Long> ids);
 	
 	List<Item> findByName(String name);
 	

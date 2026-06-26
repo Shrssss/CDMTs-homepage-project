@@ -3,13 +3,14 @@ package net.codemates.homepage.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import net.codemates.homepage.model.entity.Technology;
 
 @Mapper
 public interface TechnologyMapper {
 
-	Technology findById(Long id);
+	List<Technology> findByIds(@Param("ids")List<Long> ids);
 	
 	List<Technology> findByName(String name);
 	

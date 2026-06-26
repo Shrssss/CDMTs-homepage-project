@@ -2,9 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.codemates.homepage.mapper.MemberMapper">
 
-	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="findByIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
 	
-		SELECT * FROM members WHERE id = #{id}
+		SELECT *
+		FROM members
+		WHERE id IN
+		
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+		
+			#{id}
+		
+		</foreach> 
 	
 	</select>
 	
@@ -14,15 +22,31 @@
 	
 	</select>
 	
-	<select id="findByGrade" parameterType="Short" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="findByGrades" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
 	
-		SELECT * FROM members WHERE grade = #{grade}
+		SELECT *
+		FROM members
+		WHERE grade IN
+		
+		<foreach collection="grades" item="grade" open="(" separator="," close=")">
+		
+			#{grade}
+		
+		</foreach>
 	
 	</select>
 	
-	<select id="findByPosition" parameterType="String" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="findByPositions" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
 	
-		SELECT * FROM members WHERE position = #{position}
+		SELECT *
+		FROM members
+		WHERE position IN
+		
+		<foreach collection="positions" item="position" open="(" separator="," close=")">
+		
+			#{position}
+		
+		</foreach>
 	
 	</select>
 	
@@ -69,6 +93,18 @@
 			grade = #{grade},
 			position = #{position}
 		WHERE id = #{id}
+	
+	</update>
+	
+	<update id="updateByGrade" parameterType="net.codemates.homepage.model.entity.Item">
+	
+		UPDATE members 
+		SET name = #{name},
+			student_id = #{studentId},
+			email = #{email},
+			grade = grade+1,
+			position = #{position}
+		WHERE grade = #{grade}
 	
 	</update>
 	
