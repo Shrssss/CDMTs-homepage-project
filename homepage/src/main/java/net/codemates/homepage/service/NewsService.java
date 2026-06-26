@@ -68,7 +68,7 @@ public class NewsService {
 	}
 	
     /* IDからニュース詳細を取得 */
-	public NewsDetailResponse findNewsDetail(Long id){
+	public NewsDetailResponse findNewsDetailById(Long id){
 		
 		News newsEntity=mapper.findById(id);
 		
@@ -79,21 +79,12 @@ public class NewsService {
 	}
 	
 	/* キーワード・カテゴリ検索 */
-	public List<NewsResponse> serchNews(String keyword,List<String> categories,Integer page) {
+	public List<NewsResponse> searchNews(String keyword,List<String> categories,Integer page) {
 		
-		int currentPage=(page==null||page<0)?1:page;
+		int currentPage=(page==null||page<=0)?1:page;
 		int offset=(currentPage-1)*PAGE_SIZE;
 		
 		List<News>newsEntities=mapper.search(keyword,categories,offset,PAGE_SIZE);
-		
-		return newsEntities.stream().map(this::toResponse).toList();
-		
-	}
-	
-	/*  全ニュース取得 */
-	public List<NewsResponse> findAllNews(){
-		
-		List<News>newsEntities=mapper.findAll();
 		
 		return newsEntities.stream().map(this::toResponse).toList();
 		
@@ -153,7 +144,7 @@ public class NewsService {
 	
 	/* ニュース削除 */
 	@Transactional
-	public int deleteById(Long id) {
+	public int deleteNewsById(Long id) {
 		
 		int deleteCount=mapper.deleteById(id);
 		

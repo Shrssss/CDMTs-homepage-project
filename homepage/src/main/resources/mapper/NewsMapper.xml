@@ -42,12 +42,6 @@
 	
 	</select>
 	
-	<select id="findAll" resultType="net.codemates.homepage.model.entity.News">
-	
-		SELECT * FROM news
-	
-	</select>
-	
 	
 	
 	<insert id="insert" parameterType="net.codemates.homepage.model.entity.News" useGeneratedKeys="true" keyProperty="id">
