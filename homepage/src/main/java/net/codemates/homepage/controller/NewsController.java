@@ -26,7 +26,12 @@ import net.codemates.homepage.service.NewsService;
 @CrossOrigin(origins="")
 @RequiredArgsConstructor
 public class NewsController {
-
+	
+    /*
+     * Controller層(News)
+     * 		Service層で定義したメソッドを
+     */
+	
 	//Serviceの注入(DI:Dependency Injection)
 	private final NewsService service;
 	
