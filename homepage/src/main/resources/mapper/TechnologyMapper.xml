@@ -17,18 +17,18 @@
 	
 		SELECT * FROM technologies 
 
-	<where>
+		<where>
 	
-		<if test="name != null and name.trim() != ''">
+			<if test="name != null and name.trim() != ''">
 			
-				AND (
-					name ILIKE '%' || #{name} || '%'
-					OR content ILIKE '%' || #{name} || '%'
-				)
+					AND (
+						name ILIKE '%' || #{name} || '%'
+						OR content ILIKE '%' || #{name} || '%'
+					)
 			
-		</if> 
+			</if> 
 	
-	</where>
+		</where>
 	
 	</select>
 	

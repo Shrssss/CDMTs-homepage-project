@@ -18,8 +18,6 @@ public interface MemberMapper {
 							@Param("offset") int offset,
 				            @Param("limit") int limit);
 	
-	List<Member> findAll();
-	
 	void insert(Member member);	//transactional
 	
 	void update(Member member);	//transactional

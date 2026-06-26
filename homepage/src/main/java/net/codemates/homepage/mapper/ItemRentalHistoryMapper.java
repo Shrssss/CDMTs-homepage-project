@@ -23,8 +23,6 @@ public interface ItemRentalHistoryMapper {
 												@Param("offset") int offset,
 												@Param("limit") int limit);
 	
-	List<ItemRentalHistory> findAll();
-	
 	void insert(ItemRentalHistory history);		//transactional
 	
 	void updateReturningDayTime(LocalDateTime returnedAt);	//transactional

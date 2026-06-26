@@ -19,9 +19,6 @@ public interface ItemMapper {
 						@Param("offset") int offset,
 			            @Param("limit") int limit);
 	
-	
-	List<Item> findAll();
-	
 	void insert(Item item); //transactional
 	
 	void update(Item item);	//transactional
