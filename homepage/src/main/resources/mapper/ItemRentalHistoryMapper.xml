@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.codemates.homepage.mapper.ItemRentalHistoryMapper">
 
-	<select id="findByIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	<select id="findByIds" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
 	
 		SELECT *
 		FROM item_rental_histories
@@ -13,10 +13,13 @@
 			#{id}
 			
 		</foreach>
+		
+		ORDER BY id
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	
-	<select id="findByItemIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	<select id="findByItemIds" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
 	
 		SELECT *
 		FROM item_rental_histories
@@ -26,10 +29,13 @@
 			#{itemId}
 			
 		</foreach>
+		
+		ORDER BY id
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	
-	<select id="findByRenterIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	<select id="findByRenterIds" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
 	
 		SELECT *
 		FROM item_rental_histories
@@ -39,6 +45,9 @@
 			#{renterId}
 			
 		</foreach>
+		
+		ORDER BY id
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	

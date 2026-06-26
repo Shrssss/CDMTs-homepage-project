@@ -37,7 +37,8 @@
 		
 		</where>
 	
-		OREDER BY created_at
+		ORDER BY created_at DESC
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	

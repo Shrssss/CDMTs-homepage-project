@@ -33,6 +33,9 @@ public class NewsService {
 	//Mapperを注入する
 	private final NewsMapper mapper;
 	
+	//ページサイズの定義
+	private static final int PAGE_SIZE=20;
+	
     /*
      * News(Entity) → NewsResponse(DTO)
      *
@@ -76,9 +79,12 @@ public class NewsService {
 	}
 	
 	/* キーワード・カテゴリ検索 */
-	public List<NewsResponse> serchNews(String keyword,List<String> categories) {
+	public List<NewsResponse> serchNews(String keyword,List<String> categories,Integer page) {
 		
-		List<News>newsEntities=mapper.search(keyword,categories);
+		int currentPage=(page==null||page<0)?1:page;
+		int offset=(currentPage-1)*PAGE_SIZE;
+		
+		List<News>newsEntities=mapper.search(keyword,categories,offset,PAGE_SIZE);
 		
 		return newsEntities.stream().map(this::toResponse).toList();
 		

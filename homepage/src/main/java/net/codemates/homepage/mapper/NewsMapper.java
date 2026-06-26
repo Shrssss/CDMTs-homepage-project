@@ -12,7 +12,10 @@ public interface NewsMapper {
 	
 	News findById(Long id);
 	
-	List<News> search(@Param("keyword")String keyword,@Param("categories")List<String> categories);
+	List<News> search(@Param("keyword")String keyword,
+						@Param("categories")List<String> categories,
+						@Param("offset") int offset,
+			            @Param("limit") int limit);
 	
 	List<News> findAll();
 	

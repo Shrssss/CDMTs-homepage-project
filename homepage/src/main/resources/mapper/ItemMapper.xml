@@ -55,6 +55,7 @@
 		</where>
 	
 		ORDER BY name
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	

@@ -15,7 +15,10 @@ public interface ItemMapper {
 	List<Item> search(@Param("name")String name,
 						@Param("storageLocations")List<String> storageLocations,
 						@Param("isDisposable")Boolean isDisposable,
-						@Param("isRentable")Boolean isRentable);
+						@Param("isRentable")Boolean isRentable,
+						@Param("offset") int offset,
+			            @Param("limit") int limit);
+	
 	
 	List<Item> findAll();
 	

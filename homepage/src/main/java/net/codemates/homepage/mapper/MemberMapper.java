@@ -12,7 +12,11 @@ public interface MemberMapper {
 
 	List<Member> findByIds(@Param("ids")List<Long> ids);
 	
-	List<Member> search(String name,@Param("grades")List<Short> grades,@Param("positions")List<String> positions);
+	List<Member> search(String name,
+							@Param("grades")List<Short> grades,
+							@Param("positions")List<String> positions,
+							@Param("offset") int offset,
+				            @Param("limit") int limit);
 	
 	List<Member> findAll();
 	
