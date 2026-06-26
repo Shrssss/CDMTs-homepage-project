@@ -2,6 +2,8 @@ package net.codemates.homepage.model.dto.news;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -36,5 +38,9 @@ public class NewsUpdateRequest {
 	
 	@NotNull
 	private Boolean isPublished;
+	
+	@NotNull
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime createdAt;
 	
 }
