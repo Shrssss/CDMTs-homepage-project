@@ -24,6 +24,9 @@ public class NewsDetailResponse {
 	@Size(max=100)
 	private String title;
 	
+	@NotBlank
+	private String content;
+	
 	private String thumbnailPath;
 	
 	@NotBlank
@@ -36,5 +39,9 @@ public class NewsDetailResponse {
 	@NotNull
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
+	
+	@NotNull
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime updatedAt;
 	
 }
