@@ -10,10 +10,7 @@ import jakarta.validation.constraints.Size;
 
 public class NewsDetailResponse {
 
-/*　全記事を表示するためのObjectを定義するクラス */
-	
-	@NotNull
-	private Long id;
+/*　記事の詳細を表示するためのObjectを定義するクラス */
 
 	@NotBlank
 	@Size(max=100)

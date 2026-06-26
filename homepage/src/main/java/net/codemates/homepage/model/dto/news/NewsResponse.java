@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 
 public class NewsResponse {
 	
-	/*　記事の詳細を表示するためのObjectを定義するクラス */
+	/*　記事を表示するためのObjectを定義するクラス */
 	
 	@NotNull
 	private Long id;
