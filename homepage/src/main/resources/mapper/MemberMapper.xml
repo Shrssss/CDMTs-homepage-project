@@ -16,50 +16,43 @@
 	
 	</select>
 	
-	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="search" resultType="net.codemates.homepage.model.entity.Member">
 	
 		SELECT * FROM members 
 	
-	<where>
+		<where>
 	
-		<if test="name != null and name.trim() != ''">
+			<if test="name != null and name.trim() != ''">
 			
-				AND (
-					name ILIKE '%' || #{name} || '%'
-					OR content ILIKE '%' || #{name} || '%'
-				)
+				AND name ILIKE '%' || #{name} || '%'
 			
-		</if> 
-	
-	</where>
-	
-	</select>
-	
-	<select id="findByGrades" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
-	
-		SELECT *
-		FROM members
-		WHERE grade IN
+			</if> 
 		
-		<foreach collection="grades" item="grade" open="(" separator="," close=")">
+			<if test="grades != null and grades.size() > 0">
 		
-			#{grade}
+				AND grade IN
+			
+				<foreach collection="grades" item="grade" open="(" separator="," close=")">
 		
-		</foreach>
+					#{grade}
+		
+				</foreach>
+		
+			</if>
+		
+			<if test="positions != null and positions.size() > 0">
+		
+				AND grade IN
+			
+				<foreach collection="positions" item="position" open="(" separator="," close=")">
+		
+					#{position}
+			
+				</foreach>
+		
+			</if>
 	
-	</select>
-	
-	<select id="findByPositions" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
-	
-		SELECT *
-		FROM members
-		WHERE position IN
-		
-		<foreach collection="positions" item="position" open="(" separator="," close=")">
-		
-			#{position}
-		
-		</foreach>
+		</where>
 	
 	</select>
 	

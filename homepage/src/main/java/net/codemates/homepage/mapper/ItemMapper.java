@@ -12,13 +12,10 @@ public interface ItemMapper {
 
 	List<Item> findByIds(@Param("ids")List<Long> ids);
 	
-	List<Item> findByName(String name);
-	
-	List<Item> findByStorage(String storageLocation);
-	
-	List<Item> findByDisposable(Boolean isDisposable);
-	
-	List<Item> findByRentable(Boolean isRentable);
+	List<Item> search(@Param("name")String name,
+						@Param("storageLocations")List<String> storageLocations,
+						@Param("isDisposable")Boolean isDisposable,
+						@Param("isRentable")Boolean isRentable);
 	
 	List<Item> findAll();
 	

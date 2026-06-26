@@ -37,6 +37,8 @@
 		
 		</where>
 	
+		OREDER BY created_at
+	
 	</select>
 	
 	<select id="findAll" resultType="net.codemates.homepage.model.entity.News">
