@@ -39,8 +39,4 @@ public class NewsUpdateRequest {
 	@NotNull
 	private Boolean isPublished;
 	
-	@NotNull
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime createdAt;
-	
 }
