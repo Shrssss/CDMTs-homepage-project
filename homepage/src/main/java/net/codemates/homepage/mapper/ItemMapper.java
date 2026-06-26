@@ -26,7 +26,7 @@ public interface ItemMapper {
 	
 	void update(Item item);	//transactional
 	
-	void updateRenterIdById(Long id,Long renterId); //transactional
+	void updateRenterIdById(@Param("id")Long id,@Param("renterId")Long renterId); //transactional
 	
 	void deleteById(Long id); //transactional
 	
