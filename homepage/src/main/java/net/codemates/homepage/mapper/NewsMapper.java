@@ -12,9 +12,7 @@ public interface NewsMapper {
 	
 	News findById(Long id);
 	
-	List<News> serch(@Param("keyword")String keyword,@Param("categoryId")Long categoryId);
-	
-	List<News> findByCategories(@Param("categories")List<String> categories);
+	List<News> search(@Param("keyword")String keyword,@Param("categories")List<String> categories);
 	
 	List<News> findAll();
 	
@@ -22,7 +20,7 @@ public interface NewsMapper {
 	
 	int update(News news);	//transactional
 	
-	int updateIsPublishedById(Long id,Boolean isPublished);	//transactional
+	int updateIsPublishedById(@Param("id")Long id,@Param("isPublished")Boolean isPublished);	//transactional
 	
 	int deleteById(Long id);	//transactional
 

@@ -8,7 +8,7 @@
 	
 	</select>
 	
-	<select id="serch" resultType="net.codemates.homepage.model.entity.News">
+	<select id="search" resultType="net.codemates.homepage.model.entity.News">
 	
 		SELECT * FROM news 
 	
@@ -23,24 +23,19 @@
 			
 			</if> 
 			
-			<if test="categoryId != null">
+			<if test="categories != null and categories.size() > 0">
 			
-				AND category_id = #{categoryId}
-			
+				AND category IN
+				
+				<foreach collection="categories" item="category" open="(" separator="," close=")">
+		
+					#{category}
+		
+				</foreach>
+				
 			</if>
 		
 		</where>
-	
-	</select>
-	
-	<select id="findByCategories" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.News">
-	
-		SELECT * FROM news WHERE category = IN
-		<foreach collection="categories" item="category" open="(" separator="," close=")">
-		
-			#{category}
-		
-		</foreach>
 	
 	</select>
 	
@@ -60,14 +55,16 @@
 			title,
 			content,
 			thumbnail_path,
-			category
+			category,
+			is_published
 		)
 		VALUES
 		(
 			#{title},
 			#{content},
 			#{thumbnailPath},
-			#{category}
+			#{category},
+			#{isPublished}
 		)
 	
 	</insert>
@@ -86,7 +83,7 @@
 	
 	</update>
 	
-	<update id="updateIsPublishedById" parameterType="net.codemates.homepage.model.entity.News">
+	<update id="updateIsPublishedById">
 	
 		UPDATE news 
 		SET is_published = #{isPublished}
