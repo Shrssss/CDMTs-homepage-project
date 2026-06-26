@@ -16,33 +16,46 @@
 	
 	</select>
 	
-	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.Item">
+	<select id="search" resultType="net.codemates.homepage.model.entity.Item">
 	
-		SELECT * FROM items WHERE name = #{name}
+		SELECT * FROM items 
 	
-	</select>
+		<where>
 	
-	<select id="findByStorage" parameterType="String" resultType="net.codemates.homepage.model.entity.Item">
+			<if test="name != null and name.trim() != ''">
+			
+				AND name ILIKE '%' || #{name} || '%'
+			
+			</if> 
+			
+			<if test="storageLocations != null and storageLocations.size() > 0">
+		
+				AND storage_location IN
+			
+				<foreach collection="storageLocations" item="storageLocation" open="(" separator="," close=")">
+				
+					#{storageLocation}
+					
+				</foreach>
+		
+			</if>
+		
+			<if test="isDisposable != null">
+			
+				AND is_disposable = #{isDisposable}
+			
+			</if>
+		
+			<if test="isRentable != null">
+		
+				AND is_rentable = #{isRentable}
+			
+			</if>
 	
-		SELECT * FROM items WHERE storage_location = #{storageLocation}
+		</where>
 	
-	</select>
-	
-	<select id="findByDisposable" parameterType="Boolean" resultType="net.codemates.homepage.model.entity.Item">
-	
-		SELECT * FROM items WHERE is_disposable = #{isDisposable}
-	
-	</select>
-	
-	<select id="findByRentable" parameterType="Boolean" resultType="net.codemates.homepage.model.entity.Item">
-	
-		SELECT * FROM items WHERE is_rentable = #{isRentable}
-	
-	</select>
-	
-	<select id="findAll" resultType="net.codemates.homepage.model.entity.Item">
-	
-		SELECT * FROM items
+		ORDER BY name
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	

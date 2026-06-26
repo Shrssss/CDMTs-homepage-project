@@ -17,21 +17,28 @@ import net.codemates.homepage.model.entity.News;
 @RequiredArgsConstructor
 public class NewsService {
 
-    /*
-     * Service層(News)
-     * 
-     * 画面 -> DB
-     * 		Controllerから受け取ったDTOをEntityへ変換し、
-     *	 	Mapperを呼び出してDBを操作する。
-     *
-     * DB -> 画面
-     * 		DBから取得したEntityは、そのままControllerへ返さず、
-     * 		ResponseDTOへ変換して返す。
-     * 
-     */
+	/*
+	 * Controller層(News)
+	 *
+	 * クライアントから送られてきたHTTPリクエストを受け付ける。
+	 *
+	 * 画面 -> Service
+	 *      リクエストパラメータやJSONを受け取り、
+	 *      Service層へ処理を依頼する。
+	 *
+	 * Service -> 画面
+	 *      Serviceから受け取ったResponseDTOを
+	 *      HTTPレスポンス(JSON)としてクライアントへ返す。
+	 *
+	 *  Controllerでは業務処理(DB操作や検索処理など)は行わず、Serviceへ処理を委譲する。
+	 *   
+	 */
 	
-	//Mapperを注入する
+	//Mapperの注入(DI:Dependency Injection)
 	private final NewsMapper mapper;
+	
+	//ページサイズの定義
+	private static final int PAGE_SIZE=20;
 	
     /*
      * News(Entity) → NewsResponse(DTO)
@@ -65,7 +72,7 @@ public class NewsService {
 	}
 	
     /* IDからニュース詳細を取得 */
-	public NewsDetailResponse findNewsDetail(Long id){
+	public NewsDetailResponse findNewsDetailById(Long id){
 		
 		News newsEntity=mapper.findById(id);
 		
@@ -76,18 +83,12 @@ public class NewsService {
 	}
 	
 	/* キーワード・カテゴリ検索 */
-	public List<NewsResponse> serchNews(String keyword,List<String> categories) {
+	public List<NewsResponse> searchNews(String keyword,List<String> categories,Integer page) {
 		
-		List<News>newsEntities=mapper.search(keyword,categories);
+		int currentPage=(page==null||page<=0)?1:page;
+		int offset=(currentPage-1)*PAGE_SIZE;
 		
-		return newsEntities.stream().map(this::toResponse).toList();
-		
-	}
-	
-	/*  全ニュース取得 */
-	public List<NewsResponse> findAllNews(){
-		
-		List<News>newsEntities=mapper.findAll();
+		List<News>newsEntities=mapper.search(keyword,categories,offset,PAGE_SIZE);
 		
 		return newsEntities.stream().map(this::toResponse).toList();
 		
@@ -97,14 +98,7 @@ public class NewsService {
 	@Transactional
 	public Long createNews(NewsCreateRequest newsDto) {
 		
-		News newsEntity=new News(null,
-									newsDto.getTitle(),
-									newsDto.getContent(),
-									newsDto.getThumbnailPath(),
-									newsDto.getCategory(),
-									newsDto.getIsPublished(),
-									null,
-									null);
+		News newsEntity=newsDto.toEntity();
 		
 		int insertCount=mapper.insert(newsEntity);
 		
@@ -118,14 +112,7 @@ public class NewsService {
 	@Transactional
 	public int updateNews(NewsUpdateRequest newsDto) {
 		
-		News newsEntity=new News(newsDto.getId(),
-									newsDto.getTitle(),
-									newsDto.getContent(),
-									newsDto.getThumbnailPath(),
-									newsDto.getCategory(),
-									newsDto.getIsPublished(),
-									null,
-									null);
+		News newsEntity=newsDto.toEntity();
 		
 		int updateCount=mapper.update(newsEntity);
 		
@@ -147,7 +134,7 @@ public class NewsService {
 	
 	/* ニュース削除 */
 	@Transactional
-	public int deleteById(Long id) {
+	public int deleteNewsById(Long id) {
 		
 		int deleteCount=mapper.deleteById(id);
 		

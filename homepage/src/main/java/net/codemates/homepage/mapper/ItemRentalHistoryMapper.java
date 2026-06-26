@@ -11,13 +11,17 @@ import net.codemates.homepage.model.entity.ItemRentalHistory;
 @Mapper
 public interface ItemRentalHistoryMapper {
 	
-	List<ItemRentalHistory> findByIds(@Param("ids")List<Long> ids);
+	List<ItemRentalHistory> findByIds(@Param("ids")List<Long> ids,
+										@Param("offset") int offset,
+										@Param("limit") int limit);
 	
-	List<ItemRentalHistory> findByItemIds(@Param("itemIds")List<Long> itemIds);
+	List<ItemRentalHistory> findByItemIds(@Param("itemIds")List<Long> itemIds,
+											@Param("offset") int offset,
+											@Param("limit") int limit);
 	
-	List<ItemRentalHistory> findByRenterIds(@Param("renterIds")List<Long> renterIds);
-	
-	List<ItemRentalHistory> findAll();
+	List<ItemRentalHistory> findByRenterIds(@Param("renterIds")List<Long> renterIds,
+												@Param("offset") int offset,
+												@Param("limit") int limit);
 	
 	void insert(ItemRentalHistory history);		//transactional
 	

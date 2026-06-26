@@ -16,43 +16,46 @@
 	
 	</select>
 	
-	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="search" resultType="net.codemates.homepage.model.entity.Member">
 	
-		SELECT * FROM members WHERE name = #{name}
+		SELECT * FROM members 
 	
-	</select>
+		<where>
 	
-	<select id="findByGrades" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
-	
-		SELECT *
-		FROM members
-		WHERE grade IN
+			<if test="name != null and name.trim() != ''">
+			
+				AND name ILIKE '%' || #{name} || '%'
+			
+			</if> 
 		
-		<foreach collection="grades" item="grade" open="(" separator="," close=")">
+			<if test="grades != null and grades.size() > 0">
 		
-			#{grade}
+				AND grade IN
+			
+				<foreach collection="grades" item="grade" open="(" separator="," close=")">
 		
-		</foreach>
-	
-	</select>
-	
-	<select id="findByPositions" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
-	
-		SELECT *
-		FROM members
-		WHERE position IN
+					#{grade}
 		
-		<foreach collection="positions" item="position" open="(" separator="," close=")">
+				</foreach>
 		
-			#{position}
+			</if>
 		
-		</foreach>
+			<if test="positions != null and positions.size() > 0">
+		
+				AND grade IN
+			
+				<foreach collection="positions" item="position" open="(" separator="," close=")">
+		
+					#{position}
+			
+				</foreach>
+		
+			</if>
 	
-	</select>
-	
-	<select id="findAll" resultType="net.codemates.homepage.model.entity.Member">
-	
-		SELECT * FROM members
+		</where>
+		
+		ORDER BY name
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	

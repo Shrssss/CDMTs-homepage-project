@@ -37,11 +37,8 @@
 		
 		</where>
 	
-	</select>
-	
-	<select id="findAll" resultType="net.codemates.homepage.model.entity.News">
-	
-		SELECT * FROM news
+		ORDER BY created_at DESC
+		LIMIT #{limit} OFFSET #{offset}
 	
 	</select>
 	

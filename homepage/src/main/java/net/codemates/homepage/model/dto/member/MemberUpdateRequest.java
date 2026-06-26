@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import net.codemates.homepage.model.entity.Member;
 
 public class MemberUpdateRequest {
 	
@@ -39,6 +40,16 @@ public class MemberUpdateRequest {
 	@Size(min=10,max=72)
 	private String password;
 	
-	//後で使える技術入れる　-> 技術を加えたりする奴が必要（Notionみたいな）
+	public Member toEntity(String passwordHash) {
+		return new Member(id,
+							name,
+							studentId,
+							email,
+							grade,
+							position,
+							passwordHash,
+							null,
+							null);
+	}
 
 }

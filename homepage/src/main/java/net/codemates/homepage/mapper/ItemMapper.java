@@ -12,21 +12,18 @@ public interface ItemMapper {
 
 	List<Item> findByIds(@Param("ids")List<Long> ids);
 	
-	List<Item> findByName(String name);
-	
-	List<Item> findByStorage(String storageLocation);
-	
-	List<Item> findByDisposable(Boolean isDisposable);
-	
-	List<Item> findByRentable(Boolean isRentable);
-	
-	List<Item> findAll();
+	List<Item> search(@Param("name")String name,
+						@Param("storageLocations")List<String> storageLocations,
+						@Param("isDisposable")Boolean isDisposable,
+						@Param("isRentable")Boolean isRentable,
+						@Param("offset") int offset,
+			            @Param("limit") int limit);
 	
 	void insert(Item item); //transactional
 	
 	void update(Item item);	//transactional
 	
-	void updateRenterIdById(Long id,Long renterId); //transactional
+	void updateRenterIdById(@Param("id")Long id,@Param("renterId")Long renterId); //transactional
 	
 	void deleteById(Long id); //transactional
 	

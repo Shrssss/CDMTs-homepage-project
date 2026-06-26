@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import net.codemates.homepage.model.entity.Member;
 
 public class MemberLoginRequest {
 	
@@ -24,5 +25,17 @@ public class MemberLoginRequest {
 	@NotBlank
 	@Size(min=10,max=72)
 	private String password;
+	
+	public Member toEntity(String passwordHash) {
+		return new Member(id,
+							null,
+							studentId,
+							email,
+							null,
+							null,
+							passwordHash,
+							null,
+							null);
+	}
 	
 }

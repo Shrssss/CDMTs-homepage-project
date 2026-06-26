@@ -11,12 +11,9 @@ public class TechnologyService {
 	 * 			└─ 内容編集
 	 * 
 	 * 		技術表示
+	 * 			├─ 技術検索
 	 * 			└─ 習得者表示
 	 * 
 	 */
-	
-	//create finalized technologyMapper field (interface)
-	
-	//define all method written in technologyMapper
 	
 }
