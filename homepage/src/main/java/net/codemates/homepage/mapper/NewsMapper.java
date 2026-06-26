@@ -3,6 +3,7 @@ package net.codemates.homepage.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import net.codemates.homepage.model.entity.News;
 
@@ -11,18 +12,16 @@ public interface NewsMapper {
 	
 	News findById(Long id);
 	
-	News findByTitle(String title);
-	
-	List<News> findByCategory(String category);
+	List<News> search(@Param("keyword")String keyword,@Param("categories")List<String> categories);
 	
 	List<News> findAll();
 	
-	void insert(News news);
+	int insert(News news);	//transactional
 	
-	void update(News news);
+	int update(News news);	//transactional
 	
-	void updateIsPublishedById(Long id,Boolean isPublished);
+	int updateIsPublishedById(@Param("id")Long id,@Param("isPublished")Boolean isPublished);	//transactional
 	
-	void deleteById(Long id);
+	int deleteById(Long id);	//transactional
 
 }

@@ -8,15 +8,34 @@
 	
 	</select>
 	
-	<select id="findByTitle" parameterType="String" resultType="net.codemates.homepage.model.entity.News">
+	<select id="search" resultType="net.codemates.homepage.model.entity.News">
 	
-		SELECT * FROM news WHERE title = #{title}
+		SELECT * FROM news 
 	
-	</select>
-	
-	<select id="findByCategory" parameterType="String" resultType="net.codemates.homepage.model.entity.News">
-	
-		SELECT * FROM news WHERE category = #{category}
+		<where>
+		
+			<if test="keyword != null and keyword.trim() != ''">
+			
+				AND (
+					title ILIKE '%' || #{keyword} || '%'
+					OR content ILIKE '%' || #{keyword} || '%'
+				)
+			
+			</if> 
+			
+			<if test="categories != null and categories.size() > 0">
+			
+				AND category IN
+				
+				<foreach collection="categories" item="category" open="(" separator="," close=")">
+		
+					#{category}
+		
+				</foreach>
+				
+			</if>
+		
+		</where>
 	
 	</select>
 	
@@ -28,7 +47,7 @@
 	
 	
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.News">
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.News" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
 		news
@@ -36,14 +55,16 @@
 			title,
 			content,
 			thumbnail_path,
-			category
+			category,
+			is_published
 		)
 		VALUES
 		(
 			#{title},
 			#{content},
 			#{thumbnailPath},
-			#{category}
+			#{category},
+			#{isPublished}
 		)
 	
 	</insert>
@@ -62,7 +83,7 @@
 	
 	</update>
 	
-	<update id="updateIsPublishedById" parameterType="net.codemates.homepage.model.entity.News">
+	<update id="updateIsPublishedById">
 	
 		UPDATE news 
 		SET is_published = #{isPublished}

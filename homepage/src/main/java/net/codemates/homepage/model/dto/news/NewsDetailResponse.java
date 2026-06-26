@@ -7,19 +7,27 @@ import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewsDetailResponse {
 
-/*　全記事を表示するためのObjectを定義するクラス */
-	
-	@NotNull
-	private Long id;
+/*　記事の詳細を表示するためのObjectを定義するクラス */
 
 	@NotBlank
 	@Size(max=100)
 	private String title;
 	
-	private String thumbnail_path;
+	@NotBlank
+	private String content;
+	
+	private String thumbnailPath;
 	
 	@NotBlank
 	@Size(max=30)
@@ -31,5 +39,9 @@ public class NewsDetailResponse {
 	@NotNull
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
+	
+	@NotNull
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime updatedAt;
 	
 }

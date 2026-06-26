@@ -1,10 +1,8 @@
 package net.codemates.homepage.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class MemberService {
 
 	/*	必要な機能
@@ -21,5 +19,9 @@ public class MemberService {
 	 * 			└─ 情報更新
 	 * 
 	 */
+	
+	//create finalized memberMapper field (interface)
+	
+	//define all method written in memberMapper
 	
 }

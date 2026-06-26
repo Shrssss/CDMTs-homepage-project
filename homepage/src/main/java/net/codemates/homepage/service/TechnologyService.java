@@ -15,4 +15,8 @@ public class TechnologyService {
 	 * 
 	 */
 	
+	//create finalized technologyMapper field (interface)
+	
+	//define all method written in technologyMapper
+	
 }

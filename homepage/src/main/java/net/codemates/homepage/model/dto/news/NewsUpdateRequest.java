@@ -1,9 +1,21 @@
 package net.codemates.homepage.model.dto.news;
 
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewsUpdateRequest {
 	
 	/*　記事をアップデートするためのObjectを定義するクラス */
@@ -18,7 +30,7 @@ public class NewsUpdateRequest {
 	@NotBlank
 	private String content;
 	
-	private String thumbnail_path;
+	private String thumbnailPath;
 	
 	@NotBlank
 	@Size(max=30)
