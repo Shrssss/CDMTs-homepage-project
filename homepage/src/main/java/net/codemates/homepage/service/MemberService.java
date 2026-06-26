@@ -20,8 +20,4 @@ public class MemberService {
 	 * 
 	 */
 	
-	//create finalized memberMapper field (interface)
-	
-	//define all method written in memberMapper
-	
 }

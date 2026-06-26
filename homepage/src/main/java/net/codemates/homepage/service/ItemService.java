@@ -19,8 +19,5 @@ public class ItemService {
 	 * 
 	 */
 	
-	//create finalized itemMapper field (interface)
-	
-	//define all method written in itemMapper
 	
 }
