@@ -12,7 +12,7 @@ public interface NewsMapper {
 	
 	News findById(Long id);
 	
-	List<News> serchNews(@Param("keyword")String keyword,@Param("categoryId")Long categoryId);
+	List<News> serch(@Param("keyword")String keyword,@Param("categoryId")Long categoryId);
 	
 	List<News> findByCategories(@Param("categories")List<String> categories);
 	

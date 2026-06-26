@@ -8,7 +8,7 @@
 	
 	</select>
 	
-	<select id="serchNews" resultType="net.codemates.homepage.model.entity.News">
+	<select id="serch" resultType="net.codemates.homepage.model.entity.News">
 	
 		SELECT * FROM news 
 	
