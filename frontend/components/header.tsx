@@ -9,6 +9,7 @@ const Header = () => {
       <div className='flex gap-2'>
         <Link href="/members">メンバー</Link>
         <Link href="/news">ニュース</Link>
+        <Link href="/news">メンバー専用ページ</Link>
       </div>
     </header>
   )
