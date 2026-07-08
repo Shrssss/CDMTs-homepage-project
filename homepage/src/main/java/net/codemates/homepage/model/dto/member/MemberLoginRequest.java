@@ -11,9 +11,6 @@ public class MemberLoginRequest {
 	
 	/* ログイン時に必要なObjectを定義するクラス */
 	
-	@NotNull
-	private Long id;
-	
 	@NotBlank
 	@Email
 	private String email;
@@ -27,7 +24,7 @@ public class MemberLoginRequest {
 	private String password;
 	
 	public Member toEntity(String passwordHash) {
-		return new Member(id,
+		return new Member(null,
 							null,
 							studentId,
 							email,
