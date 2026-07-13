@@ -18,19 +18,9 @@ import net.codemates.homepage.model.entity.News;
 public class NewsService {
 
 	/*
-	 * Controller層(News)
+	 * Service層(News)
 	 *
-	 * クライアントから送られてきたHTTPリクエストを受け付ける。
-	 *
-	 * 画面 -> Service
-	 *      リクエストパラメータやJSONを受け取り、
-	 *      Service層へ処理を依頼する。
-	 *
-	 * Service -> 画面
-	 *      Serviceから受け取ったResponseDTOを
-	 *      HTTPレスポンス(JSON)としてクライアントへ返す。
-	 *
-	 *  Controllerでは業務処理(DB操作や検索処理など)は行わず、Serviceへ処理を委譲する。
+	 * Controller層で定義された処理を実装する。
 	 *   
 	 */
 	
