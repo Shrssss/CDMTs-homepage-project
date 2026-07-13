@@ -27,10 +27,22 @@ import net.codemates.homepage.service.NewsService;
 @RequiredArgsConstructor
 public class NewsController {
 	
-    /*
-     * Controller層(News)
-     * 		Service層で定義したメソッドを
-     */
+	/*
+	 * Controller層(News)
+	 *
+	 * クライアントから送られてきたHTTPリクエストを受け付ける。
+	 *
+	 * 画面 -> Service
+	 *      リクエストパラメータやJSONを受け取り、
+	 *      Service層へ処理を依頼する。
+	 *
+	 * Service -> 画面
+	 *      Serviceから受け取ったResponseDTOを
+	 *      HTTPレスポンス(JSON)としてクライアントへ返す。
+	 *
+	 *  Controllerでは業務処理(DB操作や検索処理など)は行わず、Serviceへ処理を委譲する。
+	 *   
+	 */
 	
 	//Serviceの注入(DI:Dependency Injection)
 	private final NewsService service;

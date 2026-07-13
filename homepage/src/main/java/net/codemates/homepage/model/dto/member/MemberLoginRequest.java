@@ -2,7 +2,6 @@ package net.codemates.homepage.model.dto.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import net.codemates.homepage.model.entity.Member;
@@ -10,9 +9,6 @@ import net.codemates.homepage.model.entity.Member;
 public class MemberLoginRequest {
 	
 	/* ログイン時に必要なObjectを定義するクラス */
-	
-	@NotNull
-	private Long id;
 	
 	@NotBlank
 	@Email
@@ -27,7 +23,7 @@ public class MemberLoginRequest {
 	private String password;
 	
 	public Member toEntity(String passwordHash) {
-		return new Member(id,
+		return new Member(null,
 							null,
 							studentId,
 							email,
