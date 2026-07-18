@@ -59,6 +59,14 @@
 	
 	</select>
 	
+	<select id="findByStudentIdOrEmial" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members
+		WHERE student_id = #{identifier} OR email = #{identifier}
+	
+	
+	</select>
+	
 	
 	
 	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Item">
