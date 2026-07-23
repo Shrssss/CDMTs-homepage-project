@@ -22,4 +22,69 @@ public class MemberController {
 	 * 
 	 */
 	
+    /*
+     * メンバー作成    （作らないでいい）
+     * 
+     * メソッド名 	: createMember
+     * 戻り値		: Long id
+     * 引数		: MemberCreateRequest
+     * 
+     * 		POST /api/members
+     * 
+     */
+	
+    /*
+     * メンバーログイン    （作らないでいい）
+     * 
+     * メソッド名 	: loginMember
+     * 戻り値		: Long id
+     * 引数		: MemberLoginRequest
+     * 
+     * 		GET /api/members/login
+     * 
+     */
+	
+    /*
+     * メンバー検索
+     * 
+     * メソッド名 	: searchMember
+     * 戻り値		: MemberResponse
+     * 引数		: String name,List<Short> grades,List<String> positions,Integer page
+     * 
+     * 		GET /api/members
+     * 
+     */
+	
+    /*
+     * メンバー詳細表示
+     * 
+     * メソッド名 	: getMemberDetail
+     * 戻り値		: MemberDetailResponse
+     * 引数		: Long id
+     * 
+     * 		GET /api/members/{id}
+     * 
+     */
+	
+    /*
+     * メンバー編集
+     * 
+     * メソッド名 	: updateMember
+     * 戻り値		: void
+     * 引数		: MemberUpdateRequest
+     * 
+     * 		PUT /api/members/{id}
+     * 
+     */
+	
+    /*
+     * メンバー削除
+     * 
+     * メソッド名 	: deleteMember
+     * 戻り値		: void
+     * 引数		: Long id
+     * 
+     * 		DELETE /api/members/{id}
+     * 
+     */
 }
