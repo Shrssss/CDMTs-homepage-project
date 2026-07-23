@@ -40,7 +40,7 @@ public class MemberController {
      * 戻り値		: Long id
      * 引数		: MemberLoginRequest
      * 
-     * 		GET /api/members/login
+     * 		POST /api/members/login
      * 
      */
 	
@@ -48,7 +48,7 @@ public class MemberController {
      * メンバー検索
      * 
      * メソッド名 	: searchMember
-     * 戻り値		: MemberResponse
+     * 戻り値		: List<MemberResponse>
      * 引数		: String name,List<Short> grades,List<String> positions,Integer page
      * 
      * 		GET /api/members

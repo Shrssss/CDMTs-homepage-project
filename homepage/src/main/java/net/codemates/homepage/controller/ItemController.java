@@ -55,7 +55,7 @@ public class ItemController {
     /*
      * 備品の貸し出し履歴表示
      * 
-     * メソッド名 	: getItemReantalHistories
+     * メソッド名 	: getItemRentalHistories
      * 戻り値		: List<ItemRentalHistoryResponse>
      * 引数		: Long id,Integer page
      * 
@@ -80,7 +80,7 @@ public class ItemController {
      * メソッド名 	: deleteItem
      * 戻り値		: void
      * 引数		: Long id
-     * 		DELETE /api/item/{id}
+     * 		DELETE /api/items/{id}
      * 
      */
 }

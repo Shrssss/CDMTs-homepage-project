@@ -25,7 +25,7 @@ public class TechnologyController {
      * 戻り値		: void
      * 引数		: TechnologyUpdateRequest
      * 
-     * 		POST /api/technologies/{id}
+     * 		PUT /api/technologies/{id}
      * 
      */
 	
@@ -33,7 +33,7 @@ public class TechnologyController {
      * 技術表示
      * 
      * メソッド名 	: getTechnologies
-     * 戻り値		: TechnologyResponse
+     * 戻り値		: List<TechnologyResponse>
      * 引数		: String name,Integer page
      * 
      * 		GET /api/technologies
@@ -55,10 +55,10 @@ public class TechnologyController {
      * 習得者表示
      * 
      * メソッド名 	: getSkilledMember
-     * 戻り値		: MemberResponse
+     * 戻り値		: List<MemberResponse>
      * 引数		: Long id
      * 
-     * 		GET /api/technologies/{id}/member
+     * 		GET /api/technologies/{id}/members
      * 
      */
 	
