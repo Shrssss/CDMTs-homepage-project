@@ -62,4 +62,15 @@ public class TechnologyController {
      * 
      */
 	
+    /*
+     * 技術消去
+     * 
+     * メソッド名 	: deleteTechnology
+     * 戻り値		: void
+     * 引数		: Long id
+     * 
+     * 		DELETE /api/technologies/{id}
+     * 
+     */
+	
 }
