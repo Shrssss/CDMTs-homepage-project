@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -117,12 +118,12 @@ public class NewsController {
     /*
      * 公開・非公開の切り替え
      *
-     * 		PUT /api/news/{id}/published
+     * 		PATCH /api/news/{id}/published
      *
      * 			公開状態(isPublished)のみ更新する。
      * 
      */
-	@PutMapping("/{id}/published")
+	@PatchMapping("/{id}/published")
 	public void updateIspublishedById(@PathVariable Long id,@RequestParam Boolean isPublished) {
 		
 		service.updateIsPublishedById(id,isPublished);
