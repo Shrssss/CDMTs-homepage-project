@@ -1,5 +1,7 @@
 package net.codemates.homepage.model.dto.member;
 
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -51,5 +53,9 @@ public class MemberUpdateRequest {
 							null,
 							null);
 	}
+	
+	//以降TechnologyMap
+	
+	List<Long> technologyIds; 
 
 }
