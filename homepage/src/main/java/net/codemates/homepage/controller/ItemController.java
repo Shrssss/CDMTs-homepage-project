@@ -59,7 +59,7 @@ public class ItemController {
      * 戻り値		: List<ItemRentalHistoryResponse>
      * 引数		: Long id,Integer page
      * 
-     * 		PATCH /api/items/{id}/history
+     * 		GET /api/items/{id}/history
      * 
      */
 	
