@@ -74,13 +74,14 @@ public class ItemController {
      * 
      */
 	
-    /*
-     * 備品削除
-     *
-     * メソッド名 	: deleteItem
-     * 戻り値		: void
-     * 引数		: Long id
-     * 		DELETE /api/items/{id}
-     * 
-     */
+//	※作成後コメントアウト		
+//    /*
+//     * 備品削除
+//     *
+//     * メソッド名 	: deleteItem
+//     * 戻り値		: void
+//     * 引数		: Long id
+//     * 		DELETE /api/items/{id}
+//     * 
+//     */
 }

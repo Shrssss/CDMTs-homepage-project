@@ -130,19 +130,19 @@ public class NewsController {
 		
 	}
 	
-    /*
-     * ニュース削除
-     *
-     * 		DELETE /api/news/{id}
-     *
-     * 			指定されたIDの記事を削除する。
-     * 
-     */
-	@DeleteMapping("/{id}")
-	public void deleteNewsById(@PathVariable Long id) {
-		
-		service.deleteNewsById(id);
-		
-	}
+//    /*
+//     * ニュース削除
+//     *
+//     * 		DELETE /api/news/{id}
+//     *
+//     * 			指定されたIDの記事を削除する。
+//     * 
+//     */
+//	@DeleteMapping("/{id}")
+//	public void deleteNewsById(@PathVariable Long id) {
+//		
+//		service.deleteNewsById(id);
+//		
+//	}
 	
 }

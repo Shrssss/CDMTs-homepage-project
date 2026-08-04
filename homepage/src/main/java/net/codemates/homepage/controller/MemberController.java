@@ -62,14 +62,15 @@ public class MemberController {
      * 
      */
 	
-    /*
-     * メンバー削除
-     * 
-     * メソッド名 	: deleteMember
-     * 戻り値		: void
-     * 引数		: Long id
-     * 
-     * 		DELETE /api/members/{id}
-     * 
-     */
+//		※作成後コメントアウト	
+//    /*
+//     * メンバー削除
+//     * 
+//     * メソッド名 	: deleteMember
+//     * 戻り値		: void
+//     * 引数		: Long id
+//     * 
+//     * 		DELETE /api/members/{id}
+//     * 
+//     */
 }
