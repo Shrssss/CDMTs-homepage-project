@@ -55,7 +55,6 @@ public class MemberUpdateRequest {
 	}
 	
 	//以降TechnologyMap
-	
 	List<Long> technologyIds; 
 
 }
