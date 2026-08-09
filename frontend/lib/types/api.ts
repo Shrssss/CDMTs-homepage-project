@@ -72,3 +72,71 @@ export const TechnologiesSchema = z.object({
   description: z.string(),
 });
 export type Technologies = z.infer<typeof TechnologiesSchema>;
+
+export const ItemResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.number(),
+  storageLocation: z.number(),
+  isDisposable: z.boolean(),
+  isRentable: z.boolean()
+}))
+
+export const ItemDetailResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  storageLocation: z.string(),
+  quantity: z.string(),
+  isDisposable: z.boolean(),
+  isRentable: z.boolean(),
+  renterId: z.boolean()
+}))
+
+export const MembersResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+  grade: z.number(),
+  position: z.string()
+}))
+
+export const TechnologiesResponseSchema = z.object({
+  id: z.number(),
+  name: z.string()
+})
+
+export const MemberDetailResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  grade: z.number(),
+  position: z.string(),
+  technologies: z.array(TechnologiesResponseSchema)
+})
+
+export const NewsResponseSchema = z.array(z.object({
+  title: z.string(),
+  thumbnailPath: z.string(),
+  category: z.string(),
+  isPublished: z.boolean(),
+  createdAt: z.date()
+}))
+
+export const NewsDetailResponseSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  thumbnailPath: z.string(),
+  category: z.string(),
+  isPublished: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+})
+
+export const TechnologyResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+}))
+
+export const TechnologyDetailResponseSchema = z.object({
+  id: z.number(),
+  name: z.number(),
+  description: z.number()
+})
