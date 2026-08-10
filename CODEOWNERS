@@ -1,5 +1,4 @@
-#leader
-* @Shrssss @tommy10092525
+#leader: @Shrssss @tommy10092525
 
 #FrontReviewer
 /homepage/src/main/resources/static/** @tommy10092525 @Melting-Sugar
@@ -7,4 +6,5 @@
 /frontend/** @tommy10092525 @Melting-Sugar
 
 #BackReviewer
-/homepage/src/main/java/** @Shrssss
+/homepage/src/main/** @Shrssss
+/homepage/src/test/** @Shrssss
