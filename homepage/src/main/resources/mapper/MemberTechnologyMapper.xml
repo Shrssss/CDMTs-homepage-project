@@ -5,12 +5,13 @@
 	<select id="findByTechnologiesByMemberIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.MemberTechnology">
 	
 		SELECT *
-		FROM member_technologis
-		WHERE member_id IN
+		FROM technologies
+		INNNER JOIN member_technologies ON techonology_id = technologies.id
+		WHERE member_id
 		
 		<foreach collection="memberIds" item="memberId" open="(" separator="," close=")">
 		
-			#{memeberId}
+			#{memberId}
 		
 		</foreach>
 	
@@ -19,7 +20,8 @@
 	<select id="findByMembersByTechnologyIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.MemberTechnology">
 	
 		SELECT *
-		FROM member_technologis
+		FROM members
+		INNER JOIN member_technologies ON member_id = members.id
 		WHERE technology_id IN
 		
 		<foreach collection="technologyIds" item="technologyId" open="(" separator="," close=")">
