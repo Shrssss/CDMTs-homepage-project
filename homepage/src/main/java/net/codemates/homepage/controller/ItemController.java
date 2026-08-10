@@ -61,7 +61,7 @@ public class ItemController {
      * 戻り値		: List<ItemRentalHistoryResponse>
      * 引数		: Long id,Integer page
      * 
-     * 		GET /api/items/{id}/History
+     * 		GET /api/items/{id}/history
      * 
      */
 	
@@ -76,13 +76,14 @@ public class ItemController {
      * 
      */
 	
-    /*
-     * 備品削除
-     *
-     * メソッド名 	: deleteItem
-     * 戻り値		: void
-     * 引数		: Long id
-     * 		DELETE /api/items/{id}
-     * 
-     */
+//	※作成後コメントアウト(使わないが一応書く)
+//    /*
+//     * 備品削除
+//     *
+//     * メソッド名 	: deleteItem
+//     * 戻り値		: void
+//     * 引数		: Long id
+//     * 		DELETE /api/items/{id}
+//     * 
+//     */
 }
