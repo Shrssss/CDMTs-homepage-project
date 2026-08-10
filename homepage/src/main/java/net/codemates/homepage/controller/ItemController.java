@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/items")
 public class ItemController {
 	
+	//test
+	
     /*
      * 備品作成
      * 
