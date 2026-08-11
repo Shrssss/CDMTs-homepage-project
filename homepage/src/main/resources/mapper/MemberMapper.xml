@@ -59,7 +59,7 @@
 	
 	</select>
 	
-	<select id="findByStudentIdOrEmial" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="findByStudentIdOrEmail" resultType="net.codemates.homepage.model.entity.Member">
 	
 		SELECT * FROM members
 		WHERE student_id = #{identifier} OR email = #{identifier}
@@ -69,7 +69,7 @@
 	
 	
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Item">
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Member">
 	
 		INSERT INTO
 		members
@@ -95,7 +95,7 @@
 	
 	
 	
-	<update id="update" parameterType="net.codemates.homepage.model.entity.Item">
+	<update id="update" parameterType="net.codemates.homepage.model.entity.Member">
 	
 		UPDATE members 
 		SET name = #{name},
@@ -107,7 +107,7 @@
 	
 	</update>
 	
-	<update id="updateByGrade" parameterType="net.codemates.homepage.model.entity.Item">
+	<update id="updateByGrade" parameterType="net.codemates.homepage.model.entity.Member">
 	
 		UPDATE members 
 		SET name = #{name},
