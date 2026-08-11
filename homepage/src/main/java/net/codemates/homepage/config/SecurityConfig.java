@@ -24,7 +24,7 @@ public class SecurityConfig {
 		
 		http.csrf(csrf->csrf.disable()) //CSRFについては後で検討
 		.authorizeHttpRequests(auth->auth
-				.requestMatchers(" !! praceHolder !! ").permitAll() //ログインや会員登録などの認証不要なエンドポイントを指定
+				.requestMatchers(" !! placeHolder !! ").permitAll() //ログインや会員登録などの認証不要なエンドポイントを指定
 				.anyRequest().authenticated()
 				)
 		.formLogin(form->form.disable()) //Spring Securityのデフォルトのログインフォームを無効化(フロントの画面を使用)
