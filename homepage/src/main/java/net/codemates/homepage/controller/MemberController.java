@@ -7,27 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/members")
 public class MemberController {
 	
-    /*
-     * メンバー作成    （作らないでいい）
-     * 
-     * メソッド名 	: createMember
-     * 戻り値		: Long id
-     * 引数		: MemberCreateRequest
-     * 
-     * 		POST /api/members
-     * 
-     */
-	
-    /*
-     * メンバーログイン    （作らないでいい）
-     * 
-     * メソッド名 	: loginMember
-     * 戻り値		: Long id
-     * 引数		: MemberLoginRequest
-     * 
-     * 		POST /api/members/login
-     * 
-     */
 	
     /*
      * メンバー検索
