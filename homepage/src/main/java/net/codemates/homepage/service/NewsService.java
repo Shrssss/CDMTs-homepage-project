@@ -25,7 +25,7 @@ public class NewsService {
 	 */
 	
 	//Mapperの注入(DI:Dependency Injection)
-	private final NewsMapper mapper;
+	private final NewsMapper newsMapper;
 	
 	//ページサイズの定義
 	private static final int PAGE_SIZE=20;
@@ -64,7 +64,7 @@ public class NewsService {
     /* IDからニュース詳細を取得 */
 	public NewsDetailResponse findNewsDetailById(Long id){
 		
-		News newsEntity=mapper.findById(id);
+		News newsEntity=newsMapper.findById(id);
 		
 		if(newsEntity==null) throw new IllegalArgumentException("news not found. id="+id);
 		
@@ -78,7 +78,7 @@ public class NewsService {
 		int currentPage=(page==null||page<=0)?1:page;
 		int offset=(currentPage-1)*PAGE_SIZE;
 		
-		List<News>newsEntities=mapper.search(keyword,categories,offset,PAGE_SIZE);
+		List<News>newsEntities=newsMapper.search(keyword,categories,offset,PAGE_SIZE);
 		
 		return newsEntities.stream().map(this::toResponse).toList();
 		
@@ -90,7 +90,7 @@ public class NewsService {
 		
 		News newsEntity=newsDto.toEntity();
 		
-		int insertCount=mapper.insert(newsEntity);
+		int insertCount=newsMapper.insert(newsEntity);
 		
 		if(insertCount!=1) throw new IllegalStateException("Expected 1 insert row but was "+insertCount+".");
 		
@@ -104,7 +104,7 @@ public class NewsService {
 		
 		News newsEntity=newsDto.toEntity();
 		
-		int updateCount=mapper.update(newsEntity);
+		int updateCount=newsMapper.update(newsEntity);
 		
 		if(updateCount!=1) throw new IllegalStateException("Expected 1 updated row but was "+updateCount+".");
 		
@@ -115,7 +115,7 @@ public class NewsService {
 	@Transactional
 	public int updateIsPublishedById(Long id,Boolean isPublished) {
 		
-		int updateCount=mapper.updateIsPublishedById(id,isPublished);
+		int updateCount=newsMapper.updateIsPublishedById(id,isPublished);
 		
 		if(updateCount!=1) throw new IllegalStateException("Expected 1 updated row but was "+updateCount+".");
 		
@@ -126,7 +126,7 @@ public class NewsService {
 	@Transactional
 	public int deleteNewsById(Long id) {
 		
-		int deleteCount=mapper.deleteById(id);
+		int deleteCount=newsMapper.deleteById(id);
 		
 		if(deleteCount!=1) throw new IllegalStateException("Expected 1 delete row but was "+deleteCount+".");
 		
