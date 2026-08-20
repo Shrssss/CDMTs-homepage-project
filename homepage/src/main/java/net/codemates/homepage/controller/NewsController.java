@@ -24,7 +24,7 @@ import net.codemates.homepage.service.NewsService;
 
 @RestController
 @RequestMapping("/api/news")
-@CrossOrigin(origins="")
+@CrossOrigin(origins=" !! placeHolder !! ")
 @RequiredArgsConstructor
 public class NewsController {
 	

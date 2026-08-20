@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**") 
-            	.allowedOrigins("") //別オリジンのURL
-                .allowedMethods("");	//許可するHTTPメソッド
+            	.allowedOrigins(" !! placeHolder !! ") //別オリジンのURL
+                .allowedMethods(" !! placeHolder !! ");	//許可するHTTPメソッド
     }
 }
