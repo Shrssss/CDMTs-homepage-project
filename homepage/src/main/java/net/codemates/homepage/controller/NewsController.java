@@ -24,7 +24,7 @@ import net.codemates.homepage.service.NewsService;
 
 @RestController
 @RequestMapping("/api/news")
-@CrossOrigin(origins="")
+@CrossOrigin(origins=" !! placeHolder !! ")
 @RequiredArgsConstructor
 public class NewsController {
 	
@@ -46,7 +46,7 @@ public class NewsController {
 	 */
 	
 	//Serviceの注入(DI:Dependency Injection)
-	private final NewsService service;
+	private final NewsService newsService;
 	
     /*
      * ニュース詳細取得	(記事を読むときに使用)
@@ -59,7 +59,7 @@ public class NewsController {
 	@GetMapping("/{id}")
 	public NewsDetailResponse getNewsDetail(@PathVariable Long id) {
 		
-		return service.findNewsDetailById(id);
+		return newsService.findNewsDetailById(id);
 		
 	}
 	
@@ -78,7 +78,7 @@ public class NewsController {
 											@RequestParam(required=false)List<String> categories,
 											@RequestParam(defaultValue="1")Integer page){
 		
-		return service.searchNews(keyword,categories,page);
+		return newsService.searchNews(keyword,categories,page);
 		
 	}
 	
@@ -93,7 +93,7 @@ public class NewsController {
 	@PostMapping
 	public Long createNews(@Valid @RequestBody NewsCreateRequest newsDto) {
 		
-		return service.createNews(newsDto);
+		return newsService.createNews(newsDto);
 		
 	}
 	
@@ -111,7 +111,7 @@ public class NewsController {
 		
 		newsDto.setId(id);
 		
-		service.updateNews(newsDto);
+		newsService.updateNews(newsDto);
 		
 	}
 	
@@ -126,7 +126,7 @@ public class NewsController {
 	@PatchMapping("/{id}/published")
 	public void updateIspublishedById(@PathVariable Long id,@RequestParam Boolean isPublished) {
 		
-		service.updateIsPublishedById(id,isPublished);
+		newsService.updateIsPublishedById(id,isPublished);
 		
 	}
 	
@@ -141,7 +141,7 @@ public class NewsController {
 //	@DeleteMapping("/{id}")
 //	public void deleteNewsById(@PathVariable Long id) {
 //		
-//		service.deleteNewsById(id);
+//		newsService.deleteNewsById(id);
 //		
 //	}
 	

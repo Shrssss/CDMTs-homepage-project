@@ -2,14 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mapper.TechnologyMapper">
 
-	<select id="findByIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.technology">
+	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.technology">
 	
-		SELECT * FROM technologies WHERE id IN
-		<foreach collection="ids" item="id" open="(" separator="," close=")">
-		
-			#{id}
-		
-		</foreach>
+		SELECT * 
+		FROM technologies
+		WHERE id = #{id}
 	
 	</select>
 	

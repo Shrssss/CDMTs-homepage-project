@@ -40,4 +40,15 @@ public class AuthController {
      * 
      */
 	
+    /*
+     * パスワード更新
+     * 
+     * メソッド名 	: updatePassword
+     * 戻り値		: Long id
+     * 引数		: Long id, String oldPassword, String newPassword
+     * 
+     * 		POST /api/auth/{id}/passUpdate
+     * 
+     */
+	
 }

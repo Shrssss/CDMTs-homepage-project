@@ -10,7 +10,7 @@ import net.codemates.homepage.model.entity.Member;
 @Mapper
 public interface MemberMapper {
 
-	List<Member> findByIds(@Param("ids")List<Long> ids);
+	Member findById(Long id);
 	
 	List<Member> search(String name,
 							@Param("grades")List<Short> grades,
@@ -22,10 +22,10 @@ public interface MemberMapper {
 	
 	void insert(Member member);	//transactional
 	
-	void update(Member member);	//transactional
+	int update(Member member);	//transactional
 	
-	void updateByGrade(Short grade);	//transactional
+	int updateByGrade(Short grade);	//transactional
 	
-	void deleteById(Long id);	//transactional
+	int deleteById(Long id);	//transactional
 	
 }
