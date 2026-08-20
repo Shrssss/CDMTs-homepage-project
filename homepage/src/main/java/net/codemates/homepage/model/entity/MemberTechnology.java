@@ -13,7 +13,7 @@ public class MemberTechnology {
 
 	/*	member_technologisテーブルのレコードと対応したObjectを定義するクラス
 	 * 
-	 * 	テーブル member_technologis (技術)
+	 * 	テーブル member_technologies (技術)
 	 * 			├─ member_id (メンバーID)				/BIGINT		/NOT NULL
 	 * 		 	└─ technology_id (技術ID)			/BIGINT		/NOT NULL
 	 * 
