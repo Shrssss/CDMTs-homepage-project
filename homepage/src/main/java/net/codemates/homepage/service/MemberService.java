@@ -3,6 +3,7 @@ package net.codemates.homepage.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.mapper.MemberMapper;
@@ -67,6 +68,7 @@ public class MemberService {
 		
 	}
 	
+	@Transactional
 	public int updateMember(Long id,MemberUpdateRequest memberDto) {
 		
 		memberDto.setId(id);
@@ -79,6 +81,7 @@ public class MemberService {
 		
 	}
 	
+	@Transactional
 	public int deleteMember(Long id) {
 		
 		int deleteCount=memberMapper.deleteById(id);
