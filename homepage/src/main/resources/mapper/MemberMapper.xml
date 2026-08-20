@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.codemates.homepage.mapper.MemberMapper">
 
-	<select id="findByIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
+	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.Member">
 	
 		SELECT *
 		FROM members
