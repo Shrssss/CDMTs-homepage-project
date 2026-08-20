@@ -2,6 +2,7 @@ package net.codemates.homepage.service;
 
 public class AuthService {
 
+//	private final PasswordEncoder passwordEncoder;
 	
 //	public Long login(MemberLoginRequest memberDto) {
 //	
