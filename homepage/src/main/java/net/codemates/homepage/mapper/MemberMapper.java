@@ -10,7 +10,7 @@ import net.codemates.homepage.model.entity.Member;
 @Mapper
 public interface MemberMapper {
 
-	List<Member> findById(@Param("id")Long ids);
+	Member findById(@Param("id")Long id);
 	
 	List<Member> search(String name,
 							@Param("grades")List<Short> grades,
