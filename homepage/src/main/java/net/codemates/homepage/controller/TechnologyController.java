@@ -1,11 +1,34 @@
 package net.codemates.homepage.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import net.codemates.homepage.model.dto.member.MemberResponse;
+import net.codemates.homepage.model.dto.technology.TechnologyCreateRequest;
+import net.codemates.homepage.model.dto.technology.TechnologyDetailResponse;
+import net.codemates.homepage.model.dto.technology.TechnologyResponse;
+import net.codemates.homepage.model.dto.technology.TechnologyUpdateRequest;
+import net.codemates.homepage.service.TechnologyService;
 
 @RestController
 @RequestMapping("/api/technologies")
+@CrossOrigin(origins=" !! placeHolder !! ")
+@RequiredArgsConstructor
 public class TechnologyController {
+	
+	private final TechnologyService technologyService;
 	
     /*
      * 技術登録
@@ -18,6 +41,13 @@ public class TechnologyController {
      * 
      */
 	
+	@PostMapping
+	public Long createTechnology(@Valid @RequestBody TechnologyCreateRequest technologyDto) {
+		
+		return technologyService.createTechnology(technologyDto);
+		
+	}
+	
     /*
      * 技術編集
      * 
@@ -28,6 +58,13 @@ public class TechnologyController {
      * 		PUT /api/technologies/{id}
      * 
      */
+	
+	@PutMapping("/{id}")
+	public void updateTechnology(@PathVariable Long id,@Valid @RequestBody TechnologyUpdateRequest technologyDto) {
+		
+		technologyService.updateTechnology(id,technologyDto);
+		
+	}
 	
     /*
      * 技術表示
@@ -40,6 +77,14 @@ public class TechnologyController {
      * 
      */
 	
+	@GetMapping
+	public List<TechnologyResponse> searchTechnologies(@RequestParam(required=false) String name,
+														@RequestParam(required=false) Integer page) {
+		
+		return technologyService.searchTechnologies(name,page);
+		
+	}
+	
     /*
      * 技術詳細表示
      * 
@@ -50,6 +95,13 @@ public class TechnologyController {
      * 		GET /api/technologies/{id}
      * 
      */
+	
+	@GetMapping("/{id}")
+	public TechnologyDetailResponse getTechnologyDetail(@PathVariable Long id) {
+		
+		return technologyService.getTechnologyDetail(id);
+	
+	}
 	
     /*
      * 習得者表示
@@ -62,6 +114,11 @@ public class TechnologyController {
      * 
      */
 	
+	@GetMapping("/{id}/members")
+	public List<MemberResponse> getSkilledMember(@PathVariable Long id) {
+		return technologyService.getSkilledMember(id);
+	}
+	
     /*
      * 技術消去
      * 
@@ -72,5 +129,11 @@ public class TechnologyController {
      * 		DELETE /api/technologies/{id}
      * 
      */
+	
+	@DeleteMapping("/{id}")
+	public void deleteTechnology(@PathVariable Long id) {
+		technologyService.deleteTechnology(id);
+	}
+	
 	
 }
