@@ -22,10 +22,10 @@ public interface MemberMapper {
 	
 	void insert(Member member);	//transactional
 	
-	void update(Member member);	//transactional
+	int update(Member member);	//transactional
 	
-	void updateByGrade(Short grade);	//transactional
+	int updateByGrade(Short grade);	//transactional
 	
-	void deleteById(Long id);	//transactional
+	int deleteById(Long id);	//transactional
 	
 }
