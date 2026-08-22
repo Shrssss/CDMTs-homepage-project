@@ -12,7 +12,7 @@ export const searchNews = async ({
   categories: string[] | null;
   page: number | null;
 }) => {
-  const res = await axiosInstance.get("/api/new", {
+  const res = await axiosInstance.get("/api/news", {
     params: {
       keyword,
       categories,
