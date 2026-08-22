@@ -12,7 +12,7 @@ export const searchMember = async ({
   page,
   positions,
 }: {
-  name: string;
+  name: string|null;
   grades: number[];
   positions: string[];
   page: number | null;
