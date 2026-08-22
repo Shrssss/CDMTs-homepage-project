@@ -1,18 +1,23 @@
-import Header from "@/components/header";
-import TypoGraphyWrapper from "@/components/TypoGraphyWrapper";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import Provider from "../QueryClientProvider";
+import MembersClient from "./MembersClient";
+import { Suspense } from "react";
 
-const page = () => {
-
-  // メンバー一覧ページ　例
-
+// 仮文章
+const Page = () => {
   return (
-    <>
+    <div className="max-w-6xl px-6 mx-auto">
       <Header />
-      <TypoGraphyWrapper>
-        <h1>メンバーページ</h1>
-      </TypoGraphyWrapper>
-    </>
+      <h1 className="text-5xl font-bold my-8">メンバー紹介</h1>
+      <Provider>
+        <Suspense>
+          <MembersClient />
+        </Suspense>
+      </Provider>
+      <Footer />
+    </div>
   );
 };
 
-export default page;
+export default Page;

@@ -1,16 +1,22 @@
-import Header from "@/components/header";
-import TypoGraphyWrapper from "@/components/TypoGraphyWrapper";
-import React from "react";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import Provider from "../QueryClientProvider";
+import NewsClient from "./NewsClient";
+import { Suspense } from "react";
 
-// ニュースページ　例
+// 仮文章
 const page = () => {
   return (
-    <>
+    <div className="max-w-6xl px-6 mx-auto">
       <Header />
-      <TypoGraphyWrapper>
-        <h1>ニュースページ</h1>
-      </TypoGraphyWrapper>
-    </>
+      <h1 className="text-5xl font-bold my-8">記事一覧</h1>
+      <Provider>
+        <Suspense>
+          <NewsClient />
+        </Suspense>
+      </Provider>
+      <Footer />
+    </div>
   );
 };
 

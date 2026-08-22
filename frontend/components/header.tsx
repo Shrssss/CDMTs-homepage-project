@@ -1,18 +1,29 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 // ヘッダーコンポーネント
 const Header = () => {
   return (
-    <header className='sticky w-full top-0 border-b border-b-black/10 backdrop-blur-sm p-4 flex gap-2'>
-      <Link className='font-bold text-xl' href={"/"}>ヘッダー</Link>
-      <div className='flex gap-2'>
-        <Link href="/members">メンバー</Link>
-        <Link href="/news">ニュース</Link>
-        <Link href="/news">メンバー専用ページ</Link>
+    <header className="mx-auto p-4 flex justify-between gap-2">
+      <Button variant={"default"} asChild size={"lg"}>
+        <Link href={"/"}>CODE MATES</Link>
+      </Button>
+      <div className="flex gap-2 text-muted-foreground">
+        <Button asChild variant={"link"}>
+          <Link href="/about">概要</Link>
+        </Button>
+        <Button asChild variant={"link"}>
+          <Link href="/news">記事</Link>
+        </Button>
+        <Button asChild variant={"link"}>
+          <Link href="/members">メンバー紹介</Link>
+        </Button>
+        <Button asChild variant={"link"}>
+          <Link href="/contact">お問い合わせ</Link>
+        </Button>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
