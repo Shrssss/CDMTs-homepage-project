@@ -58,6 +58,11 @@ export const loginMember = async (request: MemberLoginRequest) => {
   return z.number().parse(res.data);
 };
 
+// POST /api/auth/logout
+export const logoutMember=async()=>{
+  await axiosInstance.post("/api/auth/logout")
+}
+
 // PUT /api/members/{id} （メンバー更新）
 
 type MemberUpdateRequest = {
