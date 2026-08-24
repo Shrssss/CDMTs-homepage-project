@@ -81,16 +81,16 @@ export const ItemResponseSchema = z.array(z.object({
   isRentable: z.boolean()
 }))
 
-export const ItemDetailResponseSchema = z.array(z.object({
+export const ItemDetailResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string(),
   storageLocation: z.string(),
-  quantity: z.string(),
+  quantity: z.number(),
   isDisposable: z.boolean(),
   isRentable: z.boolean(),
-  renterId: z.boolean()
-}))
+  renterId: z.number()
+})
 
 export const MembersResponseSchema = z.array(z.object({
   id: z.number(),
