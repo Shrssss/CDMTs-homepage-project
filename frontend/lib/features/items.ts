@@ -50,7 +50,7 @@ export const getItemRentalHistories = async ({
   id,
   page,
 }: {
-  id: string;
+  id: number;
   page: number | null;
 }) => {
   const res = await axiosInstance.get(`/api/items/${id}/history`, {
@@ -59,11 +59,11 @@ export const getItemRentalHistories = async ({
       page,
     },
   });
-  return ItemRentalHistoryResponseSchema.parse(res.data);
+  return z.array(ItemRentalHistoryResponseSchema).parse(res.data);
 };
 
 // POST /api/items （備品作成）
-type ItemCreateRequest = {
+export type ItemCreateRequest = {
   name: string;
   description: string;
   storageLocaiton: string;
@@ -78,7 +78,7 @@ export const createItem = async (request: ItemCreateRequest) => {
   return z.number().parse(res.data);
 };
 
-type ItemUpdateRequest = {
+export type ItemUpdateRequest = {
   id: number;
   name: string;
   description: string;

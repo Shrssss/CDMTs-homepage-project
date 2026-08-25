@@ -35,7 +35,7 @@ export const getMemberDetail = async ({ id }: { id: number }) => {
 };
 
 // POST /api/auth （メンバー作成）
-type MemberCreateRequest = {
+export type MemberCreateRequest = {
   studentId: string;
   email: string;
   password: number;
@@ -48,7 +48,7 @@ export const createMember = async (request: MemberCreateRequest) => {
 
 // POST /api/auth/login （メンバーログイン）
 
-type MemberLoginRequest = {
+export type MemberLoginRequest = {
   identifier: string;
   password: string;
 };
@@ -65,7 +65,7 @@ export const logoutMember=async()=>{
 
 // PUT /api/members/{id} （メンバー更新）
 
-type MemberUpdateRequest = {
+export type MemberUpdateRequest = {
   id: number;
   name: string;
   email: string;
@@ -82,7 +82,7 @@ export const updateMember = async (request: MemberUpdateRequest) => {
 };
 
 // POST /api/auth/{id}/passUpdate パスワード更新
-type UpdatePasswordRequest = {
+export type UpdatePasswordRequest = {
   id: number;
   oldPassword: string;
   newPassword: string;

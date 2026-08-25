@@ -37,7 +37,7 @@ export const getSkilledMember = async ({ id }: { id: number }) => {
 };
 
 // POST /api/technologies （技術作成）
-type TechnologyCreateRequest = {
+export type TechnologyCreateRequest = {
   name: string;
   description: string;
 };
@@ -49,7 +49,7 @@ export const createTechnology = async (request: TechnologyCreateRequest) => {
 
 // PUT /api/technologies/{id} （技術更新）
 
-type TechnologyUpdateRequest = {
+export type TechnologyUpdateRequest = {
   id: number;
   name: string;
   description: string;
@@ -66,6 +66,6 @@ export const updateTechnology = async ({
 };
 
 // DELETE /api/technologies/{id} （技術消去）
-export const deleteTechnologies = async ({ id }: { id: number }) => {
+export const deleteTechnology = async ({ id }: { id: number }) => {
   await axiosInstance.delete(`/api/technologies/${id}`);
 };

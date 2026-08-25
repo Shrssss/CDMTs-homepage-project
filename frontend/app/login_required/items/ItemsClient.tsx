@@ -15,12 +15,11 @@ import {
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import useItemDetail from "./useItemDetail";
-import useInfiniteItems from "./useInfiniteItems";
 import { Card, CardContent } from "@/components/ui/card";
+import { useInfiniteItems, useItemDetail } from "@/hooks/item";
 
 const ItemDetail = ({ id }: { id: number }) => {
-  const { data, isFetching } = useItemDetail({id})
+  const { data, isFetching } = useItemDetail({ id });
   if (isFetching) {
     return <Spinner />;
   }
@@ -47,9 +46,13 @@ const ItemsClient = () => {
     "isRentable",
     parseAsBoolean.withDefault(false),
   );
-  const {data,fetchNextPage,isFetchingNextPage,isFetched,hasNextPage}=useInfiniteItems({
-    isDisposable,isRentable,name,storageLocation
-  })
+  const { data, fetchNextPage, isFetchingNextPage, isFetched, hasNextPage } =
+    useInfiniteItems({
+      isDisposable,
+      isRentable,
+      name,
+      storageLocation,
+    });
 
   return (
     <div className="mx-auto max-w-6xl p-4">
@@ -133,12 +136,17 @@ const ItemsClient = () => {
           }}
           size={"icon"}
         >
-        {isFetchingNextPage ? <Spinner /> : "+"}
+          {isFetchingNextPage ? <Spinner /> : "+"}
         </Button>
-      ) : (    
-        <div>{isFetched ? <p className="text-xs text-muted-foreground">最後の備品です</p>:<></>}</div>
-        )
-      }
+      ) : (
+        <div>
+          {isFetched ? (
+            <p className="text-xs text-muted-foreground">最後の備品です</p>
+          ) : (
+            <></>
+          )}
+        </div>
+      )}
     </div>
   );
 };
