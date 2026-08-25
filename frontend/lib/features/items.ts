@@ -1,9 +1,8 @@
 import { axiosInstance } from "@/lib/features/helper";
 import * as z from "zod";
 import {
-  ItemResponseSchema,
+  ItemsResponseSchema,
   ItemDetailResponseSchema,
-  ItemRentalHistoriesSchema,
 } from "../types/api";
 
 // GET /api/items （全体取得・検索）
@@ -29,11 +28,11 @@ export const getSearchItems = async ({
       page,
     },
   });
-  return ItemResponseSchema.parse(res.data);
+  return ItemsResponseSchema.parse(res.data);
 };
 
 // GET /api/items/{id} （詳細取得／⼀対⼀）
-export const getItemDetail = async ({ id }: { id: string }) => {
+export const getItemDetail = async ({ id }: { id: number }) => {
   const res = await axiosInstance.get(`/api/items/${id}`);
   return ItemDetailResponseSchema.parse(res.data);
 };
@@ -60,7 +59,7 @@ export const getItemRentalHistories = async ({
       page,
     },
   });
-  return ItemRentalHistoriesSchema.parse(res.data);
+  return ItemRentalHistoryResponseSchema.parse(res.data);
 };
 
 // POST /api/items （備品作成）
