@@ -21,6 +21,9 @@ const Header = () => {
         <Button asChild variant={"link"}>
           <Link href="/contact">お問い合わせ</Link>
         </Button>
+        <Button asChild variant={"default"}>
+          <Link href={"/login"}>メンバーログイン</Link>
+        </Button>
       </div>
     </header>
   );
