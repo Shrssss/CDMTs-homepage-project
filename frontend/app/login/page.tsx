@@ -1,30 +1,17 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import TypoGraphyWrapper from "@/components/TypoGraphyWrapper";
+import LoginForm from "./LoginForm";
+import Provider from "../QueryClientProvider";
 
 const Page = () => {
-	return(
-        <>
-		<Header/>
-		<TypoGraphyWrapper>
-			<form>
-       		 <label htmlFor="identifier">学籍番号 または メールアドレス</label>
-			 <input
-				id="identifier"
-				type="text"
-		  		name="identifier"
-		   		placeholder="例：01A2345 または example123@example.com"
-		   		required
-		/>
-
-			<div>
-                <label>
-                    <input type="checkbox"/>
-                     私はロボットではありません
-                </label>
-            </div>
-            </form>
-		</TypoGraphyWrapper>
-		</>
-	);
-	};
-	export default Page;
+  return (
+    <div className="max-w-6xl px-6 mx-auto">
+      <Header />
+      <Provider>
+        <LoginForm />
+      </Provider>
+      <Footer />
+    </div>
+  );
+};
+export default Page;
