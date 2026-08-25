@@ -73,10 +73,10 @@ export const TechnologiesSchema = z.object({
 });
 export type Technologies = z.infer<typeof TechnologiesSchema>;
 
-export const ItemResponseSchema = z.array(z.object({
+export const ItemsResponseSchema = z.array(z.object({
   id: z.number(),
-  name: z.number(),
-  storageLocation: z.number(),
+  name: z.string(),
+  storageLocation: z.string(),
   isDisposable: z.boolean(),
   isRentable: z.boolean()
 }))
