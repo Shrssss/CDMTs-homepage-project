@@ -38,6 +38,14 @@ export const getItemDetail = async ({ id }: { id: string }) => {
   return ItemDetailResponseSchema.parse(res.data);
 };
 
+const ItemRentalHistoryResponseSchema=z.object({
+  id:z.number(),
+  itemName:z.string(),
+  memberName:z.string(),
+  rentedAt:z.date(),
+  returnedAt:z.date()
+})
+
 // GET /api/items/{id}/history （貸し出し履歴取得／⼀対多）
 export const getItemRentalHistories = async ({
   id,
