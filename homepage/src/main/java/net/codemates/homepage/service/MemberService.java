@@ -58,7 +58,7 @@ public class MemberService {
 	
 	public MemberDetailResponse getMemberDetail(Long id) {
 		
-		Member memberEntity=memberMapper.findById(id);
+		Member memberEntity=memberMapper.findByIds(List.of(id)).getFirst();
 		
 		if(memberEntity==null) throw new IllegalArgumentException("member not found. memberId="+id);
 		

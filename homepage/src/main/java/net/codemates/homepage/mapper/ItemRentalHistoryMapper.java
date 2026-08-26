@@ -23,10 +23,12 @@ public interface ItemRentalHistoryMapper {
 												@Param("offset") int offset,
 												@Param("limit") int limit);
 	
-	void insert(ItemRentalHistory history);		//transactional
+	ItemRentalHistory findActiveByItemIdAndRenterId(@Param("itemId") Long itemId,@Param("renterId") Long renterId);
 	
-	void updateReturningDayTime(LocalDateTime returnedAt);	//transactional
+	int insert(ItemRentalHistory history);		//transactional
+	
+	int updateReturningDayTime(Long id);	//transactional
 		
-	void deleteById(Long id);	//transactional
+	int deleteById(Long id);	//transactional
 	
 }

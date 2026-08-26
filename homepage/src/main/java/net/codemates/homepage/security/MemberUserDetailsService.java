@@ -17,7 +17,7 @@ public class MemberUserDetailsService implements UserDetailsService{
 	
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 		
-		Member member=mapper.findByStudentIdOrEmial(username);
+		Member member=mapper.findByStudentIdOrEmail(username);
 		
 		if(member==null) throw new UsernameNotFoundException("Member not found");
 		

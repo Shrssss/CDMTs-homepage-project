@@ -10,7 +10,7 @@ import net.codemates.homepage.model.entity.Member;
 @Mapper
 public interface MemberMapper {
 
-	Member findById(Long id);
+	List<Member> findByIds(@Param("ids")List<Long> ids);
 	
 	List<Member> search(String name,
 							@Param("grades")List<Short> grades,
@@ -18,7 +18,7 @@ public interface MemberMapper {
 							@Param("offset") int offset,
 				            @Param("limit") int limit);
 	
-	Member findByStudentIdOrEmial(@Param("identifier")String identifier);
+	Member findByStudentIdOrEmail(@Param("identifier")String identifier);
 	
 	void insert(Member member);	//transactional
 	

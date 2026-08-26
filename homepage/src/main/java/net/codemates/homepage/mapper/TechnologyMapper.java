@@ -12,7 +12,7 @@ public interface TechnologyMapper {
 
 	Technology findById(Long id);
 	
-	List<Technology> findByName(String name,@Param("offset") int offset,@Param("limit") int limit);
+	List<Technology> findByName(@Param("name")String name,@Param("offset") int offset,@Param("limit") int limit);
 	
 	List<Technology> findAll();
 	

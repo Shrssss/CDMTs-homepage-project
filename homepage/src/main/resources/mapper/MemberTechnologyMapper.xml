@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper.MemberTechnologyMapper">
+<mapper namespace="net.codemates.homepage.mapper.MemberTechnologyMapper">
 
-	<select id="findByTechnologiesByMemberIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.MemberTechnology">
+	<select id="findByTechnologiesByMemberIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Technology">
 	
 		SELECT *
 		FROM technologies
-		INNNER JOIN member_technologies ON techonology_id = technologies.id
-		WHERE member_id
+		INNER JOIN member_technologies ON technology_id = technologies.id
+		WHERE member_id IN
 		
 		<foreach collection="memberIds" item="memberId" open="(" separator="," close=")">
 		
@@ -17,7 +17,7 @@
 	
 	</select>
 	
-	<select id="findByMembersByTechnologyIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.MemberTechnology">
+	<select id="findByMembersByTechnologyIds" parameterType="java.util.List" resultType="net.codemates.homepage.model.entity.Member">
 	
 		SELECT *
 		FROM members
@@ -34,10 +34,10 @@
 
 
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.MemberTechnology">
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.MemberTechnology" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
-		member_technologis
+		member_technologies
 		(
 			member_id,
 			technology_id
@@ -54,7 +54,8 @@
 	
 	<delete id="delete" parameterType="Long">
 	
-		DELETE FROM items WHERE member_id = #{memberId} AND technology_id = #{technologyId}
+		DELETE FROM member_technologies 
+		WHERE member_id = #{memberId} AND technology_id = #{technologyId}
 	
 	</delete>
 

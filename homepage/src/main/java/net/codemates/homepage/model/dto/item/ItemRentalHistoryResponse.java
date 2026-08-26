@@ -7,7 +7,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemRentalHistoryResponse {
 
 	/* 貸し出し履歴を表示するObjectを定義するクラス　*/
@@ -21,7 +25,7 @@ public class ItemRentalHistoryResponse {
 	
 	@NotBlank
 	@Size(max=50)
-	private String memberName;
+	private String renterName;
 	
 	@NotNull
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

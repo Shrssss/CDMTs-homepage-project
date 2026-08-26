@@ -19,12 +19,16 @@ public interface ItemMapper {
 						@Param("offset") int offset,
 			            @Param("limit") int limit);
 	
-	void insert(Item item); //transactional
+	int insert(Item item); //transactional
 	
-	void update(Item item);	//transactional
+	int update(Item item);	//transactional
 	
-	void updateRenterIdById(@Param("id")Long id,@Param("renterId")Long renterId); //transactional
+	int updateIsRentable(@Param("id")Long id,@Param("isRentable")Boolean isRentable);
 	
-	void deleteById(Long id); //transactional
+	int updateByRenting(@Param("id")Long id,@Param("renterId")Long renterId); //transactional
+	
+	int updateByReturning(@Param("id")Long id,@Param("renterId")Long renterId); //transactional
+	
+	int deleteById(Long id); //transactional
 	
 }

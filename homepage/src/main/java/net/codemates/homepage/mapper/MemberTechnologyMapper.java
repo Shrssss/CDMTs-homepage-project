@@ -18,5 +18,5 @@ public interface MemberTechnologyMapper {
 	
 	void insert(MemberTechnology memberTechnology);	//transactional
 	
-	void delete(Long memberId,Long technologyId);	//transactional
+	void delete(@Param("memberId")Long memberId,@Param("technologyId")Long technologyId);	//transactional
 }

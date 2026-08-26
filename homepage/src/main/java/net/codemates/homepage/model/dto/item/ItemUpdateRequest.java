@@ -3,8 +3,12 @@ package net.codemates.homepage.model.dto.item;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import net.codemates.homepage.model.entity.Item;
 
+@Getter
+@Setter
 public class ItemUpdateRequest {
 	
 	/* 備品状態更新を行うためのObjectを定義するクラス */

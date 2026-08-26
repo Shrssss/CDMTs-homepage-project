@@ -38,6 +38,7 @@ public class NewsService {
      */
 	private NewsResponse toResponse(News news) {
 		return new NewsResponse(
+				news.getId(),
 				news.getTitle(),
 				news.getThumbnailPath(),
 				news.getCategory(),
@@ -62,7 +63,7 @@ public class NewsService {
 	}
 	
     /* IDからニュース詳細を取得 */
-	public NewsDetailResponse findNewsDetailById(Long id){
+	public NewsDetailResponse getNewsDetail(Long id){
 		
 		News newsEntity=newsMapper.findById(id);
 		
