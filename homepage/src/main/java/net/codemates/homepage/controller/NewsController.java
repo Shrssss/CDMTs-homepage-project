@@ -59,7 +59,7 @@ public class NewsController {
 	@GetMapping("/{id}")
 	public NewsDetailResponse getNewsDetail(@PathVariable Long id) {
 		
-		return newsService.findNewsDetailById(id);
+		return newsService.getNewsDetail(id);
 		
 	}
 	
