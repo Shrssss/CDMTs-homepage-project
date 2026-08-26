@@ -6,7 +6,7 @@
 	
 		SELECT *
 		FROM technologies
-		INNER JOIN member_technologies ON techonology_id = technologies.id
+		INNER JOIN member_technologies ON technology_id = technologies.id
 		WHERE member_id IN
 		
 		<foreach collection="memberIds" item="memberId" open="(" separator="," close=")">
@@ -34,7 +34,7 @@
 
 
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.MemberTechnology">
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.MemberTechnology" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
 		member_technologis

@@ -18,7 +18,7 @@ public interface MemberMapper {
 							@Param("offset") int offset,
 				            @Param("limit") int limit);
 	
-	Member findByStudentIdOrEmial(@Param("identifier")String identifier);
+	Member findByStudentIdOrEmail(@Param("identifier")String identifier);
 	
 	void insert(Member member);	//transactional
 	

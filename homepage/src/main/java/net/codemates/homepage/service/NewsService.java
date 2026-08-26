@@ -38,6 +38,7 @@ public class NewsService {
      */
 	private NewsResponse toResponse(News news) {
 		return new NewsResponse(
+				news.getId(),
 				news.getTitle(),
 				news.getThumbnailPath(),
 				news.getCategory(),

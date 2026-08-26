@@ -162,7 +162,7 @@ public class ItemService {
 										null,
 										id,
 										renterId,
-										LocalDateTime.now(),
+										null,
 										null
 									);
 		
@@ -181,7 +181,11 @@ public class ItemService {
 		
 		if(itemUpdateCount!=1) throw new IllegalStateException("Expected 1 update row in item, but was "+itemUpdateCount+".");
 		
-		int historyUpdateCount=itemRentalHistoryMapper.updateReturningDayTime(LocalDateTime.now());
+		ItemRentalHistory activeHistory=itemRentalHistoryMapper.findActiveByItemIdAndRenterId(id, renterId);
+		
+		if (activeHistory == null)throw new IllegalStateException("Active rental history not found. itemId="+id+", renterId="+renterId);
+		
+		int historyUpdateCount=itemRentalHistoryMapper.updateReturningDayTime(activeHistory.getId());
 		
 		if(historyUpdateCount!=1) throw new IllegalStateException("Expected 1 update row in item, but was "+historyUpdateCount+".");
 		

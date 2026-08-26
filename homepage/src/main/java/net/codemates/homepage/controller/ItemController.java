@@ -29,7 +29,7 @@ import net.codemates.homepage.service.ItemService;
 @RequestMapping("/api/items")
 public class ItemController {
 	
-	private ItemService itemService;
+	private final ItemService itemService;
 	
     /*
      * 備品作成
@@ -59,7 +59,9 @@ public class ItemController {
      * 
      */
 	@PutMapping("/{id}")
-	public void updateItem(@Valid @RequestBody ItemUpdateRequest itemDto) {
+	public void updateItem(@PathVariable Long id, @Valid @RequestBody ItemUpdateRequest itemDto) {
+		
+		itemDto.setId(id);
 		
 		itemService.updateItem(itemDto);
 		
@@ -132,7 +134,7 @@ public class ItemController {
      * 戻り値		: Long itemId
      * 引数		: Long id,Long renterId
      * 
-     * 		PUT /api/items/rent
+     * 		PUT /api/items/rent/{id}/{renterId}
      * 
      */
 	@PutMapping("/rent/{id}/{renterId}")
@@ -169,7 +171,7 @@ public class ItemController {
      * 		PUT /api/items/Availability
      * 
      */
-	@PutMapping("/return")
+	@PutMapping("/Availability/{id}/{isRentable}")
 	public Long toggleIsRentable(@PathVariable Long id,@PathVariable Boolean isRentable){
 		
 		return itemService.toggleIsRentable(id,isRentable);

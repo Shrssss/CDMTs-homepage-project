@@ -23,9 +23,11 @@ public interface ItemRentalHistoryMapper {
 												@Param("offset") int offset,
 												@Param("limit") int limit);
 	
+	ItemRentalHistory findActiveByItemIdAndRenterId(@Param("itemId") Long itemId,@Param("renterId") Long renterId);
+	
 	int insert(ItemRentalHistory history);		//transactional
 	
-	int updateReturningDayTime(LocalDateTime returnedAt);	//transactional
+	int updateReturningDayTime(Long id);	//transactional
 		
 	int deleteById(Long id);	//transactional
 	

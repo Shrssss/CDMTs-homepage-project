@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper.TechnologyMapper">
+<mapper namespace="net.codemates.homepage.mapper.TechnologyMapper">
 
-	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.technology">
+	<select id="findById" parameterType="Long" resultType="net.codemates.homepage.model.entity.Technology">
 	
 		SELECT * 
 		FROM technologies
@@ -10,7 +10,7 @@
 	
 	</select>
 	
-	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.technology">
+	<select id="findByName" parameterType="String" resultType="net.codemates.homepage.model.entity.Technology">
 	
 		SELECT * FROM technologies 
 
@@ -32,7 +32,7 @@
 	
 	</select>
 	
-	<select id="findAll" resultType="net.codemates.homepage.model.entity.technology">
+	<select id="findAll" resultType="net.codemates.homepage.model.entity.Technology">
 	
 		SELECT * FROM technologies
 	
@@ -40,7 +40,7 @@
 	
 	
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.technology">
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Technology" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
 		technologies

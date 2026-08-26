@@ -61,7 +61,7 @@
 	
 	
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Item">
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Item" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
 		items
@@ -119,14 +119,14 @@
        		END
 		WHERE id = #{id}
 			AND quantity - 1 >=0
-			AND os_rentable = true
+			AND is_rentable = true
 	
 	</update>
 	
 	<update id="updateByReturning" parameterType="net.codemates.homepage.model.entity.Item">
 	
 		UPDATE items 
-		SET renter_id = #{renterId}, 
+		SET renter_id = null, 
 			quantity = quantity + 1,
 			is_rentable = true
 		WHERE id = #{id}
