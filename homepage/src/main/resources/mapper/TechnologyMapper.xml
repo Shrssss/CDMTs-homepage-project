@@ -58,7 +58,7 @@
 	
 	
 	
-	<update id="update" parameterType="net.codemates.homepage.model.entity.technology">
+	<update id="update" parameterType="net.codemates.homepage.model.entity.Technology">
 	
 		UPDATE technologies 
 		SET name = #{name},

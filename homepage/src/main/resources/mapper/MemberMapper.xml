@@ -109,11 +109,7 @@
 	<update id="updateByGrade" parameterType="net.codemates.homepage.model.entity.Member">
 	
 		UPDATE members 
-		SET name = #{name},
-			student_id = #{studentId},
-			email = #{email},
-			grade = grade+1,
-			position = #{position}
+		SET grade = grade + 1
 		WHERE grade = #{grade}
 	
 	</update>

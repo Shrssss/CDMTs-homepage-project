@@ -37,10 +37,10 @@
 	<insert id="insert" parameterType="net.codemates.homepage.model.entity.MemberTechnology" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
-		member_technologis
+		member_technologies
 		(
 			member_id,
-			techonology_id
+			technology_id
 		)
 		VALUES
 		(
@@ -54,7 +54,8 @@
 	
 	<delete id="delete" parameterType="Long">
 	
-		DELETE FROM member_technologis WHERE member_id = #{memberId} AND technology_id = #{technologyId}
+		DELETE FROM member_technologies 
+		WHERE member_id = #{memberId} AND technology_id = #{technologyId}
 	
 	</delete>
 
