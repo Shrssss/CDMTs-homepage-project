@@ -6,7 +6,12 @@
 	
 		SELECT *
 		FROM members
-		WHERE id = #{id}
+		WHERE id IN 
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+		
+			#{id}
+		
+		</foreach>
 	
 	</select>
 	
