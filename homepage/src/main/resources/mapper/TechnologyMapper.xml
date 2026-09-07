@@ -20,7 +20,7 @@
 			
 					AND (
 						name ILIKE '%' || #{name} || '%'
-						OR content ILIKE '%' || #{name} || '%'
+						OR description ILIKE '%' || #{name} || '%'
 					)
 			
 			</if> 
