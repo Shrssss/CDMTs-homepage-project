@@ -9,8 +9,9 @@ spring:
       driver-class-name: org.postgresql.Driver
       
 mybatis:
-   configuration:
-      map-underscore-to-camel-case: true
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
       
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}

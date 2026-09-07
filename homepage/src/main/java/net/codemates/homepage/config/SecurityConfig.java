@@ -75,8 +75,15 @@ public class SecurityConfig {
 		//ログイン時に必要になったらセッションを作成する
 		.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 		.authorizeHttpRequests(auth->auth
-				 //ログインや会員登録などの認証不要なエンドポイントを指定
-				.requestMatchers(HttpMethod.POST,"/api/auth","/api/auth/login").permitAll()
+		//ログインや会員登録などの認証不要なエンドポイントを指定
+			    // index.html はGETで誰でもアクセス可能
+			    .requestMatchers("/", "/index.html").permitAll()
+			    // 会員登録・ログインはPOSTで認証不要
+			    .requestMatchers(
+			        HttpMethod.POST,
+			        "/api/auth",
+			        "/api/auth/login"
+			    ).permitAll()
 				.anyRequest().authenticated()
 				)
 		//Spring Securityのデフォルトのログインフォームを無効化(フロントの画面を使用)
