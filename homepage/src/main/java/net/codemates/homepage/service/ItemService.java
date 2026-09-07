@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import net.codemates.homepage.exception.BusinessException;
+import net.codemates.homepage.exception.DbAssertions;
+import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.ItemMapper;
 import net.codemates.homepage.mapper.ItemRentalHistoryMapper;
 import net.codemates.homepage.mapper.MemberMapper;
@@ -78,7 +81,7 @@ public class ItemService {
 		
 		int insertCount=itemMapper.insert(itemEntity);
 		
-		if(insertCount!=1) throw new IllegalStateException("Expected 1 insert row but was "+insertCount+".");
+		DbAssertions.requireAffected(1, insertCount);
 		
 		return itemEntity.getId();
 		
@@ -89,7 +92,7 @@ public class ItemService {
 		
 		int updateCount=itemMapper.update(itemDto.toEntity());
 		
-		if(updateCount!=1) throw new IllegalStateException("Expected 1 update row but was "+updateCount+".");
+		DbAssertions.requireAffected(1, updateCount);
 		
 	}
 	
@@ -139,7 +142,9 @@ public class ItemService {
 															)
 													);
 		
-		Item itemEntity=itemMapper.findByIds(List.of(id)).getFirst();
+		Item itemEntity=itemMapper.findByIds(List.of(id)).stream()
+				.findFirst()
+				.orElseThrow(()->new BusinessException(ErrorCode.ITEM_NOT_FOUND));
 		
 		return itemRentalHistoryEntities.stream().map(history->toHistoryResponse(
 																history,
@@ -155,7 +160,7 @@ public class ItemService {
 		
 		int itemUpdateCount=itemMapper.updateByRenting(id,renterId);
 		
-		if(itemUpdateCount!=1) throw new IllegalStateException("Expected 1 update row in item, but was "+itemUpdateCount+".");
+		if(itemUpdateCount!=1) throw new BusinessException(ErrorCode.ITEM_NOT_RENTABLE);
 		
 		ItemRentalHistory history=new ItemRentalHistory(
 										null,
@@ -167,7 +172,7 @@ public class ItemService {
 		
 		int historyInsertCount=itemRentalHistoryMapper.insert(history);
 		
-		if(historyInsertCount!=1) throw new IllegalStateException("Expected 1 insert row in history, but was "+historyInsertCount+".");
+		DbAssertions.requireAffected(1, historyInsertCount);
 		
 		return id;
 		
@@ -178,15 +183,15 @@ public class ItemService {
 		
 		int itemUpdateCount=itemMapper.updateByReturning(id,renterId); 
 		
-		if(itemUpdateCount!=1) throw new IllegalStateException("Expected 1 update row in item, but was "+itemUpdateCount+".");
+		if(itemUpdateCount!=1) throw new BusinessException(ErrorCode.NO_ACTIVE_RENTAL);
 		
 		ItemRentalHistory activeHistory=itemRentalHistoryMapper.findActiveByItemIdAndRenterId(id, renterId);
 		
-		if (activeHistory == null)throw new IllegalStateException("Active rental history not found. itemId="+id+", renterId="+renterId);
+		if (activeHistory == null) throw new BusinessException(ErrorCode.NO_ACTIVE_RENTAL);
 		
 		int historyUpdateCount=itemRentalHistoryMapper.updateReturningDayTime(activeHistory.getId());
 		
-		if(historyUpdateCount!=1) throw new IllegalStateException("Expected 1 update row in item, but was "+historyUpdateCount+".");
+		DbAssertions.requireAffected(1, historyUpdateCount);
 		
 		return id;
 		
@@ -197,7 +202,7 @@ public class ItemService {
 		
 		int updateCount=itemMapper.updateIsRentable(id,isRentable);
 		
-		if(updateCount!=1) throw new IllegalStateException("Expected 1 update row but was "+updateCount+".");
+		DbAssertions.requireAffected(1, updateCount);
 		
 		return id;
 		
@@ -208,7 +213,7 @@ public class ItemService {
 		
 		int deleteCount=itemMapper.deleteById(id);
 		
-		if(deleteCount!=1) throw new IllegalStateException("Expected 1 delete but was "+deleteCount+".");
+		DbAssertions.requireAffected(1, deleteCount);
 		
 	}
 	

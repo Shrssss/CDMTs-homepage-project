@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import net.codemates.homepage.exception.BusinessException;
+import net.codemates.homepage.exception.DbAssertions;
+import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.MemberTechnologyMapper;
 import net.codemates.homepage.mapper.TechnologyMapper;
 import net.codemates.homepage.model.dto.member.MemberResponse;
@@ -46,7 +49,7 @@ public class TechnologyService {
 		
 		int insertCount=technologyMapper.insert(technologyEntity);
 		
-		if(insertCount!=1) throw new RuntimeException("Expected 1 insert row but was "+insertCount+".");
+		DbAssertions.requireAffected(1, insertCount);
 		
 		return technologyEntity.getId();
 		
@@ -59,7 +62,7 @@ public class TechnologyService {
 		
 		int updateCount=technologyMapper.update(technologyDto.toEntity());
 		
-		if(updateCount!=1) throw new RuntimeException("Expected 1 updated row but was "+updateCount+".");
+		DbAssertions.requireAffected(1, updateCount);
 		
 		return updateCount;
 		
@@ -80,7 +83,7 @@ public class TechnologyService {
 		
 		Technology technologyEntity=technologyMapper.findById(id);
 		
-		if(technologyEntity==null) throw new RuntimeException("Technology not found. id="+id);
+		if(technologyEntity==null) throw new BusinessException(ErrorCode.TECHNOLOGY_NOT_FOUND);
 		
 		return toDetailResponse(technologyEntity);
 		
@@ -104,7 +107,7 @@ public class TechnologyService {
 		
 		int deleteCount=technologyMapper.deleteById(id);
 		
-		if(deleteCount!=1) throw new RuntimeException("Expected 1 delete row but was "+deleteCount+".");
+		DbAssertions.requireAffected(1, deleteCount);
 		
 		return deleteCount;
 		

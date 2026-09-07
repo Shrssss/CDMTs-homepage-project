@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import net.codemates.homepage.exception.BusinessException;
+import net.codemates.homepage.exception.DbAssertions;
+import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.MemberMapper;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
@@ -38,9 +41,9 @@ public class AuthService {
 	@Transactional
 	public Long createMember(MemberCreateRequest memberDto) {
 		
-		if(memberMapper.findByStudentIdOrEmail(memberDto.getStudentId())!=null) throw new IllegalArgumentException("Creation Failed");
+		if(memberMapper.findByStudentIdOrEmail(memberDto.getStudentId())!=null) throw new BusinessException(ErrorCode.DUPLICATE_STUDENT_ID);
 		
-		if(memberMapper.findByStudentIdOrEmail(memberDto.getEmail())!=null) throw new IllegalArgumentException("Creation Failed");
+		if(memberMapper.findByStudentIdOrEmail(memberDto.getEmail())!=null) throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
 		
 		Member memberEntity=memberDto.toEntity(passwordEncoder.encode(memberDto.getPassword()));
 		
@@ -60,7 +63,7 @@ public class AuthService {
 		try {
 			authResult=authenticationManager.authenticate(authRequest);
 		}catch(BadCredentialsException e) {
-			throw new IllegalArgumentException("Login Failed");
+			throw new BusinessException(ErrorCode.LOGIN_FAILED);
 		}
 		
 		SecurityContext context=SecurityContextHolder.createEmptyContext();
@@ -87,13 +90,13 @@ public class AuthService {
 		if(!principal.getMember().getId().equals(id)) throw new IllegalArgumentException("Update Failed");
 		
 		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
-								.orElseThrow(()->new IllegalArgumentException("Update Failed"));
+								.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 		
 		if(!passwordEncoder.matches(oldPassword,memberEntity.getPasswordHash())) throw new IllegalArgumentException("Update Failed");
 		
 		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(newPassword));
 		
-		if(updateCount!=1) throw new IllegalArgumentException("Update Failed");
+		DbAssertions.requireAffected(1, updateCount);
 		
 		return id;
 		

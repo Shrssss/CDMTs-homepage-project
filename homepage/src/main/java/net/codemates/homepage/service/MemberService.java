@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import net.codemates.homepage.exception.BusinessException;
+import net.codemates.homepage.exception.DbAssertions;
+import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.MemberMapper;
 import net.codemates.homepage.mapper.MemberTechnologyMapper;
 import net.codemates.homepage.model.dto.member.MemberDetailResponse;
@@ -58,9 +61,9 @@ public class MemberService {
 	
 	public MemberDetailResponse getMemberDetail(Long id) {
 		
-		Member memberEntity=memberMapper.findByIds(List.of(id)).getFirst();
-		
-		if(memberEntity==null) throw new IllegalArgumentException("member not found. memberId="+id);
+		Member memberEntity=memberMapper.findByIds(List.of(id)).stream()
+				.findFirst()
+				.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 		
 		List<Technology> technologyEntities=memberTechnologyMapper.findByTechnologiesByMemberIds(List.of(id));
 		
@@ -75,7 +78,7 @@ public class MemberService {
 		
 		int updateCount=memberMapper.update(memberDto.toEntity());
 		
-		if(updateCount!=1) throw new IllegalStateException("Expected 1 updated row but was "+updateCount+".");
+		DbAssertions.requireAffected(1, updateCount);
 		
 		return updateCount;
 		
@@ -86,7 +89,7 @@ public class MemberService {
 		
 		int deleteCount=memberMapper.deleteById(id);
 		
-		if(deleteCount!=1) throw new IllegalStateException("Expected 1 deleted row but was "+deleteCount+".");
+		DbAssertions.requireAffected(1, deleteCount);
 		
 		return deleteCount;
 		

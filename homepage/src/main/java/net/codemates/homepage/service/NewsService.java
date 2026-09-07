@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import net.codemates.homepage.exception.BusinessException;
+import net.codemates.homepage.exception.DbAssertions;
+import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.NewsMapper;
 import net.codemates.homepage.model.dto.news.NewsCreateRequest;
 import net.codemates.homepage.model.dto.news.NewsDetailResponse;
@@ -67,7 +70,7 @@ public class NewsService {
 		
 		News newsEntity=newsMapper.findById(id);
 		
-		if(newsEntity==null) throw new IllegalArgumentException("news not found. id="+id);
+		if(newsEntity==null) throw new BusinessException(ErrorCode.NEWS_NOT_FOUND);
 		
 		return toDetailResponse(newsEntity);
 		
@@ -93,7 +96,7 @@ public class NewsService {
 		
 		int insertCount=newsMapper.insert(newsEntity);
 		
-		if(insertCount!=1) throw new IllegalStateException("Expected 1 insert row but was "+insertCount+".");
+		DbAssertions.requireAffected(1, insertCount);
 		
 		return newsEntity.getId();
 		
@@ -107,7 +110,7 @@ public class NewsService {
 		
 		int updateCount=newsMapper.update(newsEntity);
 		
-		if(updateCount!=1) throw new IllegalStateException("Expected 1 updated row but was "+updateCount+".");
+		DbAssertions.requireAffected(1, updateCount);
 		
 		return updateCount;
 	}
@@ -118,7 +121,7 @@ public class NewsService {
 		
 		int updateCount=newsMapper.updateIsPublishedById(id,isPublished);
 		
-		if(updateCount!=1) throw new IllegalStateException("Expected 1 updated row but was "+updateCount+".");
+		DbAssertions.requireAffected(1, updateCount);
 		
 		return updateCount;
 	}
@@ -129,7 +132,7 @@ public class NewsService {
 		
 		int deleteCount=newsMapper.deleteById(id);
 		
-		if(deleteCount!=1) throw new IllegalStateException("Expected 1 delete row but was "+deleteCount+".");
+		DbAssertions.requireAffected(1, deleteCount);
 		
 		return deleteCount;
 	}
