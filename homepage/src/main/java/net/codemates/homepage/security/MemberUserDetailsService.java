@@ -13,11 +13,11 @@ import net.codemates.homepage.model.entity.Member;
 @RequiredArgsConstructor
 public class MemberUserDetailsService implements UserDetailsService{
 	
-	private final MemberMapper mapper;
+	private final MemberMapper memberMapper;
 	
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 		
-		Member member=mapper.findByStudentIdOrEmail(username);
+		Member member=memberMapper.findByStudentIdOrEmail(username);
 		
 		if(member==null) throw new UsernameNotFoundException("Member not found");
 		
