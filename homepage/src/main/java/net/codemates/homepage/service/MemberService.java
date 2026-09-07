@@ -16,6 +16,7 @@ import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.model.dto.member.MemberUpdateRequest;
 import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.entity.Member;
+import net.codemates.homepage.model.entity.MemberTechnology;
 import net.codemates.homepage.model.entity.Technology;
 
 @Service
@@ -79,6 +80,16 @@ public class MemberService {
 		int updateCount=memberMapper.update(memberDto.toEntity());
 		
 		DbAssertions.requireAffected(1, updateCount);
+		
+		memberTechnologyMapper.deleteByMemberId(id);
+		
+		List<Long> technologyIds=memberDto.getTechnologyIds();
+		
+		if(technologyIds!=null) {
+			for(Long technologyId:technologyIds) {
+				memberTechnologyMapper.insert(new MemberTechnology(id,technologyId));
+			}
+		}
 		
 		return updateCount;
 		

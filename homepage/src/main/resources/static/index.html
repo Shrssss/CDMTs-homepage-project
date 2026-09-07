@@ -3,275 +3,938 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homepage API Business Logic Test</title>
+<title>API Tester — homepage</title>
 <style>
-body{font-family:Arial,sans-serif;max-width:1100px;margin:30px auto;padding:0 20px;line-height:1.5;background:#f7f7f7;color:#222}
-h1{margin-bottom:5px}.desc{color:#666}
-section{background:white;border:1px solid #ddd;border-radius:10px;padding:18px;margin:18px 0}
-h2{margin-top:0}
-label{display:block;margin:8px 0 3px;font-weight:bold}
-input,textarea,select{width:100%;box-sizing:border-box;padding:9px;border:1px solid #bbb;border-radius:6px}
-button{padding:9px 14px;margin:7px 5px 0 0;border:0;border-radius:6px;cursor:pointer}
-.primary{background:#222;color:white}.secondary{background:#ddd}
-.result{white-space:pre-wrap;background:#111;color:#eee;padding:12px;border-radius:6px;margin-top:10px;min-height:30px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.small{font-size:.9em;color:#666}
-@media(max-width:700px){.grid{grid-template-columns:1fr}}
+  :root{
+    --bg:#0f1115;
+    --panel:#161922;
+    --panel-2:#1c2029;
+    --border:#2a2f3a;
+    --text:#e6e8ec;
+    --muted:#8992a3;
+    --accent:#4f8cff;
+    --accent-dim:#2e4d8a;
+    --get:#3fb27f;
+    --post:#4f8cff;
+    --put:#e0a83e;
+    --patch:#c78bda;
+    --delete:#e0605a;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:14px;
+    line-height:1.5;
+  }
+  header{
+    padding:16px 24px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    z-index:10;
+  }
+  header h1{
+    font-size:16px;
+    margin:0;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  header .baseurl-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:1;
+    min-width:240px;
+  }
+  header label{
+    color:var(--muted);
+    font-size:12px;
+    white-space:nowrap;
+  }
+  header input[type=text]{
+    flex:1;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:7px 10px;
+    border-radius:6px;
+    font-family:var(--mono);
+    font-size:12.5px;
+  }
+  header .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;
+  }
+  header .status-dot.ok{background:var(--get);}
+  header .status-dot.bad{background:var(--delete);}
+  #layout{
+    display:flex;
+    min-height:calc(100vh - 57px);
+  }
+  nav{
+    width:220px;
+    border-right:1px solid var(--border);
+    padding:16px 0;
+    flex-shrink:0;
+  }
+  nav .group-title{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    padding:12px 20px 6px;
+  }
+  nav button.tab{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    color:var(--text);
+    padding:8px 20px;
+    font-size:13.5px;
+    cursor:pointer;
+    border-left:2px solid transparent;
+  }
+  nav button.tab:hover{background:var(--panel);}
+  nav button.tab.active{
+    background:var(--panel);
+    border-left-color:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+  main{
+    flex:1;
+    padding:24px 28px 60px;
+    max-width:900px;
+  }
+  .endpoint-section{display:none;}
+  .endpoint-section.active{display:block;}
+  .endpoint-section > h2{
+    font-size:18px;
+    margin:0 0 4px;
+  }
+  .endpoint-section > .section-desc{
+    color:var(--muted);
+    margin:0 0 20px;
+    font-size:13px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .method-badge{
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:700;
+    padding:3px 8px;
+    border-radius:4px;
+    color:#0d0f13;
+    flex-shrink:0;
+    min-width:52px;
+    text-align:center;
+  }
+  .method-GET{background:var(--get);}
+  .method-POST{background:var(--post);}
+  .method-PUT{background:var(--put);}
+  .method-PATCH{background:var(--patch);}
+  .method-DELETE{background:var(--delete);}
+  .path-text{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text);
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .op-name{
+    color:var(--muted);
+    font-size:12px;
+    flex-shrink:0;
+  }
+  .chevron{
+    color:var(--muted);
+    transition:transform .15s;
+    flex-shrink:0;
+  }
+  .card.open .chevron{transform:rotate(90deg);}
+  .card-body{
+    display:none;
+    padding:0 16px 16px;
+    border-top:1px solid var(--border);
+  }
+  .card.open .card-body{display:block;padding-top:14px;}
+  .field-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    align-items:flex-start;
+  }
+  .field-row label{
+    width:150px;
+    flex-shrink:0;
+    padding-top:7px;
+    font-size:12.5px;
+    color:var(--muted);
+    font-family:var(--mono);
+  }
+  .field-row .field-hint{
+    display:block;
+    color:#5c6474;
+    font-size:11px;
+    margin-top:3px;
+  }
+  .field-row input[type=text],
+  .field-row input[type=number],
+  .field-row input[type=password],
+  .field-row select,
+  .field-row textarea{
+    flex:1;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:7px 10px;
+    border-radius:6px;
+    font-size:13px;
+    font-family:var(--sans);
+  }
+  .field-row textarea{
+    font-family:var(--mono);
+    font-size:12.5px;
+    min-height:70px;
+    resize:vertical;
+  }
+  .field-row .bool-toggle{
+    display:flex;
+    gap:14px;
+    padding-top:6px;
+  }
+  .field-row .bool-toggle label{
+    width:auto;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    cursor:pointer;
+    font-family:var(--sans);
+  }
+  .body-json-block{margin-bottom:14px;}
+  .body-json-block > .label-line{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+  }
+  .body-json-block > .label-line span{
+    font-size:12px;
+    color:var(--muted);
+    font-family:var(--mono);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .body-json-block textarea{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:#d6d0ff;
+    padding:10px 12px;
+    border-radius:6px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    min-height:130px;
+    resize:vertical;
+  }
+  .btn-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:6px;
+  }
+  button.send-btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:8px 18px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  button.send-btn:hover{background:#3d78e8;}
+  button.send-btn:disabled{background:var(--accent-dim);cursor:default;}
+  button.reset-btn{
+    background:none;
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:12.5px;
+    cursor:pointer;
+  }
+  button.reset-btn:hover{color:var(--text);border-color:var(--muted);}
+  .req-preview{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    margin-left:auto;
+  }
+  .result-box{
+    margin-top:14px;
+    border-top:1px dashed var(--border);
+    padding-top:12px;
+  }
+  .result-status{
+    font-family:var(--mono);
+    font-size:12.5px;
+    margin-bottom:8px;
+    font-weight:700;
+  }
+  .result-status.ok{color:var(--get);}
+  .result-status.err{color:var(--delete);}
+  .result-status.pending{color:var(--muted);}
+  pre.result-pre{
+    background:#0a0c10;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:12px;
+    margin:0;
+    font-family:var(--mono);
+    font-size:12px;
+    color:#c9d1d9;
+    overflow-x:auto;
+    max-height:400px;
+    overflow-y:auto;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .footer-note{
+    color:#4a5162;
+    font-size:11.5px;
+    margin-top:30px;
+    line-height:1.7;
+  }
+  ::-webkit-scrollbar{width:9px;height:9px;}
+  ::-webkit-scrollbar-thumb{background:#333a48;border-radius:5px;}
+  @media (max-width: 760px){
+    #layout{flex-direction:column;}
+    nav{width:100%;border-right:none;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:8px;}
+    nav .group-title{display:none;}
+    nav button.tab{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;}
+    nav button.tab.active{border-left:none;border-bottom-color:var(--accent);}
+    .field-row{flex-direction:column;}
+    .field-row label{width:auto;padding-top:0;}
+  }
 </style>
 </head>
 <body>
-<h1>Homepage API 業務ロジックテスト</h1>
-<p class="desc">Spring Boot APIを「登録 → ログイン → 業務操作」の流れで確認するためのテストHTMLです。</p>
 
-<section>
-<h2>1. 接続設定</h2>
-<label>API Base URL</label>
-<input id="baseUrl" value="http://localhost:8080">
-<p class="small">本番・検証環境を使う場合はURLを変更してください。</p>
-</section>
+<header>
+  <h1>API Tester</h1>
+  <div class="baseurl-wrap">
+    <span class="status-dot" id="statusDot"></span>
+    <label for="baseUrl">Base URL</label>
+    <input type="text" id="baseUrl" value="http://localhost:8080" spellcheck="false">
+  </div>
+</header>
 
-<section>
-<h2>2. メンバー登録 → ログイン</h2>
-<div class="grid">
-<div>
-<label>名前 *</label><input id="regName" value="API Test User">
-<label>Student ID *</label><input id="regStudentId" value="99A0001" maxlength="7">
-<label>Email *</label><input id="regEmail" value="api-test@example.com">
-<label>Grade *</label><input id="regGrade" type="number" min="1" max="4" value="1">
-<label>Password *</label><input id="regPassword" type="password" value="password1234">
+<div id="layout">
+  <nav id="navTabs"></nav>
+  <main id="mainContent"></main>
 </div>
-<div>
-<p class="small">登録DTOの必須項目に合わせています。</p>
-<button class="primary" onclick="register()">メンバー登録</button>
-<button class="secondary" onclick="login()">ログイン</button>
-<button class="secondary" onclick="logout()">ログアウト</button>
-</div>
-</div>
-<div id="authResult" class="result"></div>
-</section>
-
-<section>
-<h2>3. Technology 登録 → 詳細 → メンバー</h2>
-<div class="grid">
-<div>
-<label>Technology name *</label><input id="techName" value="Java">
-<label>Description *</label><textarea id="techDescription">Java programming language</textarea>
-</div>
-<div>
-<p class="small">TechnologyCreateRequest の @NotBlank 対応。</p>
-<button class="primary" onclick="createTechnology()">Technology登録</button>
-<label>Technology ID</label><input id="techId" placeholder="登録後に自動入力">
-<button class="secondary" onclick="getTechnology()">Technology詳細</button>
-<button class="secondary" onclick="getTechnologyMembers()">Technology所属メンバー</button>
-</div>
-</div>
-<div id="techResult" class="result"></div>
-</section>
-
-<section>
-<h2>4. Item 業務フロー</h2>
-<div class="grid">
-<div>
-<label>Item ID</label><input id="itemId" placeholder="例: 1">
-<label>Quantity</label><input id="quantity" type="number" min="1" value="1">
-</div>
-<div>
-<button class="primary" onclick="rentItem()">貸出</button>
-<button class="secondary" onclick="getItem()">Item確認</button>
-<button class="secondary" onclick="returnItem()">返却</button>
-<button class="secondary" onclick="getRentalHistory()">貸出履歴</button>
-</div>
-</div>
-<div id="itemResult" class="result"></div>
-</section>
-
-<section>
-<h2>5. Member API</h2>
-<div class="grid">
-<div>
-<label>Member ID</label><input id="memberId">
-<label>検索名</label><input id="memberName">
-</div>
-<div>
-<button class="secondary" onclick="getMember()">Member取得</button>
-<button class="secondary" onclick="searchMembers()">Member検索</button>
-<button class="secondary" onclick="updateMember()">Member更新</button>
-<button class="secondary" onclick="deleteMember()">Member削除</button>
-</div>
-</div>
-<div id="memberResult" class="result"></div>
-</section>
-
-<section>
-<h2>6. News API</h2>
-<div class="grid">
-<div>
-<label>Title</label><input id="newsTitle" value="API Test News">
-<label>Content</label><textarea id="newsContent">API test content</textarea>
-</div>
-<div>
-<label>News ID</label><input id="newsId">
-<button class="primary" onclick="createNews()">News登録</button>
-<button class="secondary" onclick="getNews()">News取得</button>
-<button class="secondary" onclick="updateNews()">News更新</button>
-<button class="secondary" onclick="deleteNews()">News削除</button>
-</div>
-</div>
-<div id="newsResult" class="result"></div>
-</section>
-
-<section>
-<h2>7. 個別APIテスト</h2>
-<label>HTTP Method</label>
-<select id="method">
-<option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option>
-</select>
-<label>Path</label>
-<input id="path" value="/api/">
-<label>JSON Body</label>
-<textarea id="body">{}</textarea>
-<button class="primary" onclick="manualApi()">実行</button>
-<div id="manualResult" class="result"></div>
-</section>
 
 <script>
-let currentMemberId = null;
-let currentTechnologyId = null;
+/* =========================================================
+   Endpoint definitions — mirrors the Spring Boot controllers
+   ========================================================= */
+const ENDPOINTS = [
+  {
+    group: "Auth", groupDesc: "会員登録・ログイン・パスワード変更 (/api/auth)",
+    items: [
+      {
+        method:"POST", path:"/api/auth", name:"createMember",
+        desc:"新規メンバーを作成する。",
+        body:[
+          {key:"name", type:"text", required:true, hint:"最大50文字"},
+          {key:"studentId", type:"text", required:true, hint:"形式: 12A3456"},
+          {key:"email", type:"text", required:true},
+          {key:"grade", type:"number", required:true, hint:"1〜4"},
+          {key:"password", type:"password", required:true, hint:"10〜72文字"},
+        ]
+      },
+      {
+        method:"POST", path:"/api/auth/login", name:"loginMember",
+        desc:"学籍番号またはメールアドレスでログインする。",
+        body:[
+          {key:"identifier", type:"text", required:true, hint:"学籍番号 or メールアドレス"},
+          {key:"password", type:"password", required:true},
+        ]
+      },
+      {
+        method:"POST", path:"/api/auth/{id}/passUpdate", name:"updatePassword",
+        desc:"パスワードを更新する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        query:[
+          {key:"oldPassword", type:"password", required:true},
+          {key:"newPassword", type:"password", required:true},
+        ]
+      },
+    ]
+  },
+  {
+    group: "Member", groupDesc: "メンバー検索・詳細・編集 (/api/members)",
+    items: [
+      {
+        method:"GET", path:"/api/members", name:"searchMember",
+        desc:"条件を指定してメンバーを検索する。すべて任意項目。",
+        query:[
+          {key:"name", type:"text"},
+          {key:"grades", type:"text", hint:"カンマ区切り 例: 1,2,3 (List<Short>)"},
+          {key:"positions", type:"text", hint:"カンマ区切り (List<String>)"},
+          {key:"page", type:"number", default:"1"},
+        ]
+      },
+      {
+        method:"GET", path:"/api/members/{id}", name:"getMemberDetail",
+        desc:"メンバーの詳細情報を取得する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+      },
+      {
+        method:"PUT", path:"/api/members/{id}", name:"updateMember",
+        desc:"メンバー情報を編集する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        body:[
+          {key:"id", type:"number", required:true, hint:"パスの{id}と一致させる"},
+          {key:"name", type:"text", required:true},
+          {key:"email", type:"text", required:true},
+          {key:"studentId", type:"text", required:true, hint:"形式: 12A3456"},
+          {key:"grade", type:"number", required:true, hint:"1〜4"},
+          {key:"position", type:"text"},
+          {key:"technologyIds", type:"jsonarray", hint:"習得技術ID配列 例: [1,2]"},
+        ]
+      },
+    ]
+  },
+  {
+    group: "Item", groupDesc: "備品の登録・貸出・返却・検索 (/api/items)",
+    items: [
+      {
+        method:"POST", path:"/api/items", name:"createItem",
+        desc:"備品を新規作成する。",
+        body:[
+          {key:"name", type:"text", required:true, hint:"最大100文字"},
+          {key:"description", type:"text", required:true, hint:"最大255文字"},
+          {key:"storageLocation", type:"text", required:true, hint:"最大100文字"},
+          {key:"quantity", type:"number", required:true},
+          {key:"isDisposable", type:"bool", required:true},
+          {key:"isRentable", type:"bool", required:true},
+        ]
+      },
+      {
+        method:"PUT", path:"/api/items/{id}", name:"updateItem",
+        desc:"備品情報を更新する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        body:[
+          {key:"name", type:"text", required:true},
+          {key:"description", type:"text", required:true},
+          {key:"storageLocation", type:"text", required:true},
+          {key:"quantity", type:"number", required:true},
+          {key:"isDisposable", type:"bool", required:true},
+          {key:"isRentable", type:"bool", required:true},
+        ]
+      },
+      {
+        method:"GET", path:"/api/items/{id}", name:"getItemDetail",
+        desc:"備品詳細を取得する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+      },
+      {
+        method:"GET", path:"/api/items", name:"searchItems",
+        desc:"条件を指定して備品を検索する。すべて任意項目。",
+        query:[
+          {key:"name", type:"text"},
+          {key:"strageLocation", type:"text", hint:"カンマ区切り (List<String>)"},
+          {key:"isDisposable", type:"select-bool"},
+          {key:"isRentable", type:"select-bool"},
+          {key:"page", type:"number", default:"1"},
+        ]
+      },
+      {
+        method:"GET", path:"/api/items/{id}/history", name:"getItemRentalHistories",
+        desc:"備品の貸し出し履歴を取得する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        query:[{key:"page", type:"number", default:"1"}]
+      },
+      {
+        method:"PUT", path:"/api/items/rent/{id}/{renterId}", name:"rentItem",
+        desc:"備品を貸し出す。",
+        pathParams:[
+          {key:"id", type:"number", placeholder:"1"},
+          {key:"renterId", type:"number", placeholder:"1"},
+        ],
+      },
+      {
+        method:"PUT", path:"/api/items/return/{id}/{renterId}", name:"returnItem",
+        desc:"備品を返却する。",
+        pathParams:[
+          {key:"id", type:"number", placeholder:"1"},
+          {key:"renterId", type:"number", placeholder:"1"},
+        ],
+      },
+      {
+        method:"PUT", path:"/api/items/Availability/{id}/{isRentable}", name:"toggleIsRentable",
+        desc:"備品の貸出可否ステータスを切り替える。",
+        pathParams:[
+          {key:"id", type:"number", placeholder:"1"},
+          {key:"isRentable", type:"select-bool-path", placeholder:"true"},
+        ],
+      },
+    ]
+  },
+  {
+    group: "News", groupDesc: "お知らせ記事の作成・編集・検索・公開切替 (/api/news)",
+    items: [
+      {
+        method:"GET", path:"/api/news/{id}", name:"getNewsDetail",
+        desc:"記事を1件取得する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+      },
+      {
+        method:"GET", path:"/api/news", name:"searchNews",
+        desc:"キーワード・カテゴリで記事を検索する。すべて任意項目。",
+        query:[
+          {key:"keyword", type:"text"},
+          {key:"categories", type:"text", hint:"カンマ区切り (List<String>)"},
+          {key:"page", type:"number", default:"1"},
+        ]
+      },
+      {
+        method:"POST", path:"/api/news", name:"createNews",
+        desc:"記事を新規作成する。",
+        body:[
+          {key:"title", type:"text", required:true, hint:"最大100文字"},
+          {key:"content", type:"textarea", required:true},
+          {key:"thumbnailPath", type:"text"},
+          {key:"category", type:"text", required:true, hint:"最大30文字"},
+          {key:"isPublished", type:"bool", required:true},
+        ]
+      },
+      {
+        method:"PUT", path:"/api/news/{id}", name:"updateNews",
+        desc:"記事を更新する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        body:[
+          {key:"title", type:"text", required:true},
+          {key:"content", type:"textarea", required:true},
+          {key:"thumbnailPath", type:"text"},
+          {key:"category", type:"text", required:true},
+          {key:"isPublished", type:"bool", required:true},
+        ]
+      },
+      {
+        method:"PATCH", path:"/api/news/{id}/published", name:"updateIsPublishedById",
+        desc:"公開・非公開のみを切り替える。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        query:[{key:"isPublished", type:"select-bool", required:true}]
+      },
+    ]
+  },
+  {
+    group: "Technology", groupDesc: "技術タグの登録・編集・削除・習得者検索 (/api/technologies)",
+    items: [
+      {
+        method:"POST", path:"/api/technologies", name:"createTechnology",
+        desc:"技術を登録する。",
+        body:[
+          {key:"name", type:"text", required:true, hint:"最大50文字"},
+          {key:"description", type:"text", required:true, hint:"最大255文字"},
+        ]
+      },
+      {
+        method:"PUT", path:"/api/technologies/{id}", name:"updateTechnology",
+        desc:"技術情報を更新する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+        body:[
+          {key:"name", type:"text", required:true},
+          {key:"description", type:"text", required:true},
+        ]
+      },
+      {
+        method:"GET", path:"/api/technologies", name:"searchTechnologies",
+        desc:"技術一覧を検索・取得する。すべて任意項目。",
+        query:[
+          {key:"name", type:"text"},
+          {key:"page", type:"number"},
+        ]
+      },
+      {
+        method:"GET", path:"/api/technologies/{id}", name:"getTechnologyDetail",
+        desc:"技術の詳細を取得する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+      },
+      {
+        method:"GET", path:"/api/technologies/{id}/members", name:"getSkilledMember",
+        desc:"この技術を習得しているメンバー一覧を取得する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+      },
+      {
+        method:"DELETE", path:"/api/technologies/{id}", name:"deleteTechnology",
+        desc:"技術を削除する。",
+        pathParams:[{key:"id", type:"number", placeholder:"1"}],
+      },
+    ]
+  },
+];
 
-function base(){ return document.getElementById('baseUrl').value.replace(/\/+$/,''); }
-function val(id){ return document.getElementById(id).value; }
-function show(id, data){ document.getElementById(id).textContent = typeof data === 'string' ? data : JSON.stringify(data,null,2); }
+/* =========================================================
+   Rendering
+   ========================================================= */
+const navTabs = document.getElementById("navTabs");
+const mainContent = document.getElementById("mainContent");
+const baseUrlInput = document.getElementById("baseUrl");
+const statusDot = document.getElementById("statusDot");
 
-async function call(resultId, method, path, body=null){
-  const opt={method,credentials:'include',headers:{'Content-Type':'application/json'}};
-  if(body!==null && method!=='GET') opt.body=JSON.stringify(body);
-  try{
-    const r=await fetch(base()+path,opt);
-    const text=await r.text();
-    let data; try{data=JSON.parse(text)}catch{data=text}
-    show(resultId, 'HTTP '+r.status+'\\n'+JSON.stringify(data,null,2));
-    return {status:r.status,data};
-  }catch(e){
-    show(resultId,'通信エラー\\n'+e);
-    return {status:0,data:null};
+let uid = 0;
+function nextId(){ return "el" + (uid++); }
+
+ENDPOINTS.forEach((grp, gi) => {
+  const title = document.createElement("div");
+  title.className = "group-title";
+  title.textContent = grp.group;
+  navTabs.appendChild(title);
+
+  const tabBtn = document.createElement("button");
+  tabBtn.className = "tab" + (gi === 0 ? " active" : "");
+  tabBtn.textContent = grp.group;
+  tabBtn.dataset.target = "section-" + gi;
+  tabBtn.addEventListener("click", () => activateSection(gi));
+  navTabs.appendChild(tabBtn);
+
+  const section = document.createElement("section");
+  section.className = "endpoint-section" + (gi === 0 ? " active" : "");
+  section.id = "section-" + gi;
+
+  const h2 = document.createElement("h2");
+  h2.textContent = grp.group;
+  section.appendChild(h2);
+
+  const desc = document.createElement("p");
+  desc.className = "section-desc";
+  desc.textContent = grp.groupDesc;
+  section.appendChild(desc);
+
+  grp.items.forEach(ep => {
+    section.appendChild(buildCard(ep));
+  });
+
+  mainContent.appendChild(section);
+});
+
+function activateSection(gi){
+  document.querySelectorAll("nav button.tab").forEach((b,i)=>{
+    b.classList.toggle("active", i===gi);
+  });
+  document.querySelectorAll(".endpoint-section").forEach((s,i)=>{
+    s.classList.toggle("active", i===gi);
+  });
+}
+
+function buildCard(ep){
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const head = document.createElement("div");
+  head.className = "card-head";
+  head.innerHTML = `
+    <span class="method-badge method-${ep.method}">${ep.method}</span>
+    <span class="path-text">${ep.path}</span>
+    <span class="op-name">${ep.name}</span>
+    <span class="chevron">›</span>
+  `;
+  head.addEventListener("click", () => card.classList.toggle("open"));
+  card.appendChild(head);
+
+  const body = document.createElement("div");
+  body.className = "card-body";
+
+  const descEl = document.createElement("p");
+  descEl.style.cssText = "color:var(--muted);font-size:12.5px;margin:0 0 14px;";
+  descEl.textContent = ep.desc;
+  body.appendChild(descEl);
+
+  const fieldRefs = { path:{}, query:{}, body:{} };
+
+  // path params
+  if(ep.pathParams){
+    ep.pathParams.forEach(p => {
+      const row = document.createElement("div");
+      row.className = "field-row";
+      const id = nextId();
+      if(p.type === "select-bool-path"){
+        row.innerHTML = `
+          <label for="${id}">{${p.key}}</label>
+          <select id="${id}">
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>`;
+      } else {
+        row.innerHTML = `
+          <label for="${id}">{${p.key}}</label>
+          <input type="${p.type==='number'?'number':'text'}" id="${id}" placeholder="${p.placeholder||''}">`;
+      }
+      body.appendChild(row);
+      fieldRefs.path[p.key] = id;
+    });
   }
-}
 
-async function register(){
-  if(!val('regName')||!val('regStudentId')||!val('regEmail')||!val('regGrade')||!val('regPassword')){
-    return alert('必須項目を入力してください');
+  // query params
+  if(ep.query){
+    ep.query.forEach(q => {
+      const row = document.createElement("div");
+      row.className = "field-row";
+      const id = nextId();
+      let inputHtml = "";
+      if(q.type === "select-bool"){
+        inputHtml = `<select id="${id}">
+            <option value="">(未指定)</option>
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>`;
+      } else if(q.type === "password"){
+        inputHtml = `<input type="password" id="${id}" placeholder="${q.default||''}">`;
+      } else {
+        inputHtml = `<input type="${q.type==='number'?'number':'text'}" id="${id}" placeholder="${q.default||''}">`;
+      }
+      row.innerHTML = `
+        <label for="${id}">${q.key}${q.required?' *':''}
+          ${q.hint?`<span class="field-hint">${q.hint}</span>`:''}
+        </label>
+        <div style="flex:1">${inputHtml}</div>`;
+      body.appendChild(row);
+      fieldRefs.query[q.key] = id;
+    });
   }
-  if(val('regStudentId').length!==7) return alert('Student IDは7文字です');
-  const r=await call('authResult','POST','/api/auth',{
-    name:val('regName'),
-    studentId:val('regStudentId'),
-    email:val('regEmail'),
-    grade:Number(val('regGrade')),
-    password:val('regPassword')
-  });
-  if(r.status>=200 && r.status<300 && r.data){
-    currentMemberId=r.data.id ?? r.data.memberId ?? r.data;
-    document.getElementById('memberId').value=currentMemberId ?? '';
+
+  // body fields -> build as individual inputs, but assembled to JSON on send
+  let bodyEditorId = null;
+  let syncJson = () => {};
+  if(ep.body){
+    ep.body.forEach(f => {
+      const row = document.createElement("div");
+      row.className = "field-row";
+      const id = nextId();
+      let inputHtml = "";
+      if(f.type === "bool"){
+        inputHtml = `<div class="bool-toggle">
+            <label><input type="radio" name="${id}" value="true" checked> true</label>
+            <label><input type="radio" name="${id}" value="false"> false</label>
+          </div>`;
+      } else if(f.type === "textarea"){
+        inputHtml = `<textarea id="${id}"></textarea>`;
+      } else if(f.type === "jsonarray"){
+        inputHtml = `<input type="text" id="${id}" placeholder="例: [1,2,3]">`;
+      } else if(f.type === "password"){
+        inputHtml = `<input type="password" id="${id}">`;
+      } else if(f.type === "number"){
+        inputHtml = `<input type="number" id="${id}">`;
+      } else {
+        inputHtml = `<input type="text" id="${id}">`;
+      }
+      row.innerHTML = `
+        <label for="${id}">${f.key}${f.required?' *':''}
+          ${f.hint?`<span class="field-hint">${f.hint}</span>`:''}
+        </label>
+        <div style="flex:1">${inputHtml}</div>`;
+      body.appendChild(row);
+      fieldRefs.body[f.key] = {id, type:f.type};
+    });
   }
-}
 
-async function login(){
-  const identifier=val('regEmail')||val('regStudentId');
-  await call('authResult','POST','/api/auth/login',{
-    identifier:identifier,
-    password:val('regPassword')
-  });
-}
-async function logout(){ await call('authResult','POST','/api/auth/logout'); }
+  // JSON preview / raw override block for requests with a body
+  if(ep.body){
+    const jsonBlock = document.createElement("div");
+    jsonBlock.className = "body-json-block";
+    bodyEditorId = nextId();
+    jsonBlock.innerHTML = `
+      <div class="label-line"><span>Request Body (JSON プレビュー・編集可)</span></div>
+      <textarea id="${bodyEditorId}" spellcheck="false"></textarea>`;
+    body.appendChild(jsonBlock);
 
-async function createTechnology(){
-  if(!val('techName')||!val('techDescription')) return alert('Technology name と Description は必須です');
-  const r=await call('techResult','POST','/api/technologies',{
-    name:val('techName'),
-    description:val('techDescription')
-  });
-  if(r.status>=200 && r.status<300 && r.data){
-    currentTechnologyId=r.data.id ?? r.data.technologyId ?? r.data;
-    document.getElementById('techId').value=currentTechnologyId ?? '';
+    // sync individual fields -> json textarea
+    syncJson = function(){
+      const obj = {};
+      ep.body.forEach(f => {
+        const ref = fieldRefs.body[f.key];
+        let val;
+        if(f.type === "bool"){
+          const checked = body.querySelector(`input[name="${ref.id}"]:checked`);
+          val = checked ? checked.value === "true" : null;
+        } else if(f.type === "number"){
+          const raw = body.querySelector("#"+ref.id).value;
+          val = raw === "" ? null : Number(raw);
+        } else if(f.type === "jsonarray"){
+          const raw = body.querySelector("#"+ref.id).value.trim();
+          if(raw === ""){ val = null; }
+          else if(raw.startsWith("[")){
+            try { val = JSON.parse(raw); if(!Array.isArray(val)) val = [val]; }
+            catch(e){ val = raw.replace(/^\[|\]$/g,"").split(",").map(s=>Number(s.trim())).filter(n=>!Number.isNaN(n)); }
+          } else {
+            // bare value(s) without brackets, e.g. "1" or "1,2" -> always wrap into an array
+            val = raw.split(",").map(s=>Number(s.trim())).filter(n=>!Number.isNaN(n));
+          }
+        } else {
+          const raw = body.querySelector("#"+ref.id).value;
+          val = raw === "" ? null : raw;
+        }
+        obj[f.key] = val;
+      });
+      body.querySelector("#"+bodyEditorId).value = JSON.stringify(obj, null, 2);
+    }
+    ep.body.forEach(f => {
+      const ref = fieldRefs.body[f.key];
+      if(f.type === "bool"){
+        body.querySelectorAll(`input[name="${ref.id}"]`).forEach(r => r.addEventListener("change", syncJson));
+      } else {
+        body.querySelector("#"+ref.id).addEventListener("input", syncJson);
+      }
+    });
+    // initial sync deferred until element is in DOM (after appendChild below)
+    setTimeout(syncJson, 0);
   }
-}
-async function getTechnology(){
-  const id=val('techId');
-  if(!id) return alert('Technology IDを入力してください');
-  await call('techResult','GET','/api/technologies/'+encodeURIComponent(id));
-}
-async function getTechnologyMembers(){
-  const id=val('techId');
-  if(!id) return alert('Technology IDを入力してください');
-  await call('techResult','GET','/api/technologies/'+encodeURIComponent(id)+'/members');
-}
 
-async function getItem(){
-  const id=val('itemId'); if(!id)return alert('Item IDを入力してください');
-  await call('itemResult','GET','/api/items/'+encodeURIComponent(id));
-}
-async function rentItem(){
-  const id=val('itemId'); if(!id)return alert('Item IDを入力してください');
-  await call('itemResult','POST','/api/items/'+encodeURIComponent(id)+'/rent',{quantity:Number(val('quantity'))});
-}
-async function returnItem(){
-  const id=val('itemId'); if(!id)return alert('Item IDを入力してください');
-  await call('itemResult','POST','/api/items/'+encodeURIComponent(id)+'/return');
-}
-async function getRentalHistory(){
-  await call('itemResult','GET','/api/items/rental-history');
-}
+  // send row
+  const btnRow = document.createElement("div");
+  btnRow.className = "btn-row";
+  const sendBtn = document.createElement("button");
+  sendBtn.className = "send-btn";
+  sendBtn.textContent = "Send";
+  const resetBtn = document.createElement("button");
+  resetBtn.className = "reset-btn";
+  resetBtn.textContent = "クリア";
+  btnRow.appendChild(sendBtn);
+  btnRow.appendChild(resetBtn);
+  body.appendChild(btnRow);
 
-async function getMember(){
-  const id=val('memberId'); if(!id)return alert('Member IDを入力してください');
-  await call('memberResult','GET','/api/members/'+encodeURIComponent(id));
-}
-async function searchMembers(){
-  const name=encodeURIComponent(val('memberName')||'');
-  await call('memberResult','GET','/api/members/search?name='+name);
-}
-async function updateMember(){
-  const id=val('memberId'); if(!id)return alert('Member IDを入力してください');
-  await call('memberResult','PUT','/api/members/'+encodeURIComponent(id),{
-    name:val('regName'),
-    email:val('regEmail'),
-    grade:Number(val('regGrade'))
+  const resultBox = document.createElement("div");
+  resultBox.className = "result-box";
+  resultBox.style.display = "none";
+  resultBox.innerHTML = `<div class="result-status"></div><pre class="result-pre"></pre>`;
+  body.appendChild(resultBox);
+
+  resetBtn.addEventListener("click", () => {
+    body.querySelectorAll("input[type=text], input[type=number], input[type=password], textarea").forEach(el => el.value = "");
+    body.querySelectorAll("select").forEach(el => el.selectedIndex = 0);
+    body.querySelectorAll("input[type=radio]").forEach(el => { el.checked = (el.value === "true"); });
+    syncJson();
+    resultBox.style.display = "none";
   });
-}
-async function deleteMember(){
-  const id=val('memberId'); if(!id)return alert('Member IDを入力してください');
-  await call('memberResult','DELETE','/api/members/'+encodeURIComponent(id));
+
+  sendBtn.addEventListener("click", async () => {
+    sendBtn.disabled = true;
+    sendBtn.textContent = "送信中…";
+    resultBox.style.display = "block";
+    const statusEl = resultBox.querySelector(".result-status");
+    const preEl = resultBox.querySelector(".result-pre");
+    statusEl.className = "result-status pending";
+    statusEl.textContent = "Loading...";
+    preEl.textContent = "";
+
+    try {
+      // build path
+      let path = ep.path;
+      if(ep.pathParams){
+        ep.pathParams.forEach(p => {
+          const raw = body.querySelector("#"+fieldRefs.path[p.key]).value;
+          path = path.replace(`{${p.key}}`, encodeURIComponent(raw ?? ""));
+        });
+      }
+
+      // build query string
+      const params = new URLSearchParams();
+      if(ep.query){
+        ep.query.forEach(q => {
+          const raw = body.querySelector("#"+fieldRefs.query[q.key]).value;
+          if(raw !== "" && raw !== null && raw !== undefined){
+            if(q.hint && q.hint.includes("カンマ区切り")){
+              raw.split(",").map(s=>s.trim()).filter(Boolean).forEach(v => params.append(q.key, v));
+            } else {
+              params.append(q.key, raw);
+            }
+          }
+        });
+      }
+      const base = baseUrlInput.value.replace(/\/$/, "");
+      const qs = params.toString();
+      const url = base + path + (qs ? "?" + qs : "");
+
+      const fetchOpts = { method: ep.method, headers: {} };
+      if(ep.body){
+        fetchOpts.headers["Content-Type"] = "application/json";
+        fetchOpts.body = body.querySelector("#"+bodyEditorId).value;
+      }
+
+      const startTime = performance.now();
+      const res = await fetch(url, fetchOpts);
+      const elapsed = Math.round(performance.now() - startTime);
+
+      let resultText;
+      const contentType = res.headers.get("content-type") || "";
+      if(contentType.includes("application/json")){
+        try {
+          const json = await res.json();
+          resultText = JSON.stringify(json, null, 2);
+        } catch(e){
+          resultText = "(空のJSONレスポンス)";
+        }
+      } else {
+        resultText = await res.text();
+        if(!resultText) resultText = "(空のレスポンス本文)";
+      }
+
+      statusEl.className = "result-status " + (res.ok ? "ok" : "err");
+      statusEl.textContent = `${res.status} ${res.statusText}  ·  ${elapsed}ms  ·  ${url}`;
+      preEl.textContent = resultText;
+      statusDot.className = "status-dot " + (res.ok ? "ok" : "bad");
+    } catch(err){
+      statusEl.className = "result-status err";
+      statusEl.textContent = "リクエスト失敗";
+      preEl.textContent = String(err && err.message ? err.message : err) +
+        "\n\n※ CORSエラーの場合、サーバー側でCrossOriginの許可設定が必要です。\n※ ブラウザのコンソールに詳細なエラーが表示されます。";
+      statusDot.className = "status-dot bad";
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Send";
+    }
+  });
+
+  card.appendChild(body);
+  return card;
 }
 
-async function createNews(){
-  await call('newsResult','POST','/api/news',{
-    title:val('newsTitle'),
-    content:val('newsContent')
-  });
-}
-async function getNews(){
-  const id=val('newsId');
-  await call('newsResult','GET',id?'/api/news/'+encodeURIComponent(id):'/api/news');
-}
-async function updateNews(){
-  const id=val('newsId'); if(!id)return alert('News IDを入力してください');
-  await call('newsResult','PUT','/api/news/'+encodeURIComponent(id),{
-    title:val('newsTitle'),
-    content:val('newsContent')
-  });
-}
-async function deleteNews(){
-  const id=val('newsId'); if(!id)return alert('News IDを入力してください');
-  await call('newsResult','DELETE','/api/news/'+encodeURIComponent(id));
-}
-
-async function manualApi(){
-  let body=null;
-  if(!['GET','DELETE'].includes(val('method'))){
-    try{body=JSON.parse(val('body'))}catch(e){return alert('JSON Bodyが不正です')}
-  }
-  await call('manualResult',val('method'),val('path'),body);
-}
+// footer note
+const note = document.createElement("p");
+note.className = "footer-note";
+note.textContent = "※ このツールはブラウザから直接APIへfetchリクエストを送信します。サーバー側でCORS許可（@CrossOrigin等）が設定されていない場合、別オリジンからの呼び出しはブロックされます。その場合はBase URLをサーバーと同一オリジンに合わせるか、サーバー側でCORS設定を行ってください。認証が必要なエンドポイント（ログイン後のCookie/セッションなど）は、ブラウザの認証情報（credentials）送信設定が必要になる場合があります。";
+mainContent.appendChild(note);
 </script>
 </body>
 </html>

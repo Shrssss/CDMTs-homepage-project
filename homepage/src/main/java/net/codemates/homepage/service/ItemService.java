@@ -130,17 +130,19 @@ public class ItemService {
 		
 		List<ItemRentalHistory> itemRentalHistoryEntities=itemRentalHistoryMapper.findByItemIds(List.of(id),offset,PAGE_SIZE);
 		
-		Map<Long,Member> renterEntities=memberMapper.findByIds(
-													itemRentalHistoryEntities.stream()
-																.map(ItemRentalHistory::getRenterId)
-																.distinct()
-																.toList()
-													).stream()
-													.collect(Collectors.toMap(
-																Member::getId,
-																Function.identity()
-															)
-													);
+		List<Long> renterIds=itemRentalHistoryEntities.stream()
+				.map(ItemRentalHistory::getRenterId)
+				.distinct()
+				.toList();
+		
+		Map<Long,Member> renterEntities=renterIds.isEmpty()
+				? Map.of()
+				: memberMapper.findByIds(renterIds).stream()
+						.collect(Collectors.toMap(
+								Member::getId,
+								Function.identity()
+							)
+						);
 		
 		Item itemEntity=itemMapper.findByIds(List.of(id)).stream()
 				.findFirst()
