@@ -1,7 +1,10 @@
 package net.codemates.homepage.model.dto.member;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -15,9 +18,9 @@ public class MemberCreateRequest {
 	
 	/* メンバー登録を行うためのObjectを定義するクラス */
 	
-//	@NotBlank
-//	@Size(max=50)
-//	private String name;
+	@NotBlank
+	@Size(max=50)
+	private String name;
 	
 	@NotBlank
 	@Pattern(regexp="^[0-9]{2}[A-Z]{1}[0-9]{4}$",message="StudentID must be in the format 12A3456")
@@ -27,10 +30,10 @@ public class MemberCreateRequest {
 	@Email
 	private String email;
 	
-//	@NotNull
-//	@Min(1)
-//	@Max(4)
-//	private Short grade;
+	@NotNull
+	@Min(1)
+	@Max(4)
+	private Short grade;
 //	
 //	@Size(max=50)
 //	private String position;
@@ -41,10 +44,10 @@ public class MemberCreateRequest {
 	
 	public Member toEntity(String passwordHash) {
 		return new Member(null,
-							null,
+							name,
 							studentId,
 							email,
-							null,
+							grade,
 							null,
 							passwordHash,
 							null,

@@ -20,9 +20,11 @@ public interface MemberMapper {
 	
 	Member findByStudentIdOrEmail(@Param("identifier")String identifier);
 	
-	void insert(Member member);	//transactional
+	int insert(Member member);	//transactional
 	
 	int update(Member member);	//transactional
+	
+	int updatePassword(@Param("id")Long id,@Param("passwordHash")String passwordHash);	//transactional
 	
 	int updateByGrade(Short grade);	//transactional
 	

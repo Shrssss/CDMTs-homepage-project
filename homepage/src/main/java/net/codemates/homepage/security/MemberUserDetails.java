@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.model.entity.Member;
 
+@Getter
 @RequiredArgsConstructor
 public class MemberUserDetails implements UserDetails{	
 	

@@ -24,7 +24,7 @@ import net.codemates.homepage.service.TechnologyService;
 
 @RestController
 @RequestMapping("/api/technologies")
-@CrossOrigin(origins=" !! placeHolder !! ")
+//@CrossOrigin(origins=" !! placeHolder !! ")
 @RequiredArgsConstructor
 public class TechnologyController {
 	

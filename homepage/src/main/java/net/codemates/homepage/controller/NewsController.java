@@ -2,8 +2,8 @@ package net.codemates.homepage.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
+//import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,7 @@ import net.codemates.homepage.service.NewsService;
 
 @RestController
 @RequestMapping("/api/news")
-@CrossOrigin(origins=" !! placeHolder !! ")
+//@CrossOrigin(origins=" !! placeHolder !! ")
 @RequiredArgsConstructor
 public class NewsController {
 	

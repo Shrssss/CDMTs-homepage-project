@@ -1,8 +1,12 @@
 package net.codemates.homepage.model.dto.item;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import net.codemates.homepage.model.entity.Item;
 
+@Getter
+@Setter
 public class ItemRentRequest {
 	
 	/* 備品の貸し出し時に使うObjectを定義するクラス */
