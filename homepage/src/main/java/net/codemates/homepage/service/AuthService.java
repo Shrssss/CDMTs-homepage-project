@@ -47,7 +47,9 @@ public class AuthService {
 		
 		Member memberEntity=memberDto.toEntity(passwordEncoder.encode(memberDto.getPassword()));
 		
-		memberMapper.insert(memberEntity);
+		int insertCount=memberMapper.insert(memberEntity);
+		
+		DbAssertions.requireAffected(1, insertCount);
 		
 		return memberEntity.getId();
 		
@@ -87,12 +89,12 @@ public class AuthService {
 															.getAuthentication()
 															.getPrincipal();
 		
-		if(!principal.getMember().getId().equals(id)) throw new IllegalArgumentException("Update Failed");
+		if(!principal.getMember().getId().equals(id))throw new BusinessException(ErrorCode.ACCESS_DENIED);
 		
 		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
 								.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 		
-		if(!passwordEncoder.matches(oldPassword,memberEntity.getPasswordHash())) throw new IllegalArgumentException("Update Failed");
+		if(!passwordEncoder.matches(oldPassword,memberEntity.getPasswordHash())) throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
 		
 		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(newPassword));
 		
