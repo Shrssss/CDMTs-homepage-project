@@ -1,7 +1,9 @@
 package net.codemates.homepage.config;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +23,10 @@ import jakarta.servlet.http.HttpServletResponse;
 @Configuration
 public class SecurityConfig {
 
+	//許可するオリジン(環境変数)
+	@Value("${cors.allowed-origins}")
+	private String allowedOrigins;
+	
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		
@@ -40,9 +46,13 @@ public class SecurityConfig {
 		
 		CorsConfiguration configuration=new CorsConfiguration();
 		//別オリジンのURL
-		configuration.setAllowedOrigins(List.of(" !! placeHolder !! "));
+		configuration.setAllowedOrigins(
+			    Arrays.stream(allowedOrigins.split(","))
+			          .map(String::trim)
+			          .toList()
+			);
 		//許可するHTTPメソッド
-		configuration.setAllowedMethods(List.of(" !! placeHolder !! "));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
 		//許可するHTTPヘッダ
 		configuration.setAllowedHeaders(List.of("*"));
 		//Cookie(JSESSIONID)付きリクエストを許可

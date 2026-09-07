@@ -2,8 +2,8 @@ package net.codemates.homepage.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
+//import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ import net.codemates.homepage.service.ItemService;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins=" !! placeHolder !! ")
+//@CrossOrigin(origins=" !! placeHolder !! ")
 @RequestMapping("/api/items")
 public class ItemController {
 	
