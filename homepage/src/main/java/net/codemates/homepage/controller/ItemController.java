@@ -96,7 +96,7 @@ public class ItemController {
      */
 	@GetMapping
 	public List<ItemResponse> searchItems(@RequestParam(required=false) String name,
-											@RequestParam(required=false) List<String> strageLocation,
+											@RequestParam(required=false) List<String> storageLocation,
 											@RequestParam(required=false) Boolean isDisposable,
 											@RequestParam(required=false) Boolean isRentable,
 											@RequestParam(defaultValue="1") Integer page){

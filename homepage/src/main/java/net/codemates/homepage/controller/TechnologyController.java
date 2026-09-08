@@ -79,7 +79,7 @@ public class TechnologyController {
 	
 	@GetMapping
 	public List<TechnologyResponse> searchTechnologies(@RequestParam(required=false) String name,
-														@RequestParam(required=false) Integer page) {
+														@RequestParam(defaultValue="1") Integer page) {
 		
 		return technologyService.searchTechnologies(name,page);
 		
