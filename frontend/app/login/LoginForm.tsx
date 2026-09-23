@@ -23,7 +23,7 @@ const LoginForm = () => {
       });
     },
     onSuccess: () => {
-      router.push("/items");
+      router.push("/login_required/items");
     },
   });
   return (
