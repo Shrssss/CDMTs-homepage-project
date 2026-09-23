@@ -1,11 +1,11 @@
-import { axiosInstance } from "@/lib/features/helper";
+import { axiosInstance } from "@/lib/features/api";
 import * as z from "zod";
 import {
   ItemsResponseSchema,
   ItemDetailResponseSchema,
 } from "../types/api";
 
-// GET /api/items （全体取得・検索）
+// GET /items （全体取得・検索）
 export const getSearchItems = async ({
   name,
   storageLocation,
@@ -19,7 +19,7 @@ export const getSearchItems = async ({
   isRentable: boolean | null;
   page: number;
 }) => {
-  const res = await axiosInstance.get("/api/items", {
+  const res = await axiosInstance.get("/items", {
     params: {
       name,
       storageLocation,
@@ -31,9 +31,9 @@ export const getSearchItems = async ({
   return ItemsResponseSchema.parse(res.data);
 };
 
-// GET /api/items/{id} （詳細取得／⼀対⼀）
+// GET /items/{id} （詳細取得／⼀対⼀）
 export const getItemDetail = async ({ id }: { id: number }) => {
-  const res = await axiosInstance.get(`/api/items/${id}`);
+  const res = await axiosInstance.get(`/items/${id}`);
   return ItemDetailResponseSchema.parse(res.data);
 };
 
@@ -45,7 +45,7 @@ const ItemRentalHistoryResponseSchema=z.object({
   returnedAt:z.date()
 })
 
-// GET /api/items/{id}/history （貸し出し履歴取得／⼀対多）
+// GET /items/{id}/history （貸し出し履歴取得／⼀対多）
 export const getItemRentalHistories = async ({
   id,
   page,
@@ -53,7 +53,7 @@ export const getItemRentalHistories = async ({
   id: number;
   page: number | null;
 }) => {
-  const res = await axiosInstance.get(`/api/items/${id}/history`, {
+  const res = await axiosInstance.get(`/items/${id}/history`, {
     params: {
       id,
       page,
@@ -62,7 +62,7 @@ export const getItemRentalHistories = async ({
   return z.array(ItemRentalHistoryResponseSchema).parse(res.data);
 };
 
-// POST /api/items （備品作成）
+// POST /items （備品作成）
 export type ItemCreateRequest = {
   name: string;
   description: string;
@@ -72,9 +72,9 @@ export type ItemCreateRequest = {
   isRentable: boolean;
 };
 
-// POST /api/items （備品作成）
+// POST /items （備品作成）
 export const createItem = async (request: ItemCreateRequest) => {
-  const res = await axiosInstance.post("/api/items", request);
+  const res = await axiosInstance.post("/items", request);
   return z.number().parse(res.data);
 };
 
@@ -88,13 +88,13 @@ export type ItemUpdateRequest = {
   isRentable: boolean;
 };
 
-// PUT /api/items/{id} （備品更新）
+// PUT /items/{id} （備品更新）
 export const updateItem = async (request: ItemUpdateRequest) => {
   const { id } = request;
-  await axiosInstance.put(`/api/items/${id}`, request);
+  await axiosInstance.put(`/items/${id}`, request);
 };
 
-// PUT /api/items/rent （貸し出し時の更新）
+// PUT /items/rent （貸し出し時の更新）
 export const rentItems = async ({
   ids,
   renterId,
@@ -103,7 +103,7 @@ export const rentItems = async ({
   renterId: number;
 }) => {
   const res = await axiosInstance.put(
-    "/api/items/rent",
+    "/items/rent",
     {},
     {
       params: { ids, renterId },

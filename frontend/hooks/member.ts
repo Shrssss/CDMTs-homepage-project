@@ -1,15 +1,15 @@
 import { createMember, getMemberDetail, loginMember, logoutMember, MemberCreateRequest, MemberLoginRequest, MemberUpdateRequest, searchMember, updateMember, updatePassword, UpdatePasswordRequest } from "@/lib/features/member";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const useSearchMember = ({
+export const useMembers = ({
   grades,
   name,
   page,
   positions,
 }: {
   name: string | null;
-  grades: number[];
-  positions: string[];
+  grades: number[]|null;
+  positions: string[]|null;
   page: number | null;
 }) => {
   return useQuery({

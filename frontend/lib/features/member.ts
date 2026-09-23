@@ -3,9 +3,9 @@ import {
   MembersResponseSchema,
   MemberDetailResponseSchema,
 } from "../types/api";
-import { axiosInstance } from "./helper";
+import { axiosInstance } from "./api";
 
-// GET /api/members （全体取得・検索）
+// GET /members （全体取得・検索）
 export const searchMember = async ({
   grades,
   name,
@@ -13,11 +13,11 @@ export const searchMember = async ({
   positions,
 }: {
   name: string|null;
-  grades: number[];
-  positions: string[];
+  grades: number[]|null;
+  positions: string[]|null;
   page: number | null;
 }) => {
-  const res = await axiosInstance.get("/api/members", {
+  const res = await axiosInstance.get("/members", {
     params: {
       grades,
       name,
@@ -28,13 +28,13 @@ export const searchMember = async ({
   return MembersResponseSchema.parse(res.data);
 };
 
-// GET /api/members/{id} （詳細取得／⼀対⼀）
+// GET /members/{id} （詳細取得／⼀対⼀）
 export const getMemberDetail = async ({ id }: { id: number }) => {
-  const res = await axiosInstance.get(`/api/members/${id}`);
+  const res = await axiosInstance.get(`/members/${id}`);
   return MemberDetailResponseSchema.parse(res.data);
 };
 
-// POST /api/auth （メンバー作成）
+// POST /auth （メンバー作成）
 export type MemberCreateRequest = {
   studentId: string;
   email: string;
@@ -42,11 +42,11 @@ export type MemberCreateRequest = {
 };
 
 export const createMember = async (request: MemberCreateRequest) => {
-  const res = await axiosInstance.post("/api/auth", request);
+  const res = await axiosInstance.post("/auth", request);
   return z.number().parse(res.data);
 };
 
-// POST /api/auth/login （メンバーログイン）
+// POST /auth/login （メンバーログイン）
 
 export type MemberLoginRequest = {
   identifier: string;
@@ -54,16 +54,17 @@ export type MemberLoginRequest = {
 };
 
 export const loginMember = async (request: MemberLoginRequest) => {
-  const res = await axiosInstance.post("/api/auth/login", request);
+  return 1
+  const res = await axiosInstance.post("/auth/login", request);
   return z.number().parse(res.data);
 };
 
-// POST /api/auth/logout
+// POST /auth/logout
 export const logoutMember=async()=>{
-  await axiosInstance.post("/api/auth/logout")
+  await axiosInstance.post("/auth/logout")
 }
 
-// PUT /api/members/{id} （メンバー更新）
+// PUT /members/{id} （メンバー更新）
 
 export type MemberUpdateRequest = {
   id: number;
@@ -78,10 +79,10 @@ export type MemberUpdateRequest = {
 
 export const updateMember = async (request: MemberUpdateRequest) => {
   const { id } = request;
-  await axiosInstance.post(`/api/members/${id}`, request);
+  await axiosInstance.post(`/members/${id}`, request);
 };
 
-// POST /api/auth/{id}/passUpdate パスワード更新
+// POST /auth/{id}/passUpdate パスワード更新
 export type UpdatePasswordRequest = {
   id: number;
   oldPassword: string;
@@ -90,6 +91,6 @@ export type UpdatePasswordRequest = {
 
 export const updatePassword = async (request: UpdatePasswordRequest) => {
   const { id } = request;
-  const res = await axiosInstance.post(`/api/auth/${id}/passUpdate`, request);
+  const res = await axiosInstance.post(`/auth/${id}/passUpdate`, request);
   return z.number().parse(res.data);
 };

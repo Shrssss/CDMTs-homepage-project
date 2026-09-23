@@ -1,8 +1,8 @@
 import * as z from "zod";
 import { NewsResponseSchema, NewsDetailResponseSchema } from "../types/api";
-import { axiosInstance } from "./helper";
+import { axiosInstance } from "./api";
 
-// GET /api/news （全体取得・検索）
+// GET /news （全体取得・検索）
 export const searchNews = async ({
   keyword,
   categories,
@@ -12,7 +12,7 @@ export const searchNews = async ({
   categories: string[] | null;
   page: number | null;
 }) => {
-  const res = await axiosInstance.get("/api/news", {
+  const res = await axiosInstance.get("/news", {
     params: {
       keyword,
       categories,
@@ -22,13 +22,13 @@ export const searchNews = async ({
   return NewsResponseSchema.parse(res.data);
 };
 
-// GET /api/news/{id} （詳細取得／⼀対⼀）
+// GET /news/{id} （詳細取得／⼀対⼀）
 export const getNewsDetail = async ({ id }: { id: number }) => {
-  const res = await axiosInstance.get(`/api/news/${id}`);
+  const res = await axiosInstance.get(`/news/${id}`);
   return NewsDetailResponseSchema.parse(res.data);
 };
 
-// POST /api/news （記事作成）
+// POST /news （記事作成）
 type NewsCreateRequest = {
   title: string;
   content: string;
@@ -38,11 +38,11 @@ type NewsCreateRequest = {
 };
 
 export const createNews = async (request: NewsCreateRequest) => {
-  const res = await axiosInstance.post("/api/news", request);
+  const res = await axiosInstance.post("/news", request);
   return z.number().parse(res.data);
 };
 
-// PUT /api/news/{id} （記事更新）
+// PUT /news/{id} （記事更新）
 type NewsUpdateRequest = {
   id: number;
   title: string;
@@ -59,10 +59,10 @@ export const updateNews = async ({
   id: number;
   request: NewsUpdateRequest;
 }) => {
-  await axiosInstance.put(`/api/news/${id}`, request);
+  await axiosInstance.put(`/news/${id}`, request);
 };
 
-// PATCH /api/news/{id}/published （公開状態更新）
+// PATCH /news/{id}/published （公開状態更新）
 export const updateIsPublshedById = async ({
   id,
   isPublished,
@@ -71,7 +71,7 @@ export const updateIsPublshedById = async ({
   isPublished: boolean;
 }) => {
   await axiosInstance.patch(
-    `/api/news/${id}/published`,
+    `/news/${id}/published`,
     {},
     {
       params: { isPublished },

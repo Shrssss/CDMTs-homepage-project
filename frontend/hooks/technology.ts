@@ -1,7 +1,7 @@
 import { createTechnology, deleteTechnology, getSkilledMember, getTechnologies, getTechnologyDetail, TechnologyCreateRequest, TechnologyUpdateRequest, updateTechnology } from "@/lib/features/technologies";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
-export const useInfiniteTechnologies=({name}:{name:string})=>{
+export const useInfiniteTechnologies=({name}:{name:string|null})=>{
   return useInfiniteQuery({
     queryKey:["infiniteTechnologies",name],
     queryFn:async({pageParam})=>{
