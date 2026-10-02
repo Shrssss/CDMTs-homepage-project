@@ -1,6 +1,11 @@
 spring:
    application:
       name:　homepage
+      
+   servlet:
+      multipart:
+         max-file-size: 5MB
+         max-request-size: 6MB
    
    datasource:
       url: ${DB_URL:jdbc:postgresql://localhost:5432/homepage}
@@ -14,4 +19,7 @@ mybatis:
     map-underscore-to-camel-case: true
       
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  
+file:
+   upload-dir: ${UPLOAD_DIR:./uploads}

@@ -14,6 +14,7 @@ public enum ErrorCode {
 	ITEM_NOT_RENTABLE(HttpStatus.BAD_REQUEST,"この備品は貸し出しできません。"),
 	ITEM_ALREADY_RENTED(HttpStatus.BAD_REQUEST,"この備品はすでに貸し出し中です。"),
 	NO_ACTIVE_RENTAL(HttpStatus.BAD_REQUEST,"有効な貸し出し記録が見つかりません。"),
+	OMVALID_IMAGE_FILE(HttpStatus.BAD_REQUEST,"画像ファイルは(jpg/png/gif)を指定してください。"),
 	
 	//401 Unauthorized
 	LOGIN_FAILED(HttpStatus.UNAUTHORIZED,"学籍番号/メールアドレスまたはパスワードが間違っています。"),
@@ -32,8 +33,12 @@ public enum ErrorCode {
 	DUPLICATE_STUDENT_ID(HttpStatus.CONFLICT,"この学籍番号は既に登録されています。"),
 	DUPLICATE_EMAIL(HttpStatus.CONFLICT,"このメールアドレスは既に登録されています。"),
 	
+	//413 Payload Too Large
+	FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE,"ファイルサイズが大きすぎます。(上限:5MB)"),
+	
 	//500 Internal Server Error
-	UNEXPECTED_DB_STATE(HttpStatus.INTERNAL_SERVER_ERROR, "データベースの更新に失敗しました。");
+	UNEXPECTED_DB_STATE(HttpStatus.INTERNAL_SERVER_ERROR, "データベースの更新に失敗しました。"),
+	FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"ファイルの保存に失敗しました。");
 	
 	private final HttpStatus status;
 	private final String message;
