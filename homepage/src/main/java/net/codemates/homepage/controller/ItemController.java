@@ -103,7 +103,7 @@ public class ItemController {
 		
 		return itemService.searchItems(
 							name,
-							strageLocation, 
+							storageLocation, 
 							isDisposable, 
 							isRentable, 
 							page);
