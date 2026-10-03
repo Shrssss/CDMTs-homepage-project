@@ -136,6 +136,15 @@ public class NewsController {
 		
 	}
 	
+    /*
+     * 画像の保存
+     *
+     * 		POST /api/news/thumbnail
+     *
+     * 			サムネ画像を保存する
+     * 			パスが返る
+     * 
+     */
 	@PostMapping(value="/thumbnail",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
 	public Map<String,String> uploadThumbnail(@RequestParam MultipartFile file){
 		
