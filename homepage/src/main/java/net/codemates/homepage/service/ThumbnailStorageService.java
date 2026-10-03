@@ -32,13 +32,11 @@ public class ThumbnailStorageService {
 		
 	}
 	
-	
-	
 	public String save(MultipartFile file) {
 		
 		if(file==null||file.isEmpty())throw new BusinessException(ErrorCode.INVALID_IMAGE_FILE);
 		
-		String ext=ALLOWED.get(file.getClass().componentType());
+		String ext=ALLOWED.get(file.getContentType());
 		
 		if(ext==null)throw new BusinessException(ErrorCode.INVALID_IMAGE_FILE);
 		

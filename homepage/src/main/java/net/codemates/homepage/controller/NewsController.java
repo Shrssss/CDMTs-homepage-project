@@ -1,7 +1,9 @@
 package net.codemates.homepage.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.MediaType;
 //import org.springframework.web.bind.annotation.CrossOrigin;
 //import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import net.codemates.homepage.model.dto.news.NewsDetailResponse;
 import net.codemates.homepage.model.dto.news.NewsResponse;
 import net.codemates.homepage.model.dto.news.NewsUpdateRequest;
 import net.codemates.homepage.service.NewsService;
+import net.codemates.homepage.service.ThumbnailStorageService;
 
 @RestController
 @RequestMapping("/api/news")
@@ -47,6 +51,8 @@ public class NewsController {
 	
 	//Serviceの注入(DI:Dependency Injection)
 	private final NewsService newsService;
+	
+	private final ThumbnailStorageService thumbnailStorageService;
 	
     /*
      * ニュース詳細取得	(記事を読むときに使用)
@@ -127,6 +133,13 @@ public class NewsController {
 	public void updateIspublishedById(@PathVariable Long id,@RequestParam Boolean isPublished) {
 		
 		newsService.updateIsPublishedById(id,isPublished);
+		
+	}
+	
+	@PostMapping(value="/thumbnail",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Map<String,String> uploadThumbnail(@RequestParam MultipartFile file){
+		
+		return Map.of("thumbnailPath",thumbnailStorageService.save(file));
 		
 	}
 	
