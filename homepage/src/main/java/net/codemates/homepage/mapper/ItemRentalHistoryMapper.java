@@ -1,7 +1,6 @@
 package net.codemates.homepage.mapper;
 
 import java.util.List;
-import java.time.LocalDateTime;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

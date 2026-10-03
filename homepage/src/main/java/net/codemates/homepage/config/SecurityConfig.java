@@ -84,6 +84,13 @@ public class SecurityConfig {
 			        "/api/auth",
 			        "/api/auth/login"
 			    ).permitAll()
+				// メンバー・ニュース・画像はGETで認証不要
+				.requestMatchers(
+					HttpMethod.GET,
+					"/api/news",
+					"/api/members",
+					"/uploads/**"
+				).permitAll()
 				.anyRequest().authenticated()
 				)
 		//Spring Securityのデフォルトのログインフォームを無効化(フロントの画面を使用)
