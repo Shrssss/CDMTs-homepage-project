@@ -84,11 +84,12 @@ public class SecurityConfig {
 			        "/api/auth",
 			        "/api/auth/login"
 			    ).permitAll()
-				// メンバー・ニュースはGETで認証不要
+				// メンバー・ニュース・画像はGETで認証不要
 				.requestMatchers(
 					HttpMethod.GET,
 					"/api/news",
-					"/api/members"
+					"/api/members",
+					"/uploads/**"
 				).permitAll()
 				.anyRequest().authenticated()
 				)
