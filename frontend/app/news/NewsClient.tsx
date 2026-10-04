@@ -32,17 +32,14 @@ const NewsClient = () => {
     );
   }
   return (
-    <div className="grid grid-cols-3 gap-2">
-      {news.data?.map((n, idx) => {
-        return (
-          <News
-            thumnailPath={n.thumbnailPath}
-            category={n.category}
-            createdAt={n.createdAt}
-            key={idx}
-            title={n.title}
-          />
-        );
+    <div className="">
+      {news.data?.map((item,idx)=>{
+        return<div key={idx}>
+          <p className="border-brand-black">{item.category}</p>
+          <img src={item.thumbnailPath} alt="" />
+          <h2>{item.title}</h2>
+          <p>{item.createdAt.toLocaleDateString()}</p>
+        </div>
       })}
     </div>
   );

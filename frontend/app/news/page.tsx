@@ -7,9 +7,12 @@ import { Suspense } from "react";
 // 仮文章
 const page = () => {
   return (
-    <div className="max-w-6xl px-6 mx-auto">
+    <div className="text-gray-900 bg-brand-beige">
       <Header />
-      <h1 className="text-5xl font-bold my-8">記事一覧</h1>
+      <div className="p-16">
+        <h1 className="text-7xl font-bold my-8">NEWS / LOG</h1>
+        <h2 className="text-3xl font-bold mt-4">お知らせと活動記録</h2>
+      </div>
       <Provider>
         <Suspense>
           <NewsClient />

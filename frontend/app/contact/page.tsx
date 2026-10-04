@@ -1,7 +1,6 @@
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { EnvelopeIcon, InstagramLogoIcon } from '@phosphor-icons/react/dist/ssr';
 
 // 仮文章

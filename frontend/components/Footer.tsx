@@ -4,13 +4,14 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="max-w-6xl mx-auto p-4 flex justify-between gap-2">
+    <footer className="p-12 gap-2 bg-brand-black text-brand-beige">
+      <p className="text-5xl font-bold">いい感じの言葉</p>
+      <p className="mt-6">いい感じの謳い文句</p>
+      <div className="border-t-brand-beige/30 border-t-2 w-full mt-16 mb-8"></div>
       <p className="text-sm text-muted-foreground">
       ©2026 CODE MATES
       </p>
-      <Button variant={"link"} asChild>
-        <Link href={"contact"}>お問い合わせ</Link>
-      </Button>
+
     </footer>
   )
 }
