@@ -40,7 +40,7 @@ export const getItemDetail = async ({ id }: { id: number }) => {
 const ItemRentalHistoryResponseSchema=z.object({
   id:z.number(),
   itemName:z.string(),
-  memberName:z.string(),
+  renterName:z.string(),
   rentedAt:z.date(),
   returnedAt:z.date()
 })

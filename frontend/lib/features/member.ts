@@ -39,6 +39,8 @@ export type MemberCreateRequest = {
   studentId: string;
   email: string;
   password: number;
+  name:string;
+  grade:number;
 };
 
 export const createMember = async (request: MemberCreateRequest) => {
@@ -54,7 +56,6 @@ export type MemberLoginRequest = {
 };
 
 export const loginMember = async (request: MemberLoginRequest) => {
-  return 1
   const res = await axiosInstance.post("/auth/login", request);
   return z.number().parse(res.data);
 };
@@ -73,7 +74,6 @@ export type MemberUpdateRequest = {
   studentId: string;
   grade: number;
   position: number;
-  password: string;
   technologyIds: number[];
 };
 
