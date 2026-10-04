@@ -78,3 +78,11 @@ export const updateIsPublshedById = async ({
     },
   );
 };
+
+// POST /api/news/thumbnail （サムネイル画像アップロード）
+export const uploadThumbnail=async(file:File)=>{
+  const fd=new FormData()
+  fd.append("file",file)
+  const res=await axiosInstance.postForm("/news/thumbnail",fd)
+  return z.string().parse(res.data)
+}
