@@ -8,9 +8,6 @@ const NewsClient = () => {
   const newsQuery = useQuery({
     queryFn: async () => {
       return await searchNews({
-        categories: null,
-        keyword: null,
-        page: null,
       });
     },
     queryKey: ["news"],

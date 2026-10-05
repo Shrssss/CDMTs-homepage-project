@@ -27,7 +27,7 @@ export const useInfiniteItemRentalHistories = ({ id }: { id: number }) => {
 };
 
 export const useInfiniteItems = ({name,isDisposable,isRentable,storageLocation}:{
-  name:string|null,isDisposable:boolean,isRentable:boolean,storageLocation:string|null
+  name?:string,isDisposable:boolean,isRentable:boolean,storageLocation?:string
 }) => {
   const debouncedName=useDebounce(name,500)
   const debouncedStorageLocation=useDebounce(storageLocation,500)

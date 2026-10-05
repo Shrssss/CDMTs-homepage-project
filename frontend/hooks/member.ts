@@ -7,10 +7,10 @@ export const useMembers = ({
   page,
   positions,
 }: {
-  name: string | null;
-  grades: number[]|null;
-  positions: string[]|null;
-  page: number | null;
+  name?: string ;
+  grades?: number[];
+  positions?: string[];
+  page?: number ;
 }) => {
   return useQuery({
     queryFn: async () => {

@@ -12,10 +12,10 @@ export const searchMember = async ({
   page,
   positions,
 }: {
-  name: string|null;
-  grades: number[]|null;
-  positions: string[]|null;
-  page: number | null;
+  name?: string;
+  grades?: number[];
+  positions?: string[];
+  page?: number;
 }) => {
   const res = await axiosInstance.get("/members", {
     params: {

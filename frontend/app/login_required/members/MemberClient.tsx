@@ -4,10 +4,6 @@ import { useMembers } from "@/hooks/member";
 
 const MemberClient = () => {
   const members=useMembers({
-    grades:null,
-    name:null,
-    page:null,
-    positions:null
   })
   if(members.isLoading){
     return (<>

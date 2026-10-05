@@ -8,9 +8,9 @@ export const searchNews = async ({
   categories,
   page,
 }: {
-  keyword: string | null;
-  categories: string[] | null;
-  page: number | null;
+  keyword?: string ;
+  categories?: string[] ;
+  page?: number ;
 }) => {
   const res = await axiosInstance.get("/news", {
     params: {

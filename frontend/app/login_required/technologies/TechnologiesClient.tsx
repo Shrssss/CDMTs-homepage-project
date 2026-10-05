@@ -5,7 +5,6 @@ import { useInfiniteTechnologies } from "@/hooks/technology";
 
 const TechnologiesClient = () => {
   const technologies=useInfiniteTechnologies({
-    name:null
   })
   
   return (

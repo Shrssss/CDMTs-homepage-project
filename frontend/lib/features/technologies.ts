@@ -12,8 +12,8 @@ export const getTechnologies = async ({
   name,
   page,
 }: {
-  name: string|null;
-  page: number | null;
+  name?: string;
+  page?: number;
 }) => {
   const res = await axiosInstance.get("/technologies", {
     params: {

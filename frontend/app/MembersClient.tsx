@@ -10,8 +10,6 @@ const MembersClient = () => {
     queryFn: async () => {
       return await searchMember({
         grades: [],
-        name: null,
-        page: null,
         positions: [],
       });
     },

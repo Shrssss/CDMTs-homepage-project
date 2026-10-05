@@ -13,11 +13,11 @@ export const getSearchItems = async ({
   isRentable,
   page,
 }: {
-  name: string | null;
-  storageLocation: string | null;
-  isDisposable: boolean | null;
-  isRentable: boolean | null;
-  page: number;
+  name?: string;
+  storageLocation?: string;
+  isDisposable?: boolean;
+  isRentable?: boolean;
+  page?: number;
 }) => {
   const res = await axiosInstance.get("/items", {
     params: {
@@ -51,7 +51,7 @@ export const getItemRentalHistories = async ({
   page,
 }: {
   id: number;
-  page: number | null;
+  page?: number;
 }) => {
   const res = await axiosInstance.get(`/items/${id}/history`, {
     params: {
@@ -104,7 +104,7 @@ export const rentItems = async ({
 }) => {
   const res = await axiosInstance.put(
     "/items/rent",
-    {},
+    undefined,
     {
       params: { ids, renterId },
     },
