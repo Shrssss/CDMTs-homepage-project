@@ -30,9 +30,6 @@ const Header = () => {
 
       <div className="gap-2 items-center hidden md:flex">
         <Button asChild variant={"link"} className="text-black font-bold">
-          <Link href="/about">概要</Link>
-        </Button>
-        <Button asChild variant={"link"} className="text-black font-bold">
           <Link href="/news">記事</Link>
         </Button>
         <Button asChild variant={"link"} className="text-black font-bold">
@@ -63,7 +60,7 @@ const Header = () => {
           </SheetHeader>
           <div className="p-4 flex flex-col items-end">
             <Button asChild variant={"link"} className="text-black font-bold">
-              <Link href="/about">概要</Link>
+              <Link href="/">ホーム</Link>
             </Button>
             <Button asChild variant={"link"} className="text-black font-bold">
               <Link href="/news">記事</Link>
