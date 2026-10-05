@@ -113,6 +113,7 @@ export const MemberDetailResponseSchema = z.object({
 })
 
 export const NewsResponseSchema = z.array(z.object({
+  id:z.number(),
   title: z.string(),
   thumbnailPath: z.string(),
   category: z.string(),
@@ -121,6 +122,7 @@ export const NewsResponseSchema = z.array(z.object({
 }))
 
 export const NewsDetailResponseSchema = z.object({
+  id:z.number(),
   title: z.string(),
   content: z.string(),
   thumbnailPath: z.string(),
