@@ -41,18 +41,19 @@ const LoginForm = () => {
       }}
     >
       <div className="flex flex-col gap-2">
-        <Label htmlFor="identifier">学籍番号 または メールアドレス</Label>
+        <Label htmlFor="identifier" className="text-xl">学籍番号 または メールアドレス</Label>
         <Input
           id="identifier"
           type="text"
           name="identifier"
           placeholder="例：01A2345 または example123@example.com"
           required
+          autoComplete="email"
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">パスワード</Label>
-        <Input id="password" type="password" name="password" required />
+        <Label htmlFor="password" className="text-xl">パスワード</Label>
+        <Input id="password" type="password" name="password" required autoComplete="current-password" />
       </div>
 
       <Button type="submit" size={"lg"}>

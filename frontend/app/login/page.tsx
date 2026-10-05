@@ -5,7 +5,7 @@ import Provider from "../QueryClientProvider";
 
 const Page = () => {
   return (
-    <div className="max-w-6xl px-6 mx-auto">
+    <div className="bg-brand-beige text-brand-black">
       <Header />
       <Provider>
         <LoginForm />
