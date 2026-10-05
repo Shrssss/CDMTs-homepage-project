@@ -40,6 +40,7 @@ const NewsDetailClient = () => {
     <div className="m-16">
       <span className="border-2 border-brand-black p-1 mt-2">{newsDetail.data.category}</span>
       <div className="aspect-video">
+        {/* Next.jsの<Image/>はSSGで使えない */}
         <img src={newsDetail.data.thumbnailPath} className="w-full h-full object-cover" />
       </div>
       <div>
