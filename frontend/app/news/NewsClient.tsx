@@ -15,7 +15,7 @@ const NewsClient = () => {
       return await searchNews({
         page: page ? parseInt(page) : 1,
         categories: [],
-        keyword,
+        keyword:keyword ? keyword : undefined,
       });
     },
   });
