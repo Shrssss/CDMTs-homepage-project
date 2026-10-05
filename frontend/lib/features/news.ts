@@ -29,7 +29,7 @@ export const getNewsDetail = async ({ id }: { id: number }) => {
 };
 
 // POST /news （記事作成）
-type NewsCreateRequest = {
+export type NewsCreateRequest = {
   title: string;
   content: string;
   thumbnailPath: string;
@@ -43,7 +43,7 @@ export const createNews = async (request: NewsCreateRequest) => {
 };
 
 // PUT /news/{id} （記事更新）
-type NewsUpdateRequest = {
+export type NewsUpdateRequest = {
   id: number;
   title: string;
   content: string;
