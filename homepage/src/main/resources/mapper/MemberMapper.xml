@@ -26,6 +26,12 @@
 				AND name ILIKE '%' || #{name} || '%'
 			
 			</if> 
+			
+			<if test="isApproved != null">
+			
+				AND is_approved = TRUE
+			
+			</if> 
 		
 			<if test="grades != null and grades.size() > 0">
 		
@@ -66,6 +72,13 @@
 	
 	</select>
 	
+	<select id="findUnApprovedMember" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members
+		WHERE is_approved = FALSE
+	
+	</select>
+	
 	
 	
 	<insert id="insert" parameterType="net.codemates.homepage.model.entity.Member" useGeneratedKeys="true" keyProperty="id">
@@ -78,7 +91,9 @@
 			email,
 			grade,
 			position,
-			password_hash
+			password_hash,
+			is_approved,
+			role
 		)
 		VALUES
 		(
@@ -87,7 +102,9 @@
 			#{email},
 			#{grade},
 			#{position},
-			#{passwordHash}
+			#{passwordHash},
+			#{isApproved},
+			#{role}
 		)
 	
 	</insert>
@@ -119,6 +136,14 @@
 		UPDATE members 
 		SET grade = grade + 1
 		WHERE grade = #{grade}
+	
+	</update>
+	
+	<update id="updateApproval" parameterType="net.codemates.homepage.model.entity.Member">
+	
+		UPDATE members 
+		SET is_approved = #{isApproved}
+		WHERE id = #{id}
 	
 	</update>
 	

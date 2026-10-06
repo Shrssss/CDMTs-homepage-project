@@ -6,6 +6,8 @@ CREATE TABLE members (
     grade SMALLINT NOT NULL,
     position VARCHAR(50),
     password_hash VARCHAR(255) NOT NULL,
+    is_approved BOOLEAN NOT NULL DEFAULT FALSE,
+    role VARCHAR(20) NOT NULL DEFAULT 'MEMBER'
     created_at TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

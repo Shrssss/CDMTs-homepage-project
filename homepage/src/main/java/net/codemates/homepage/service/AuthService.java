@@ -22,8 +22,12 @@ import net.codemates.homepage.exception.DbAssertions;
 import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.MemberMapper;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
+import net.codemates.homepage.model.dto.member.MemberDetailResponse;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
+import net.codemates.homepage.model.dto.member.MemberResponse;
+import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.entity.Member;
+import net.codemates.homepage.model.entity.Technology;
 import net.codemates.homepage.security.MemberUserDetails;
 
 @Service
@@ -37,6 +41,14 @@ public class AuthService {
 	private final AuthenticationManager authenticationManager;
 
 	private final SecurityContextRepository securityContextRepository=new HttpSessionSecurityContextRepository();
+	
+	private MemberResponse toResponse(Member member) {
+		return new MemberResponse(
+				member.getId(),
+				member.getName(),
+				member.getGrade(),
+				member.getPosition());
+	}
 
 	@Transactional
 	public Long createMember(MemberCreateRequest memberDto) {
@@ -68,14 +80,16 @@ public class AuthService {
 			throw new BusinessException(ErrorCode.LOGIN_FAILED);
 		}
 		
+		MemberUserDetails principal=(MemberUserDetails)authResult.getPrincipal();
+		
+		if(!Boolean.TRUE.equals(principal.getMember().getIsApproved()))throw new BusinessException(ErrorCode.ACCOUNT_NOT_APPROVED);
+		
 		SecurityContext context=SecurityContextHolder.createEmptyContext();
 		context.setAuthentication(authResult);
 		SecurityContextHolder.setContext(context);
 		
 		//SecurityContextをHttpSessionに保存
 		securityContextRepository.saveContext(context,request,response);
-		
-		MemberUserDetails principal=(MemberUserDetails)authResult.getPrincipal();
 		
 		return principal.getMember().getId();
 		
@@ -101,6 +115,39 @@ public class AuthService {
 		DbAssertions.requireAffected(1, updateCount);
 		
 		return id;
+		
+	}
+	
+	@Transactional
+	public Long approveMember(Long id) {
+		
+		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
+									.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+		
+		int updateCount=memberMapper.updateApproval(id,true);
+		
+		DbAssertions.requireAffected(1,updateCount);
+		
+		return id;
+		
+	}
+	
+	public List<MemberResponse> getUnApprovedMember(){
+		
+		List<Member> memberEntities=memberMapper.findUnApprovedMember();
+		
+		return memberEntities.stream()
+				.map(this::toResponse)
+				.toList();
+		
+	}
+	
+	
+	public Long getCurrentMemberId(Authentication auth) {
+		
+		MemberUserDetails userDetails=(MemberUserDetails)auth.getPrincipal();
+		
+		return userDetails.getMember().getId();
 		
 	}
 	

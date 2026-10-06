@@ -23,6 +23,8 @@ public class Member {
 	 * 			├─ grade (学年)						/SMALLINT		/NOT NULL
 	 *  		├─ position (役職)					/VARCHAR(50)
 	 *  		├─ password_hash (パスワードのハッシュ値)	/VARCHAR(255)	/NOT NULL
+	 *  		├─ isApproved (アカウントが承諾済みであるか)/BOOLEAN		/NOT NULL	/DEFAULT FALSE
+	 *  		├─ role (Auth用の役職)				/VARCHAR(20)	/NOT NULL	/DEFAULT 'MEMBER'
 	 *  		├─ created_at (登録日時)				/TIMESTAMP
 	 *			└─ updated_at (更新日時)				/TIMESTAMP					/DEFAULT CURRENT_TIMESTAMP
 	 * 
@@ -41,6 +43,10 @@ public class Member {
 	private String position;
 	
 	private String passwordHash;
+	
+	private Boolean isApproved;
+	
+	private String role;
 	
 	private LocalDateTime createdAt;
 	

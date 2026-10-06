@@ -19,6 +19,7 @@ public enum ErrorCode {
 	//401 Unauthorized
 	LOGIN_FAILED(HttpStatus.UNAUTHORIZED,"学籍番号/メールアドレスまたはパスワードが間違っています。"),
 	UNAUTHENTICATED(HttpStatus.UNAUTHORIZED,"ログインが必要です。"),
+	ACCOUNT_NOT_APPROVED(HttpStatus.UNAUTHORIZED,"アカウントが承認されていません。"),
 	
 	//403 Forbidden
 	ACCESS_DENIED(HttpStatus.FORBIDDEN,"この操作を行う権限がありません。"),

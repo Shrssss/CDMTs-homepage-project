@@ -51,6 +51,8 @@ public class MemberUpdateRequest {
 							position,
 							null,
 							null,
+							null,
+							null,
 							null);
 	}
 	
