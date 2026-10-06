@@ -95,6 +95,10 @@ public class SecurityConfig {
 						HttpMethod.PATCH,
 						"/api/auth/*/approve"
 				).hasRole("ADMIN")
+				.requestMatchers(
+						HttpMethod.GET,
+						"/api/auth/"
+				).hasRole("ADMIN")
 				.anyRequest().authenticated()
 				)
 		//Spring Securityのデフォルトのログインフォームを無効化(フロントの画面を使用)

@@ -1,5 +1,9 @@
 package net.codemates.homepage.controller;
 
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
+import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.service.AuthService;
 
 @RestController
@@ -94,5 +99,38 @@ public class AuthController {
 		
 	}
 	
+    /*
+     * 非承認ユーザーの表示
+     * 
+     * メソッド名 	: getUnApprovedMember
+     * 戻り値		: List<MemberDetailResponse>
+     * 引数		: 
+     * 
+     * 		GET /api/auth
+     * 
+     */
+	@GetMapping
+	public List<MemberResponse> getUnApprovedMember(){
+		
+		return authService.getUnApprovedMember();
+		
+	}
+	
+    /*
+     * セッションに保存されているユーザのID取得
+     * 
+     * メソッド名 	: getCurrentMemberId
+     * 戻り値		: Long
+     * 引数		: Authentication auth
+     * 
+     * 		GET /api/auth/me
+     * 
+     */
+	@GetMapping("/me")
+	public Long getCurrentMemberId(Authentication auth) {
+		
+		return authService.getCurrentMemberId(auth);
+		
+	}
 	
 }

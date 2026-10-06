@@ -18,6 +18,8 @@ public interface MemberMapper {
 							@Param("offset") int offset,
 				            @Param("limit") int limit);
 	
+	List<Member> findUnApprovedMember();
+	
 	Member findByStudentIdOrEmail(@Param("identifier")String identifier);
 	
 	int insert(Member member);	//transactional

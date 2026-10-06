@@ -26,6 +26,12 @@
 				AND name ILIKE '%' || #{name} || '%'
 			
 			</if> 
+			
+			<if test="isApproved != null">
+			
+				AND is_approved = TRUE
+			
+			</if> 
 		
 			<if test="grades != null and grades.size() > 0">
 		
@@ -63,6 +69,13 @@
 		SELECT * FROM members
 		WHERE student_id = #{identifier} OR email = #{identifier}
 	
+	
+	</select>
+	
+	<select id="findUnApprovedMember" resultType="net.codemates.homepage.model.entity.Member">
+	
+		SELECT * FROM members
+		WHERE is_approved = FALSE
 	
 	</select>
 	
