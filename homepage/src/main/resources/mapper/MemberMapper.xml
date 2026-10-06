@@ -78,7 +78,9 @@
 			email,
 			grade,
 			position,
-			password_hash
+			password_hash,
+			is_approved,
+			role
 		)
 		VALUES
 		(
@@ -87,7 +89,9 @@
 			#{email},
 			#{grade},
 			#{position},
-			#{passwordHash}
+			#{passwordHash},
+			#{isApproved},
+			#{role}
 		)
 	
 	</insert>
@@ -119,6 +123,14 @@
 		UPDATE members 
 		SET grade = grade + 1
 		WHERE grade = #{grade}
+	
+	</update>
+	
+	<update id="updateApproval" parameterType="net.codemates.homepage.model.entity.Member">
+	
+		UPDATE members 
+		SET is_approved = #{isApproved}
+		WHERE id = #{id}
 	
 	</update>
 	

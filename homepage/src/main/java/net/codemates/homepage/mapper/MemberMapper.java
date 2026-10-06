@@ -24,6 +24,8 @@ public interface MemberMapper {
 	
 	int update(Member member);	//transactional
 	
+	int updateApproval (@Param("id")Long id,@Param("isApproved")Boolean isApproved); //transactional
+	
 	int updatePassword(@Param("id")Long id,@Param("passwordHash")String passwordHash);	//transactional
 	
 	int updateByGrade(Short grade);	//transactional

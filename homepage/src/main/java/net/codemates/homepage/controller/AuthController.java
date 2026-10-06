@@ -1,5 +1,6 @@
 package net.codemates.homepage.controller;
 
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,11 +68,31 @@ public class AuthController {
      * 		POST /api/auth/{id}/passUpdate
      * 
      */
+	
+	//リクエストボディに変更
 	@PostMapping("/{id}/passUpdate")
 	public Long updatePassword(@PathVariable Long id,@RequestParam String oldPassword,@RequestParam String newPassword) {
 		
 		return authService.updatePassword(id,oldPassword,newPassword);
 		
 	}
+	
+    /*
+     * ユーザー承認
+     * 
+     * メソッド名 	: approveMember
+     * 戻り値		: Long id
+     * 引数		: Long id
+     * 
+     * 		POST /api/auth/{id}/approve
+     * 
+     */
+	@PatchMapping("/{id}/approve")
+	public Long approveMember(@PathVariable Long id) {
+		
+		return authService.approveMember(id);
+		
+	}
+	
 	
 }

@@ -68,14 +68,16 @@ public class AuthService {
 			throw new BusinessException(ErrorCode.LOGIN_FAILED);
 		}
 		
+		MemberUserDetails principal=(MemberUserDetails)authResult.getPrincipal();
+		
+		if(!Boolean.TRUE.equals(principal.getMember().getIsApproved()))throw new BusinessException(ErrorCode.ACCOUNT_NOT_APPROVED);
+		
 		SecurityContext context=SecurityContextHolder.createEmptyContext();
 		context.setAuthentication(authResult);
 		SecurityContextHolder.setContext(context);
 		
 		//SecurityContextをHttpSessionに保存
 		securityContextRepository.saveContext(context,request,response);
-		
-		MemberUserDetails principal=(MemberUserDetails)authResult.getPrincipal();
 		
 		return principal.getMember().getId();
 		
@@ -99,6 +101,20 @@ public class AuthService {
 		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(newPassword));
 		
 		DbAssertions.requireAffected(1, updateCount);
+		
+		return id;
+		
+	}
+	
+	@Transactional
+	public Long approveMember(Long id) {
+		
+		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
+									.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+		
+		int updateCount=memberMapper.updateApproval(id,true);
+		
+		DbAssertions.requireAffected(1,updateCount);
 		
 		return id;
 		

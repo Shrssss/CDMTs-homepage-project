@@ -50,6 +50,8 @@ public class MemberCreateRequest {
 							grade,
 							null,
 							passwordHash,
+							false,
+							"MEMBER",
 							null,
 							null);
 	}
