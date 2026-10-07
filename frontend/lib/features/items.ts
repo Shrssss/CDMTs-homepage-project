@@ -3,6 +3,7 @@ import * as z from "zod";
 import {
   ItemsResponseSchema,
   ItemDetailResponseSchema,
+  ItemRentalHistoriesResponseSchema,
 } from "../types/api";
 
 // GET /items （全体取得・検索）
@@ -14,7 +15,7 @@ export const getSearchItems = async ({
   page,
 }: {
   name?: string;
-  storageLocation?: string;
+  storageLocation?: string[];
   isDisposable?: boolean;
   isRentable?: boolean;
   page?: number;
@@ -37,14 +38,6 @@ export const getItemDetail = async ({ id }: { id: number }) => {
   return ItemDetailResponseSchema.parse(res.data);
 };
 
-const ItemRentalHistoryResponseSchema=z.object({
-  id:z.number(),
-  itemName:z.string(),
-  renterName:z.string(),
-  rentedAt:z.date(),
-  returnedAt:z.date()
-})
-
 // GET /items/{id}/history （貸し出し履歴取得／⼀対多）
 export const getItemRentalHistories = async ({
   id,
@@ -55,18 +48,17 @@ export const getItemRentalHistories = async ({
 }) => {
   const res = await axiosInstance.get(`/items/${id}/history`, {
     params: {
-      id,
       page,
     },
   });
-  return z.array(ItemRentalHistoryResponseSchema).parse(res.data);
+  return ItemRentalHistoriesResponseSchema.parse(res.data);
 };
 
 // POST /items （備品作成）
 export type ItemCreateRequest = {
   name: string;
   description: string;
-  storageLocaiton: string;
+  storageLocation: string;
   quantity: number;
   isDisposable: boolean;
   isRentable: boolean;
@@ -94,20 +86,40 @@ export const updateItem = async (request: ItemUpdateRequest) => {
   await axiosInstance.put(`/items/${id}`, request);
 };
 
-// PUT /items/rent （貸し出し時の更新）
-export const rentItems = async ({
-  ids,
+// PUT /items/rent/{id}/{renterId} （貸し出し）
+export const rentItem = async ({
+  id,
   renterId,
 }: {
-  ids: number[];
+  id: number;
   renterId: number;
 }) => {
+  const res = await axiosInstance.put(`/items/rent/${id}/${renterId}`);
+  return z.number().parse(res.data);
+};
+
+// PUT /items/return/{id}/{renterId} （返却）
+export const returnItem = async ({
+  id,
+  renterId,
+}: {
+  id: number;
+  renterId: number;
+}) => {
+  const res = await axiosInstance.put(`/items/return/${id}/${renterId}`);
+  return z.number().parse(res.data);
+};
+
+// PUT /items/Availability/{id}/{isRentable} （貸出可否の切り替え）
+export const toggleIsRentable = async ({
+  id,
+  isRentable,
+}: {
+  id: number;
+  isRentable: boolean;
+}) => {
   const res = await axiosInstance.put(
-    "/items/rent",
-    undefined,
-    {
-      params: { ids, renterId },
-    },
+    `/items/Availability/${id}/${isRentable}`,
   );
   return z.number().parse(res.data);
 };

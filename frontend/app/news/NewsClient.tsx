@@ -36,7 +36,7 @@ const NewsClient = () => {
       {news.data?.map((item,idx)=>{
         return<div key={idx}>
           <p className="border-brand-black">{item.category}</p>
-          <img src={item.thumbnailPath} alt="" />
+          <img src={item.thumbnailPath ?? undefined} alt="" />
           <h2>{item.title}</h2>
           <p>{item.createdAt.toLocaleDateString()}</p>
         </div>

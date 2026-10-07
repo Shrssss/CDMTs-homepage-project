@@ -1,4 +1,4 @@
-import { createItem, getItemDetail, getItemRentalHistories, getSearchItems, ItemCreateRequest, ItemUpdateRequest, rentItems, updateItem } from "@/lib/features/items";
+import { createItem, getItemDetail, getItemRentalHistories, getSearchItems, ItemCreateRequest, ItemUpdateRequest, rentItem, updateItem } from "@/lib/features/items";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import useDebounce from "./useDebounce";
 
@@ -39,7 +39,7 @@ export const useInfiniteItems = ({name,isDisposable,isRentable,storageLocation}:
         name: debouncedName,
         isDisposable,
         isRentable,
-        storageLocation: debouncedStorageLocation,
+        storageLocation: debouncedStorageLocation ? [debouncedStorageLocation] : undefined,
         page: pageParam,
       });
     },
@@ -60,11 +60,11 @@ export const useItemDetail = ({ id }: { id: number }) => {
   });
 };
 
-export const useRentItemMutation = ({ids,renterId}:{ids:number[],renterId:number}) => {
+export const useRentItemMutation = ({id,renterId}:{id:number,renterId:number}) => {
   return useMutation({
     mutationFn:async()=>{
-      await rentItems({
-        ids,renterId
+      return await rentItem({
+        id,renterId
       })
     }
   })

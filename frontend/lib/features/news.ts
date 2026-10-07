@@ -1,5 +1,9 @@
 import * as z from "zod";
-import { NewsResponseSchema, NewsDetailResponseSchema } from "../types/api";
+import {
+  NewsResponseSchema,
+  NewsDetailResponseSchema,
+  ThumbnailUploadResponseSchema,
+} from "../types/api";
 import { axiosInstance } from "./api";
 
 // GET /news （全体取得・検索）
@@ -32,7 +36,7 @@ export const getNewsDetail = async ({ id }: { id: number }) => {
 export type NewsCreateRequest = {
   title: string;
   content: string;
-  thumbnailPath: string;
+  thumbnailPath?: string | null;
   category: string;
   isPublished: boolean;
 };
@@ -47,7 +51,8 @@ export type NewsUpdateRequest = {
   id: number;
   title: string;
   content: string;
-  thumbnailPath: string;
+  // null（省略）で送ると画像が解除される。維持する場合は既存の値を送る
+  thumbnailPath?: string | null;
   category: string;
   isPublished: boolean;
 };
@@ -63,7 +68,7 @@ export const updateNews = async ({
 };
 
 // PATCH /news/{id}/published （公開状態更新）
-export const updateIsPublshedById = async ({
+export const updateIsPublishedById = async ({
   id,
   isPublished,
 }: {
@@ -80,9 +85,9 @@ export const updateIsPublshedById = async ({
 };
 
 // POST /api/news/thumbnail （サムネイル画像アップロード）
-export const uploadThumbnail=async(file:File)=>{
-  const fd=new FormData()
-  fd.append("file",file)
-  const res=await axiosInstance.postForm("/news/thumbnail",fd)
-  return z.string().parse(res.data)
-}
+export const uploadThumbnail = async (file: File) => {
+  const fd = new FormData();
+  fd.append("file", file);
+  const res = await axiosInstance.postForm("/news/thumbnail", fd);
+  return ThumbnailUploadResponseSchema.parse(res.data).thumbnailPath;
+};

@@ -4,7 +4,7 @@ import {
   NewsCreateRequest,
   NewsUpdateRequest,
   searchNews,
-  updateIsPublshedById,
+  updateIsPublishedById,
   updateNews,
   uploadThumbnail,
 } from "@/lib/features/news";
@@ -74,7 +74,7 @@ export const useUpdateIsPublishedByIdMutation = ({
 }) => {
   return useMutation({
     mutationFn: async () => {
-      return updateIsPublshedById({
+      return updateIsPublishedById({
         id,
         isPublished,
       });

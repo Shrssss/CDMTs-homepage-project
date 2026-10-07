@@ -2,7 +2,7 @@ type Props = {
   id: number;
   name: string;
   grade: number;
-  position: string;
+  position: string | null;
 };
 
 const Member = ({ grade, id, name, position }: Props) => {
@@ -10,7 +10,7 @@ const Member = ({ grade, id, name, position }: Props) => {
     <div key={id} className="bg-accent">
       <h3>{name}</h3>
       <p>
-        {grade}・{position}
+        {grade}{position && `・${position}`}
       </p>
     </div>
   );

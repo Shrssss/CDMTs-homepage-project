@@ -38,7 +38,7 @@ export const getMemberDetail = async ({ id }: { id: number }) => {
 export type MemberCreateRequest = {
   studentId: string;
   email: string;
-  password: number;
+  password: string;
   name:string;
   grade:number;
 };
@@ -73,13 +73,13 @@ export type MemberUpdateRequest = {
   email: string;
   studentId: string;
   grade: number;
-  position: number;
-  technologyIds: number[];
+  position?: string | null;
+  technologyIds?: number[];
 };
 
 export const updateMember = async (request: MemberUpdateRequest) => {
   const { id } = request;
-  await axiosInstance.post(`/members/${id}`, request);
+  await axiosInstance.put(`/members/${id}`, request);
 };
 
 // POST /auth/{id}/passUpdate パスワード更新
@@ -90,7 +90,10 @@ export type UpdatePasswordRequest = {
 };
 
 export const updatePassword = async (request: UpdatePasswordRequest) => {
-  const { id } = request;
-  const res = await axiosInstance.post(`/auth/${id}/passUpdate`, request);
+  const { id, oldPassword, newPassword } = request;
+  // oldPassword / newPassword はクエリパラメータで送る仕様
+  const res = await axiosInstance.post(`/auth/${id}/passUpdate`, undefined, {
+    params: { oldPassword, newPassword },
+  });
   return z.number().parse(res.data);
 };
