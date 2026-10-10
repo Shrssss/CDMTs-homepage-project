@@ -1,124 +1,161 @@
-import Header from "@/components/Header";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Suspense } from "react";
+
+import Header from "@/components/header";
 import Footer from "@/components/Footer";
+import SectionMarker from "@/components/brand/SectionMarker";
+import TerminalWindow from "@/components/brand/TerminalWindow";
+import InfoGrid from "@/components/brand/InfoGrid";
+import Provider from "./QueryClientProvider";
+import NewsClient from "./NewsClient";
+
+const PILLARS = [
+  {
+    eyebrow: "01 / BUILD",
+    title: "チーム開発",
+    text: "3〜5人の小さなチームで、企画・設計・実装・公開までを経験。学期ごとにひとつのプロダクトを育てます。",
+    keywords: "WEB / APP / CREATIVE CODING",
+  },
+  {
+    eyebrow: "02 / LEARN",
+    title: "各種講習会",
+    text: "テーマに応じて、不定期に講習会が開催されます。",
+    keywords: "TEXT / TEST / FEEDBACK",
+  },
+  {
+    eyebrow: "03 / SHARE",
+    title: "オフラインLT会",
+    text: "他団体と共同で数か月おきにLT会を企画。",
+    keywords: "SHARE / TALK / COMMUNICATION",
+  },
+];
 
 const Page = () => {
-  // 仮文章
   return (
-    <div className="text-gray-900 bg-brand-beige">
+    <div className="bg-brand-beige text-gray-900">
       <Header />
-      <div className="">
-        <div className="h-screen relative">
-          <div className="w-full h-full absolute bg-linear-90 from-brand-black to-transparent/20">
-          </div>
-            <div className="absolute text-white p-4 md:p-16">
-              <h1 className="text-4xl font-bold leading-normal">
-                キャッチフレーズ
-                <br />
-                キャッチフレーズ
-              </h1>
-              <h2 className="text-3xl font-bold my-6">キャッチフレーズ</h2>
-            </div>
+      <main>
+        {/* ファーストビュー */}
+        <section className="relative h-[640px] border-b-2 border-brand-black md:h-[calc(100svh-74px)] md:min-h-[560px]">
           <img
             src={"/placeholder.jpg"}
-            className="w-full h-full object-cover"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
           />
-        </div>
-
-        <div className="flex items-center p-4 gap-2 font-mono">
-          <div className="font-bold text-xs">[01]</div>
-          <div className="border-t border-t-gray-700 w-full"></div>
-          <div className="font-bold text-xs text-nowrap">WHAT WE DO</div>
-        </div>
-
-        <div className="px-4 pb-4 md:px-16 md:mb-16">
-          <h2 className="text-2xl font-bold my-4">活動の3つの柱</h2>
-          <div className="grid md:grid-cols-3 gap-2">
-
-            <div className="border-black border-2 p-4 bg-white/50">
-              <p className="text-sm font-mono mb-16">01 / BUILD</p>
-              <p className="font-extrabold text-3xl my-4">チーム開発</p>
-              <p className="text-sm">
-                3〜5人の小さなチームで、企画・設計・実装・公開までを経験。学期ごとにひとつのプロダクトを育てます。
-              </p>
-              <p className="mt-16 font-mono font-bold">WEB / APP / CREATIVE CODING</p>
+          <div className="absolute inset-0 bg-linear-to-t from-brand-black from-45% to-brand-black/40 md:bg-linear-90 md:from-brand-black md:from-0% md:to-transparent/20"></div>
+          <div className="relative flex h-full flex-col justify-end gap-4 p-4 pb-8 text-white md:max-w-3xl md:justify-center md:p-16">
+            <span className="font-mono text-xs font-bold tracking-wider">
+              HOSEI UNIV. TAMA CAMPUS
+            </span>
+            {/* TODO: キャッチコピーを確定させる */}
+            <h1 className="text-[34px] leading-snug font-bold md:text-6xl md:leading-tight">
+              「作ること」と
+              <br />
+              「楽しむこと」、
+              <br />
+              どちらも本気で。
+            </h1>
+            <p className="leading-relaxed text-white/85 md:text-lg">
+              法政大学多摩キャンパス、文系学部生だけのプログラミングサークル CODE MATES
+            </p>
+            <div className="mt-2 flex flex-col gap-2 md:flex-row md:gap-3">
+              <Link
+                href="/contact"
+                className="flex min-h-13 items-center justify-center gap-2 bg-brand-beige px-7 font-bold text-brand-black transition-all hover:scale-105"
+              >
+                見学・入部の相談をする
+                <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                href="/about"
+                className="flex min-h-13 items-center justify-center border-2 border-brand-beige px-7 font-bold text-brand-beige"
+              >
+                CODE MATESについて
+              </Link>
             </div>
-
-            <div className="border-black border-2 p-4 bg-white/50">
-              <p className="text-sm font-mono mb-16">02 / LEARN</p>
-              <p className="font-extrabold text-3xl my-4">各種講習会</p>
-              <p className="text-sm">
-                テーマに応じて、不定期に講習会が開催されます。
-              </p>
-              <p className="mt-16 font-mono font-bold">Text / Test / FeedBack</p>
-            </div>
-
-            <div className="border-black border-2 p-4 bg-white/50">
-              <p className="text-sm font-mono mb-16">03 / SHARE</p>
-              <p className="font-extrabold text-3xl my-4">オフラインLT会</p>
-              <p className="text-sm">
-                他団体と共同で数か月おきにLT会を企画。
-              </p>
-              <p className="mt-16 font-mono font-bold">Share / Talk Communication</p>
-            </div>
-
           </div>
-        </div>
+        </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 text-brand-beige">
-          <div className="col-span-2 p-8 bg-brand-black">
-            <div className="flex items-center text-white justify-between text-xs gap-2 font-mono">
-              <div className="text-lime-300">[02]</div>
-              <div className="border-t border-t-white w-full"></div>
-              <div className="text-nowrap font-bold">
-                BEGINNER FRIENDLY
+        {/* [01] 活動の3つの柱 */}
+        <section className="px-4 pt-10 pb-12 md:p-16">
+          <SectionMarker number="01" label="WHAT WE DO" />
+          <h2 className="mt-7 mb-4 text-2xl font-bold">活動の3つの柱</h2>
+          <div className="grid gap-2 md:grid-cols-3">
+            {PILLARS.map((pillar) => (
+              <div key={pillar.eyebrow} className="flex flex-col border-2 border-black bg-white/50 p-4">
+                <p className="mb-8 font-mono text-sm md:mb-16">{pillar.eyebrow}</p>
+                <p className="mb-3 text-3xl font-extrabold">{pillar.title}</p>
+                <p className="text-sm leading-relaxed">{pillar.text}</p>
+                <p className="mt-8 font-mono text-sm font-bold md:mt-auto md:pt-16">
+                  {pillar.keywords}
+                </p>
               </div>
-            </div>
-            <h2 className=" font-bold text-6xl mt-2">
-              なにからしらの文言
+            ))}
+          </div>
+        </section>
+
+        {/* [02] 初心者歓迎 */}
+        <section className="grid grid-cols-1 text-brand-beige md:grid-cols-3">
+          <div className="flex flex-col gap-4 bg-brand-black px-4 py-10 md:col-span-2 md:p-16">
+            <SectionMarker number="02" label="BEGINNER FRIENDLY" tone="dark" />
+            <h2 className="mt-2 text-3xl leading-snug font-bold md:text-5xl md:leading-tight">
+              「エンジニアになりたい」より
+              <br className="hidden md:block" />
+              「なにかを作れるようになりたい」
             </h2>
-            <p className="mt-4">ああああああ</p>
+            <p className="leading-loose md:max-w-xl">
+              メンバーのほとんどがプログラミング未経験で入部しています。初心者向けの勉強会や先輩の個別サポートで、ゼロから始められます。
+            </p>
           </div>
-          <div className="bg-black/60 p-8 text-brand-black">
-            <div className="bg-brand-beige flex items-center gap-2 p-4 font-mono">
-              <div className="size-3 bg-black rounded-full"></div>
-              <div className="size-3 bg-black/30 rounded-full"></div>
-              <div className="size-3 bg-lime-400 rounded-full"></div>
-              <p>first-step.sh</p>
-            </div>
-            <div className="bg-black p-4 text-brand-beige/50 font-mono leading-loose">
-              <p>$codemates -philosophy</p>
-              <p className="text-brand-beige">理念など</p>
-              <p>$codemates join --beginner</p>
-              <p className="text-lime-400">✓ joining complete</p>
-              <p>Welcome! まずは隣の人に hello 👍</p>
-              <p className="text-lime-400">-</p>
-            </div>
+          <div className="flex flex-col justify-center bg-black/60 p-4 py-6 md:p-8">
+            <TerminalWindow
+              fileName="first-step.sh"
+              lines={[
+                { text: "$ codemates --philosophy" },
+                // TODO: 理念を確定させる
+                { text: "[理念]", tone: "output" },
+                { text: "$ codemates join --beginner" },
+                { text: "✓ joining complete", tone: "success" },
+                { text: "Welcome! まずは隣の人に hello" },
+                { text: "_", tone: "success" },
+              ]}
+            />
           </div>
-        </div>
+        </section>
 
-        <div className="p-16">
-          <div className="flex items-center p-4 gap-2 font-mono">
-            <div className="font-bold text-xs">[03]</div>
-            <div className="border-t border-t-gray-700 w-full"></div>
-            <div className="font-bold text-xs text-nowrap">WHEN & WHERE</div>
-          </div>
-          <div className="grid md:grid-cols-3 border-black border-2 divide-x-2 mt-8">
-            <div className="p-8">
-              <p className="text-xs">Time Schedule</p>
-              <p className="text-xl font-bold">月・火　15:30～</p>
-            </div>
-            <div className="p-8">
-              <p className="text-xs">LOCATION</p>
-              <p className="text-xl font-bold">エッグドーム5F</p>
-            </div>
-            <div className="p-8">
-              <p className="text-xs">そのほかの事項</p>
-            </div>
-          </div>
-        </div>
+        {/* [03] 活動日・場所 */}
+        <section className="px-4 pt-12 pb-10 md:p-16">
+          <SectionMarker number="03" label="WHEN & WHERE" className="mb-6 md:mb-8" />
+          <InfoGrid
+            items={[
+              { label: "TIME SCHEDULE", value: "月・火　15:30～" },
+              { label: "LOCATION", value: "エッグドーム5F" },
+              // TODO: そのほかの事項を確定させる
+              { label: "OTHERS", value: "[そのほかの事項]" },
+            ]}
+          />
+        </section>
 
-        <Footer />
-      </div>
+        {/* [04] 最新のお知らせ */}
+        <section className="flex flex-col gap-4 px-4 pt-2 pb-14 md:px-16 md:pt-0 md:pb-16">
+          <SectionMarker number="04" label="LATEST NEWS" />
+          <h2 className="mt-3 text-2xl font-bold">最新のお知らせ</h2>
+          <Provider>
+            <Suspense>
+              <NewsClient />
+            </Suspense>
+          </Provider>
+          <Link
+            href="/news"
+            className="flex min-h-13 items-center justify-center gap-2 self-stretch bg-brand-black px-7 font-bold text-white md:self-start"
+          >
+            すべての記事を見る
+            <ArrowRight className="size-4" />
+          </Link>
+        </section>
+      </main>
+      <Footer />
     </div>
   );
 };

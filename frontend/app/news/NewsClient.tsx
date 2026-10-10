@@ -1,47 +1,104 @@
 "use client";
 
+import { parseAsInteger, useQueryState } from "nuqs";
+
 import News from "@/components/News";
-import { searchNews } from "@/lib/features/news";
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import FilterChips from "@/components/brand/FilterChips";
+import SearchField from "@/components/brand/SearchField";
+import Pagination from "@/components/brand/Pagination";
+import { EmptyPanel, ErrorPanel, LoadingCards } from "@/components/brand/StatusPanels";
+import { useNews } from "@/hooks/news";
+
+// TODO: 実際に運用するカテゴリに合わせる
+const CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会"];
+
+// バックエンドのNewsService.PAGE_SIZEと合わせる
+const PAGE_SIZE = 20;
 
 const NewsClient = () => {
-  const searchParams = useSearchParams();
-  const page = searchParams.get("page");
-  const keyword = searchParams.get("keyword");
-  const news = useQuery({
-    queryKey: ["news", page, keyword],
-    queryFn: async () => {
-      return await searchNews({
-        page: page ? parseInt(page) : 1,
-        categories: [],
-        keyword:keyword ? keyword : undefined,
-      });
-    },
+  const [category, setCategory] = useQueryState("category");
+  const [keyword, setKeyword] = useQueryState("keyword");
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+
+  const news = useNews({
+    page,
+    categories: category ? [category] : [],
+    keyword: keyword ?? undefined,
   });
-  if (news.isLoading) {
-    return (
-      <div className="bg-accent p-2 text-muted-foreground">読み込み中</div>
-    );
-  }
-  if (news.error) {
-    return (
-      <div className="bg-accent p-2 text-muted-foreground">
-        エラーが発生しました
-      </div>
-    );
-  }
+
+  const clear = () => {
+    setCategory(null);
+    setKeyword(null);
+    setPage(null);
+  };
+
+  const published = (news.data ?? []).filter((n) => n.isPublished);
+
   return (
-    <div className="">
-      {news.data?.map((item,idx)=>{
-        return<div key={idx}>
-          <p className="border-brand-black">{item.category}</p>
-          <img src={item.thumbnailPath ?? undefined} alt="" />
-          <h2>{item.title}</h2>
-          <p>{item.createdAt.toLocaleDateString()}</p>
-        </div>
-      })}
-    </div>
+    <>
+      <section
+        aria-label="絞り込み"
+        className="flex flex-col gap-5 border-2 border-brand-black bg-white/50 p-4 md:flex-row-reverse md:flex-wrap md:items-end md:justify-between md:gap-6 md:p-6"
+      >
+        <SearchField
+          key={keyword ?? ""}
+          id="news-keyword"
+          label="KEYWORD"
+          placeholder="記事を検索"
+          defaultValue={keyword ?? ""}
+          onSubmit={(value) => {
+            setKeyword(value || null);
+            setPage(null);
+          }}
+        />
+        <FilterChips
+          label="CATEGORY"
+          options={[
+            { label: "すべて", value: null },
+            ...CATEGORIES.map((c) => ({ label: c, value: c })),
+          ]}
+          value={category}
+          onChange={(value) => {
+            setCategory(value);
+            setPage(null);
+          }}
+        />
+      </section>
+
+      {news.isLoading ? (
+        <LoadingCards count={6} />
+      ) : news.error ? (
+        <ErrorPanel
+          command="codemates news --list"
+          message="記事を読み込めませんでした"
+          onRetry={() => news.refetch()}
+        />
+      ) : published.length === 0 ? (
+        <EmptyPanel
+          unit="POSTS"
+          message={keyword ? `「${keyword}」に一致する記事は見つかりませんでした` : "該当する記事はありません"}
+          onClear={category || keyword ? clear : undefined}
+        />
+      ) : (
+        <section aria-label="記事" className="grid grid-cols-1 gap-3 md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-2">
+          {published.map((item, idx) => (
+            <News
+              key={idx}
+              title={item.title}
+              category={item.category}
+              createdAt={item.createdAt}
+              thumbnailPath={item.thumbnailPath}
+            />
+          ))}
+        </section>
+      )}
+
+      <Pagination
+        page={page}
+        hasNext={(news.data?.length ?? 0) >= PAGE_SIZE}
+        onChange={(p) => setPage(p === 1 ? null : p)}
+      />
+    </>
   );
 };
 

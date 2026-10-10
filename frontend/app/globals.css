@@ -113,6 +113,10 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Geistは日本語グリフを持たないため、和文はシステムのゴシック体にフォールバックさせる */
+  --font-sans: var(--font-geist-sans), "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
   --brand-gray:#e4efef;
   --brand-sky:#95c7ce;
   --brand-emerald:#7dcebb;

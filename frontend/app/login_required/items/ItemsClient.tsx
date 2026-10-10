@@ -50,8 +50,8 @@ const ItemsClient = () => {
     useInfiniteItems({
       isDisposable,
       isRentable,
-      name,
-      storageLocation,
+      name:name ?? "",
+      storageLocation :storageLocation ?? "",
     });
 
   return (
