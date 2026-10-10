@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
 const NewsDetailClient = () => {
+  // クエリパラメータから対象の記事を取ってくる
   const searchParams = useSearchParams();
   const id = searchParams.get("id")
   const parsed=id ? parseInt(id) : -1

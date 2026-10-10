@@ -2,6 +2,7 @@ import Provider from '@/app/QueryClientProvider';
 import Client from "./TechnologiesClient"
 import LoginRequiredHeader from '../LoginRequiredHeader';
 
+// 技術一覧
 const Page = () => {
   return (
     <div className="max-w-6xl mx-auto p-6">

@@ -7,15 +7,15 @@ import { useSearchParams } from "next/navigation";
 
 const MembersClient = () => {
   const searchParams = useSearchParams();
-  const name = searchParams.get("name");
-  const page = searchParams.get("page");
+  const name = searchParams.get("name") ?? undefined
+  const page = searchParams.get("page") ?? undefined;
 
   const members = useQuery({
     queryFn: async () => {
       return await searchMember({
         grades: [],
         name,
-        page: parseInt(page ? page : "1"),
+        page:parseInt(page ?? "1"),
         positions: [],
       });
     },

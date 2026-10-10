@@ -4,7 +4,7 @@ import Provider from "../QueryClientProvider";
 import NewsClient from "./NewsClient";
 import { Suspense } from "react";
 
-// 仮文章
+// 記事一覧ページ
 const page = () => {
   return (
     <div className="text-gray-900 bg-brand-beige">

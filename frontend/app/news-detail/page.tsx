@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import NewsDetailClient from "./NewsDetailClient";
 import Provider from "../QueryClientProvider";
 
+// 各記事
 const Page=()=>{
   return (
     <div className="text-gray-900 bg-brand-beige">

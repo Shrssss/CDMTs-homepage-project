@@ -2,9 +2,10 @@ import Provider from '@/app/QueryClientProvider';
 import Client from "./MemberClient"
 import LoginRequiredHeader from '../LoginRequiredHeader';
 
+// サークルメンバー一覧
 const Page = () => {
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="">
       <Provider>
         <LoginRequiredHeader />
         <Client/>

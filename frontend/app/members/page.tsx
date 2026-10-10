@@ -4,7 +4,7 @@ import Provider from "../QueryClientProvider";
 import MembersClient from "./MembersClient";
 import { Suspense } from "react";
 
-// 仮文章
+// メンバー一覧ページ
 const Page = () => {
   return (
     <div className="max-w-6xl px-6 mx-auto">
