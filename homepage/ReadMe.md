@@ -2,13 +2,15 @@
 
 ## 1. 概要
 
-本システムは、団体（サークル・研究会等）のホームページを支えるバックエンドAPIである。以下4つの業務ドメインを扱う。
+本システムは、団体（サークル・研究会等）のホームページを支えるバックエンドAPIである。以下5つの業務ドメインを扱う。
 
-- **会員管理（Member）**：会員情報の登録・検索・更新
-- **認証（Auth）**：会員登録・ログイン・ログアウト・パスワード変更
+- **会員管理（Member）**：会員情報の検索・詳細表示・更新（習得技術の紐付けを含む）
+- **認証（Auth）**：会員登録・ログイン・ログアウト・パスワード変更・会員の承認（管理者）・ログイン中会員ID取得
 - **備品管理（Item）**：備品の登録・検索・貸出／返却・貸出履歴管理
-- **お知らせ管理（News）**：活動報告記事の投稿・検索・公開管理
+- **お知らせ管理（News）**：活動報告記事の投稿・検索・公開管理・サムネイル画像アップロード
 - **技術管理（Technology）**：習得技術の登録・会員との紐付け管理
+
+会員登録は**管理者承認制**である。登録直後のアカウントは未承認（`is_approved = FALSE`）で、管理者（`role = 'ADMIN'`）が承認するまでログインできない。
 
 ### 1.1 技術スタック
 
@@ -16,12 +18,13 @@
 |---|---|---|
 | 言語 | Java | 21 |
 | フレームワーク | Spring Boot | 3.5.15 |
-| ビルドツール | Gradle | - |
+| ビルドツール | Gradle | 8.14.5（Wrapper） |
 | O/Rマッパー | MyBatis (mybatis-spring-boot-starter) | 3.0.5 |
 | DB | PostgreSQL | - |
 | 認証 | Spring Security（セッション方式） | - |
 | バリデーション | spring-boot-starter-validation (Jakarta Validation) | - |
-| 補助ライブラリ | Lombok | - |
+| 補助ライブラリ | Lombok、Spring Boot DevTools（開発時のみ） | - |
+| ファイル保存 | ローカルディスク（`file.upload-dir`） | - |
 
 ### 1.2 アーキテクチャ
 
@@ -42,6 +45,8 @@ Controller層 → Service層 → Mapper層（MyBatis） → DB
 ---
 
 ## 2. データベース設計
+
+DDLは `src/main/resources/db/schema.sql`。
 
 ### 2.1 ER概要
 
@@ -65,8 +70,10 @@ members ──< member_technologies >── technologies
 | grade | SMALLINT | NOT NULL | 学年（1〜4） |
 | position | VARCHAR(50) | | 役職 |
 | password_hash | VARCHAR(255) | NOT NULL | パスワードハッシュ（BCrypt） |
-| created_at | TIMESTAMP | | 登録日時 |
-| updated_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 更新日時 |
+| is_approved | BOOLEAN | NOT NULL, DEFAULT FALSE | 承認済みフラグ（未承認はログイン不可） |
+| role | VARCHAR(20) | NOT NULL, DEFAULT 'MEMBER' | 権限（`MEMBER` / `ADMIN`）。ADMINへの変更APIはなく、DBで直接設定する |
+| created_at | TIMESTAMP | | 登録日時（DEFAULT未設定。現状のINSERTでは値を設定していない） |
+| updated_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 更新日時（INSERT時のみ設定。更新時は自動更新されない） |
 
 #### items（備品）
 
@@ -76,11 +83,11 @@ members ──< member_technologies >── technologies
 | name | VARCHAR(100) | NOT NULL | 備品名 |
 | description | VARCHAR(255) | NOT NULL | 説明 |
 | storage_location | VARCHAR(100) | NOT NULL | 保管場所 |
-| quantity | SMALLINT | NOT NULL | 在庫数 |
+| quantity | SMALLINT | NOT NULL | 在庫数（貸出で-1、返却で+1） |
 | is_disposable | BOOLEAN | NOT NULL, DEFAULT FALSE | 消耗品フラグ |
-| is_rentable | BOOLEAN | NOT NULL, DEFAULT FALSE | 貸出可否フラグ |
-| renter_id | BIGINT | FK → members(id), ON DELETE SET NULL | 現在の借主ID |
-| rented_at | TIMESTAMP | | 貸出日時 |
+| is_rentable | BOOLEAN | NOT NULL, DEFAULT FALSE | 貸出可否フラグ（在庫0になると自動でFALSE、返却でTRUE） |
+| renter_id | BIGINT | FK → members(id), ON DELETE SET NULL | 直近の借主ID（貸出で設定、返却でNULL） |
+| rented_at | TIMESTAMP | | 貸出日時（現状の貸出処理では更新されない。履歴は`item_rental_histories`で管理） |
 
 #### item_rental_histories（貸出履歴）
 
@@ -99,11 +106,11 @@ members ──< member_technologies >── technologies
 | id | BIGSERIAL | PK | ニュースID |
 | title | VARCHAR(100) | NOT NULL | タイトル |
 | content | TEXT | NOT NULL | 本文 |
-| thumbnail_path | VARCHAR(255) | | サムネイル画像パス |
+| thumbnail_path | VARCHAR(255) | | サムネイル画像パス（例: `/uploads/news/{UUID}.png`） |
 | category | VARCHAR(30) | NOT NULL | カテゴリ |
 | is_published | BOOLEAN | NOT NULL, DEFAULT FALSE | 公開フラグ |
 | created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 投稿日時 |
-| updated_at | TIMESTAMP | | 更新日時 |
+| updated_at | TIMESTAMP | | 更新日時（記事更新時に設定） |
 
 #### technologies（技術）
 
@@ -128,7 +135,8 @@ members ──< member_technologies >── technologies
 net.codemates.homepage
 ├── HomepageApplication.java         起動クラス
 ├── config/
-│   └── SecurityConfig.java          Spring Security設定（CORS, 認可, ログアウト）
+│   ├── SecurityConfig.java          Spring Security設定（CORS, 認可, ログアウト）
+│   └── WebMvcConfig.java            /uploads/** をアップロードディレクトリにマッピング
 ├── controller/
 │   ├── AuthController.java          /api/auth
 │   ├── MemberController.java        /api/members
@@ -140,7 +148,8 @@ net.codemates.homepage
 │   ├── MemberService.java
 │   ├── ItemService.java
 │   ├── NewsService.java
-│   └── TechnologyService.java
+│   ├── TechnologyService.java
+│   └── ThumbnailStorageService.java サムネイル画像の検証・保存
 ├── mapper/                          MyBatis Mapperインターフェース
 │   ├── MemberMapper.java
 │   ├── ItemMapper.java
@@ -152,11 +161,11 @@ net.codemates.homepage
 │   ├── entity/                      Item, ItemRentalHistory, Member, MemberTechnology, News, Technology
 │   └── dto/
 │       ├── member/  (CreateRequest, UpdateRequest, LoginRequest, Response, DetailResponse)
-│       ├── item/    (CreateRequest, UpdateRequest, RentRequest, Response, DetailResponse, RentalHistoryResponse)
+│       ├── item/    (CreateRequest, UpdateRequest, RentRequest※未使用, Response, DetailResponse, RentalHistoryResponse)
 │       ├── news/    (CreateRequest, UpdateRequest, Response, DetailResponse)
 │       └── technology/ (CreateRequest, UpdateRequest, Response, DetailResponse)
 ├── security/
-│   ├── MemberUserDetails.java        UserDetails実装（Memberをラップ）
+│   ├── MemberUserDetails.java        UserDetails実装（Memberをラップ。権限は`ROLE_`+role）
 │   └── MemberUserDetailsService.java UserDetailsService実装（学籍番号/メールでロード）
 └── exception/
     ├── ErrorCode.java                エラーコード定義（HTTPステータス＋メッセージ）
@@ -166,76 +175,103 @@ net.codemates.homepage
     └── DbAssertions.java             DB更新件数の検証ユーティリティ
 ```
 
+リソース配置：`src/main/resources/` 配下に `application.yml`、`db/schema.sql`、`mapper/*.xml`、`static/`（APIテスター `index.html` ほか）。
+
 ---
 
 ## 4. API設計
 
+### 4.0 共通仕様
+
+- **更新系PUTのリクエストボディには`id`が必須**：`MemberUpdateRequest` / `ItemUpdateRequest` / `NewsUpdateRequest` / `TechnologyUpdateRequest` の`id`は`@NotNull`であり、`@Valid`検証がControllerでのパス変数`id`の上書きより先に行われる。そのためボディにも`id`（パスと同じ値）を含める必要がある。
+- **ページング**：`page`は1始まり（デフォルト1）、1ページ20件固定。0以下は1ページ目として扱う（備品検索・備品履歴のみ負数のときだけ1ページ目扱いで、`page=0`は不正なオフセットになる ※11章参照）。
+- **並び順**：会員＝氏名順、備品＝備品名順、お知らせ＝投稿日時の新しい順、技術＝IDの新しい順、貸出履歴＝ID昇順。
+- **検索の文字列条件**：`ILIKE '%...%'`による部分一致（大文字小文字を区別しない）。
+- **バリデーション失敗**：`MethodArgumentNotValidException`は専用ハンドラを持たず、Spring標準の400レスポンスとなる（`ErrorResponse`形式ではない）。
+
 ### 4.1 認証 API（`/api/auth`）
 
-| メソッド | パス | 概要 | 認証要否 | リクエスト | レスポンス |
+| メソッド | パス | 概要 | 認証／認可 | リクエスト | レスポンス |
 |---|---|---|---|---|---|
-| POST | `/api/auth` | 会員登録 | 不要 | `MemberCreateRequest` | `Long`（会員ID） |
+| POST | `/api/auth` | 会員登録（未承認で作成） | 不要 | `MemberCreateRequest` | `Long`（会員ID） |
 | POST | `/api/auth/login` | ログイン | 不要 | `MemberLoginRequest` | `Long`（会員ID） |
 | POST | `/api/auth/{id}/passUpdate` | パスワード変更 | 必要 | `oldPassword`, `newPassword`（クエリ） | `Long`（会員ID） |
-| POST | `/api/auth/logout` | ログアウト | 必要 | - | 200 OK |
+| POST | `/api/auth/logout` | ログアウト | - | - | 200 OK |
+| PATCH | `/api/auth/{id}/approve` | 会員の承認 | ADMIN | - | `Long`（会員ID） |
+| GET | `/api/auth` | 未承認会員の一覧取得 | ADMIN（※11章参照） | - | `List<MemberResponse>` |
+| GET | `/api/auth/me` | ログイン中の会員ID取得 | 必要 | - | `Long`（会員ID） |
 
 **会員登録・ログイン仕様**
 
-- パスワードはBCryptでハッシュ化して保存する。
-- 学籍番号・メールアドレスの重複はDB検索によって事前チェックし、重複時は`DUPLICATE_STUDENT_ID` / `DUPLICATE_EMAIL`を返す。
-- ログインは学籍番号またはメールアドレス（`identifier`）＋パスワードで行う。Spring Securityの`AuthenticationManager`に処理を委譲し、認証成功時は`SecurityContext`をHTTPセッションに保存する（`HttpSessionSecurityContextRepository`）。
-- パスワード変更は、ログイン中の本人（`SecurityContextHolder`から取得した`MemberUserDetails`）とパス変数の`id`が一致しない場合`ACCESS_DENIED`を返す。旧パスワードの一致確認後に更新する。
+- パスワードはBCryptでハッシュ化して保存する。登録時は `is_approved = false`、`role = 'MEMBER'` で作成する。
+- 学籍番号・メールアドレスの重複はDB検索（`findByStudentIdOrEmail`）によって事前チェックし、重複時は`DUPLICATE_STUDENT_ID` / `DUPLICATE_EMAIL`を返す。
+- ログインは学籍番号またはメールアドレス（`identifier`）＋パスワードで行う。Spring Securityの`AuthenticationManager`に処理を委譲し、資格情報不一致は`LOGIN_FAILED`とする。認証成功後に**承認済みか**を確認し、未承認なら`ACCOUNT_NOT_APPROVED`を返す（セッションは作成しない）。承認済みの場合のみ`SecurityContext`をHTTPセッションに保存する（`HttpSessionSecurityContextRepository`）。
+- パスワード変更は、ログイン中の本人（`SecurityContextHolder`から取得した`MemberUserDetails`）とパス変数の`id`が一致しない場合`ACCESS_DENIED`を返す。旧パスワードの一致確認（不一致は`PASSWORD_MISMATCH`）後に更新する。
+- 承認（`approve`）は対象会員の存在確認後、`is_approved = true`に更新する。未承認一覧は`is_approved = FALSE`の会員を返す。
 
 ### 4.2 会員 API（`/api/members`）
 
-| メソッド | パス | 概要 | クエリ／パラメータ |
-|---|---|---|---|
-| GET | `/api/members` | 会員検索・一覧取得 | `name`, `grades`, `positions`, `page`（デフォルト1） |
-| GET | `/api/members/{id}` | 会員詳細取得（習得技術一覧含む） | - |
-| PUT | `/api/members/{id}` | 会員情報更新（技術紐付けも一括更新） | `MemberUpdateRequest` |
+| メソッド | パス | 概要 | 認証 | クエリ／パラメータ |
+|---|---|---|---|---|
+| GET | `/api/members` | 会員検索・一覧取得 | 不要 | `name`, `grades`, `positions`, `page`（デフォルト1） |
+| GET | `/api/members/{id}` | 会員詳細取得（習得技術一覧含む） | 必要 | - |
+| PUT | `/api/members/{id}` | 会員情報更新（技術紐付けも一括更新） | 必要 | `MemberUpdateRequest` |
 
-会員更新時は、`member_technologies`をいったん全削除した上で、リクエストの`technologyIds`を再登録する（洗い替え方式）。
+会員更新では`name`, `student_id`, `email`, `grade`, `position`を更新し、`member_technologies`をいったん全削除した上で、リクエストの`technologyIds`を再登録する（洗い替え方式。`technologyIds`が`null`の場合は紐付けが全て削除される）。
 
 ### 4.3 備品 API（`/api/items`）
+
+全て認証必須。
 
 | メソッド | パス | 概要 |
 |---|---|---|
 | POST | `/api/items` | 備品登録 |
 | PUT | `/api/items/{id}` | 備品更新 |
 | GET | `/api/items/{id}` | 備品詳細取得 |
-| GET | `/api/items` | 備品検索・一覧取得（`name`, `strageLocation`, `isDisposable`, `isRentable`, `page`） |
+| GET | `/api/items` | 備品検索・一覧取得（`name`, `storageLocation`, `isDisposable`, `isRentable`, `page`） |
 | GET | `/api/items/{id}/history` | 貸出履歴取得（`page`） |
 | PUT | `/api/items/rent/{id}/{renterId}` | 貸出処理 |
 | PUT | `/api/items/return/{id}/{renterId}` | 返却処理 |
 | PUT | `/api/items/Availability/{id}/{isRentable}` | 貸出可否切替 |
 
+> 検索パラメータ名は`storageLocation`（旧版ReadMeの`strageLocation`は誤記）。複数指定可（`List<String>`、IN検索）。
+
 **貸出／返却の業務ロジック**
 
-- 貸出：`items.renter_id`／`rented_at`を条件付きUPDATE（`updateByRenting`）し、更新件数が1件でなければ`ITEM_NOT_RENTABLE`（すでに借りられている等）とする。成功時は`item_rental_histories`へ新規レコードを1件INSERTする。
-- 返却：`items`の借主情報をクリアする条件付きUPDATE（`updateByReturning`）を行い、対象の借主IDと一致する行が更新されなければ`NO_ACTIVE_RENTAL`とする。あわせて対応する有効な履歴レコード（`returned_at IS NULL`）を検索し、`returned_at`を更新する。
+- 貸出（`updateByRenting`）：`is_rentable = true` かつ `quantity - 1 >= 0` の備品に限り、`renter_id`を設定し`quantity`を1減らす。減算後の在庫が0になる場合は`is_rentable`を`false`にする。更新件数が1件でなければ`ITEM_NOT_RENTABLE`。成功時は`item_rental_histories`へ新規レコードを1件INSERTする（`rented_at`はDB側`CURRENT_TIMESTAMP`）。複数在庫の備品は、在庫がある限り別の会員も借りられる。
+- 返却（`updateByReturning`）：`id`のみを条件に`renter_id`をNULLにし、`quantity`を1増やし、`is_rentable`を`true`にする。続いて、`item_id`・`renter_id`が一致し`returned_at IS NULL`の履歴（`rented_at`が最新の1件）を検索し、見つからなければ`NO_ACTIVE_RENTAL`をスローする（`@Transactional`によりUPDATEもロールバックされる）。見つかれば`returned_at`を現在時刻に更新する。借主の一致確認はこの履歴検索で行われる。
+- 貸出可否切替：`is_rentable`のみを更新する。更新件数が1件でなければ`UNEXPECTED_DB_STATE`。
 
 ### 4.4 お知らせ API（`/api/news`）
 
-| メソッド | パス | 概要 |
-|---|---|---|
-| GET | `/api/news/{id}` | 記事詳細取得 |
-| GET | `/api/news` | 記事検索・一覧取得（`keyword`, `categories`, `page`） |
-| POST | `/api/news` | 記事作成 |
-| PUT | `/api/news/{id}` | 記事更新 |
-| PATCH | `/api/news/{id}/published` | 公開／非公開切替（`isPublished`） |
+| メソッド | パス | 概要 | 認証 |
+|---|---|---|---|
+| GET | `/api/news/{id}` | 記事詳細取得 | 必要 |
+| GET | `/api/news` | 記事検索・一覧取得（`keyword`, `categories`, `page`） | 不要 |
+| POST | `/api/news` | 記事作成 | 必要 |
+| PUT | `/api/news/{id}` | 記事更新 | 必要 |
+| PATCH | `/api/news/{id}/published` | 公開／非公開切替（`isPublished`をクエリで指定） | 必要 |
+| POST | `/api/news/thumbnail` | サムネイル画像アップロード（`multipart/form-data`、パート名`file`） | 必要 |
+
+- `keyword`は`title`と`content`の部分一致、`categories`はIN検索。
+- 記事更新（PUT）は`title`, `content`, `thumbnail_path`, `category`, `updated_at`を更新し、**`is_published`は更新しない**（公開状態は`PATCH .../published`で変更する）。
+- 一覧検索は公開フラグによる絞り込みを行わず、`isPublished`をレスポンスに含めて返す。
+- **サムネイルアップロード仕様**：許可MIMEタイプは`image/jpeg`・`image/png`・`image/gif`のみ。`ImageIO`で画像として読み込めることも検証し、不正な場合は`INVALID_IMAGE_FILE`。保存先は`{file.upload-dir}/news/{UUID}.{拡張子}`で、`{"thumbnailPath": "/uploads/news/{UUID}.{ext}"}`を返す。このパスを記事の`thumbnailPath`に指定して登録する。サイズ上限は5MB（超過時`FILE_TOO_LARGE`）。保存失敗時は`FILE_UPLOAD_FAILED`。保存した画像は`/uploads/**`で配信される（認証不要のGET）。
 
 ### 4.5 技術 API（`/api/technologies`）
+
+全て認証必須。
 
 | メソッド | パス | 概要 |
 |---|---|---|
 | POST | `/api/technologies` | 技術登録 |
 | PUT | `/api/technologies/{id}` | 技術更新 |
-| GET | `/api/technologies` | 技術検索・一覧取得（`name`, `page`） |
+| GET | `/api/technologies` | 技術検索・一覧取得（`name`, `page`。技術名または説明の部分一致） |
 | GET | `/api/technologies/{id}` | 技術詳細取得 |
 | GET | `/api/technologies/{id}/members` | 当該技術の習得者一覧取得 |
 | DELETE | `/api/technologies/{id}` | 技術削除 |
 
-> 備考：会員削除・備品削除は実装済みだがControllerではコメントアウトされ、未公開のエンドポイントとなっている（Service層には`deleteMember` / `deleteItem`メソッドが存在する）。
+> 備考：会員削除・備品削除・記事削除は実装済みだがControllerではコメントアウトされ、未公開のエンドポイントとなっている（Service層には`deleteMember` / `deleteItem` / `deleteNewsById`メソッドが存在する）。
 
 ---
 
@@ -247,7 +283,8 @@ net.codemates.homepage
 
 - `MemberUserDetailsService`：学籍番号またはメールアドレス（`identifier`）で`Member`を検索し、`MemberUserDetails`（`UserDetails`実装）でラップする。
 - パスワード照合：`PasswordEncoder`（BCrypt）による照合。
-- 権限（`GrantedAuthority`）は現状未実装（空リストを返却）であり、将来的なロール追加の余地を残している。
+- 権限（`GrantedAuthority`）：`members.role`を`ROLE_` + role（`ROLE_MEMBER` / `ROLE_ADMIN`）として付与する。
+- 承認チェック：`UserDetails`の`isEnabled()`は常に`true`で、未承認の判定は`AuthService.login`内で行う。
 
 ### 5.2 認可ルール（`SecurityConfig`）
 
@@ -255,15 +292,20 @@ net.codemates.homepage
 |---|---|---|
 | `/`, `/index.html` | GET | 全員許可 |
 | `/api/auth`, `/api/auth/login` | POST | 全員許可 |
+| `/api/news`, `/api/members`, `/uploads/**` | GET | 全員許可 |
+| `/api/auth/*/approve` | PATCH | ADMINのみ |
+| `/api/auth/` | GET | ADMINのみ |
 | 上記以外の全リクエスト | - | 認証必須 |
 
+- 全員許可のGETは一覧（`/api/news`, `/api/members`）と画像（`/uploads/**`）のみ。`/api/news/{id}`や`/api/members/{id}`は認証が必要。
+- ADMIN限定のルールは会員承認関連の2件のみ。備品・お知らせ・技術・会員更新などは、ログイン済みであればロールを問わず実行できる。
 - CSRF保護は現時点で無効化（コメントに「後で検討」とあり、暫定対応）。
-- CORSは`cors.allowed-origins`（環境変数、デフォルト`http://localhost:3000`）で許可オリジンを設定し、`/api/**`に適用。Cookie送信を伴うリクエストを許可（`allowCredentials(true)`）。
-- ログアウトは`/api/auth/logout`でセッション破棄＋認証情報クリアを行う。
+- CORSは`cors.allowed-origins`（環境変数、カンマ区切りで複数指定可、デフォルト`http://localhost:3000`）で許可オリジンを設定し、`/api/**`に適用。許可メソッドはGET/POST/PUT/PATCH/DELETE。Cookie送信を伴うリクエストを許可（`allowCredentials(true)`）。
+- ログアウトは`/api/auth/logout`でセッション破棄＋認証情報クリアを行い、200を返す。
 
 ### 5.3 パスワードポリシー
 
-- 新規登録・変更時ともに10〜72文字。
+- 新規登録時・ログイン時のリクエストは10〜72文字（`@Size(min=10, max=72)`）。パスワード変更APIの`newPassword`（クエリパラメータ）には長さ検証がない。
 - BCryptでハッシュ化して`password_hash`に保存し、平文は保持しない。
 
 ---
@@ -272,28 +314,33 @@ net.codemates.homepage
 
 ### 6.1 エラーコード一覧（`ErrorCode`）
 
-| コード | HTTPステータス | メッセージ |
-|---|---|---|
-| PASSWORD_MISMATCH | 400 | パスワードが正しくありません。 |
-| ITEM_NOT_RENTABLE | 400 | この備品は貸し出しできません。 |
-| ITEM_ALREADY_RENTED | 400 | この備品はすでに貸し出し中です。 |
-| NO_ACTIVE_RENTAL | 400 | 有効な貸し出し記録が見つかりません。 |
-| LOGIN_FAILED | 401 | 学籍番号/メールアドレスまたはパスワードが間違っています。 |
-| UNAUTHENTICATED | 401 | ログインが必要です。 |
-| ACCESS_DENIED | 403 | この操作を行う権限がありません。 |
-| NEWS_NOT_FOUND | 404 | 指定された記事が見つかりません。 |
-| MEMBER_NOT_FOUND | 404 | 指定されたメンバーが見つかりません。 |
-| ITEM_NOT_FOUND | 404 | 指定された備品が見つかりません。 |
-| TECHNOLOGY_NOT_FOUND | 404 | 指定された技術が見つかりません。 |
-| DUPLICATE_STUDENT_ID | 409 | この学籍番号は既に登録されています。 |
-| DUPLICATE_EMAIL | 409 | このメールアドレスは既に登録されています。 |
-| UNEXPECTED_DB_STATE | 500 | データベースの更新に失敗しました。 |
+| コード | HTTPステータス | メッセージ | 備考 |
+|---|---|---|---|
+| PASSWORD_MISMATCH | 400 | パスワードが正しくありません。 | パスワード変更時の旧パスワード不一致 |
+| ITEM_NOT_RENTABLE | 400 | この備品は貸し出しできません。 | |
+| ITEM_ALREADY_RENTED | 400 | この備品はすでに貸し出し中です。 | 未使用 |
+| NO_ACTIVE_RENTAL | 400 | 有効な貸し出し記録が見つかりません。 | |
+| INVALID_IMAGE_FILE | 400 | 画像ファイルは(jpg/png/gif)を指定してください。 | |
+| LOGIN_FAILED | 401 | 学籍番号/メールアドレスまたはパスワードが間違っています。 | |
+| UNAUTHENTICATED | 401 | ログインが必要です。 | 未使用 |
+| ACCOUNT_NOT_APPROVED | 401 | アカウントが承認されていません。 | |
+| ACCESS_DENIED | 403 | この操作を行う権限がありません。 | パスワード変更の本人確認でのみ使用 |
+| NEWS_NOT_FOUND | 404 | 指定された記事が見つかりません。 | |
+| MEMBER_NOT_FOUND | 404 | 指定されたメンバーが見つかりません。 | |
+| ITEM_NOT_FOUND | 404 | 指定された備品が見つかりません。 | 貸出履歴取得で使用 |
+| TECHNOLOGY_NOT_FOUND | 404 | 指定された技術が見つかりません。 | |
+| DUPLICATE_STUDENT_ID | 409 | この学籍番号は既に登録されています。 | |
+| DUPLICATE_EMAIL | 409 | このメールアドレスは既に登録されています。 | |
+| FILE_TOO_LARGE | 413 | ファイルサイズが大きすぎます。(上限:5MB) | |
+| UNEXPECTED_DB_STATE | 500 | データベースの更新に失敗しました。 | |
+| FILE_UPLOAD_FAILED | 500 | ファイルの保存に失敗しました。 | |
 
 ### 6.2 例外処理フロー
 
 1. Service層で業務ルール違反を検知すると`BusinessException(ErrorCode)`をスローする。
-2. `DbAssertions.requireAffected(expected, actual)`により、INSERT/UPDATE/DELETEの影響行数が期待値と異なる場合は`UNEXPECTED_DB_STATE`をスローし、想定外のDB状態を検知する（楽観的な整合性チェック）。
+2. `DbAssertions.requireAffected(expected, actual)`により、INSERT/UPDATE/DELETEの影響行数が期待値と異なる場合は`UNEXPECTED_DB_STATE`をスローし、想定外のDB状態を検知する（楽観的な整合性チェック）。更新対象が存在しない場合も、この経路で500となる。
 3. `GlobalExceptionHandler`（`@RestControllerAdvice`）が`BusinessException`を捕捉し、`ErrorCode`に応じたHTTPステータスと`ErrorResponse(message)`をJSONで返却する。
+4. `MaxUploadSizeExceededException`（multipart上限超過）も同ハンドラで捕捉し、`FILE_TOO_LARGE`（413）を返す。
 
 ---
 
@@ -304,17 +351,24 @@ net.codemates.homepage
 | 項目 | 制約 |
 |---|---|
 | 会員氏名 | 必須、50文字以内 |
-| 学籍番号 | 必須、正規表現 `^[0-9]{2}[A-Z]{1}[0-9]{4}$`（例: `12A3456`） |
+| 学籍番号 | 必須、正規表現 `^[0-9]{2}[A-Z]{1}[0-9]{4}$`（例: `12A3456`）。会員登録・会員更新の両方 |
 | メールアドレス | 必須、メール形式 |
 | 学年 | 必須、1〜4の範囲 |
-| パスワード | 必須、10〜72文字 |
+| 役職 | 任意、50文字以内（会員更新） |
+| パスワード | 必須、10〜72文字（登録・ログイン） |
+| ログイン識別子 | 必須（学籍番号またはメールアドレス） |
 | 備品名 | 必須、100文字以内 |
 | 備品説明 | 必須、255文字以内 |
 | 保管場所 | 必須、100文字以内 |
+| 備品の在庫数・消耗品フラグ・貸出可否フラグ | 必須 |
 | 記事タイトル | 必須、100文字以内 |
+| 記事本文 | 必須 |
 | 記事カテゴリ | 必須、30文字以内 |
+| 記事の公開フラグ | 必須（作成・更新） |
+| サムネイル画像 | jpg/png/gifのみ、5MB以下（リクエスト全体は6MB以下） |
 | 技術名 | 必須、50文字以内 |
 | 技術説明 | 必須、255文字以内 |
+| 更新系リクエストの`id` | 必須（4.0参照） |
 
 ---
 
@@ -322,14 +376,18 @@ net.codemates.homepage
 
 - MapperインターフェースとXML（`src/main/resources/mapper/*.xml`）を分離して定義する。
 - `map-underscore-to-camel-case: true`により、スネークケースのカラム名とEntityのキャメルケースフィールドを自動マッピングする。
-- 検索系メソッドは可変条件（名前・カテゴリ・複数フィルタ）を動的SQL（`<if>`等）で組み立てる想定であり、`offset`/`limit`によるページング（1ページ20件固定）を各Serviceで共通実装している（`PAGE_SIZE = 20`）。
-- 貸出／返却など状態遷移を伴う更新は、条件付きUPDATE文の影響行数を確認することで、同時実行時の整合性（二重貸出の防止など）を担保する設計としている。
+- 検索系メソッドは可変条件（名前・カテゴリ・複数フィルタ）を動的SQL（`<if>`, `<where>`, `<foreach>`）で組み立て、`LIMIT`/`OFFSET`によるページング（1ページ20件固定）を各Serviceで共通実装している（`PAGE_SIZE = 20`）。
+- 貸出／返却など状態遷移を伴う更新は、条件付きUPDATE文（貸出：`is_rentable = true AND quantity - 1 >= 0`）の影響行数を確認することで、同時実行時の整合性（在庫を超える貸出の防止など）を担保する設計としている。
+- `useGeneratedKeys`により、INSERT時に採番IDをEntityへ書き戻す。
+- Mapper上に定義されているが現在Serviceから使われていないもの：`MemberMapper.updateByGrade`（学年一括繰り上げ）、`TechnologyMapper.findAll`、`MemberTechnologyMapper.delete`、`ItemRentalHistoryMapper.findByIds` / `findByRenterIds` / `deleteById`。
 
 ---
 
 ## 9. 画面連携（フロントエンド）
 
-- `src/main/resources/static/` 配下に`index.html`, `css/`, `js/` が配置されており、Spring Bootの静的リソースとして配信される（プレースホルダー段階：`cssHere.css`, `jsHere.js`, `imageHere`）。
+- `src/main/resources/static/index.html`は、全エンドポイントを画面から呼び出せる**APIテスター**（約940行の単一HTML）であり、Spring Bootの静的リソースとして`/`・`/index.html`で配信される。実際の公開画面ではない。
+- `css/cssHere.css`・`js/jsHere.js`・`img/imageHere`は未実装のプレースホルダー。
+- APIテスターのエンドポイント定義は旧版のままで、会員承認・未承認一覧・`me`・サムネイルアップロード・ログアウトが未反映（備品検索のパラメータも旧名`strageLocation`のまま）。
 - API通信を伴う画面はCookieベースのセッション認証を利用し、CORS設定（`cors.allowed-origins`）で許可されたオリジン（開発時は`http://localhost:3000`）からのアクセスを想定する。
 
 ---
@@ -340,13 +398,16 @@ net.codemates.homepage
 
 | 設定キー | 内容 | デフォルト値 |
 |---|---|---|
-| `spring.application.name` | アプリケーション名 | homepage |
+| `spring.application.name` | アプリケーション名 | homepage（※11章参照） |
+| `spring.servlet.multipart.max-file-size` | アップロード1ファイルの上限 | `5MB` |
+| `spring.servlet.multipart.max-request-size` | multipartリクエスト全体の上限 | `6MB` |
 | `spring.datasource.url` | 接続先DB URL | `jdbc:postgresql://localhost:5432/homepage`（環境変数`DB_URL`で上書き可） |
 | `spring.datasource.username` | DBユーザー名 | `postgres`（環境変数`DB_USERNAME`） |
 | `spring.datasource.password` | DBパスワード | 環境変数`DB_PASSWORD`必須 |
 | `mybatis.mapper-locations` | MapperのXML配置場所 | `classpath:/mapper/*.xml` |
 | `mybatis.configuration.map-underscore-to-camel-case` | スネーク⇔キャメル自動変換 | `true` |
-| `cors.allowed-origins` | CORS許可オリジン | `http://localhost:3000`（環境変数`CORS_ALLOWED_ORIGINS`） |
+| `cors.allowed-origins` | CORS許可オリジン（カンマ区切り） | `http://localhost:3000`（環境変数`CORS_ALLOWED_ORIGINS`） |
+| `file.upload-dir` | アップロード画像の保存ルート（実際の保存先は配下の`news/`） | `./uploads`（環境変数`UPLOAD_DIR`） |
 
 ### 10.2 主要依存関係（`build.gradle`）
 
@@ -356,13 +417,37 @@ net.codemates.homepage
 - `mybatis-spring-boot-starter:3.0.5`
 - `postgresql`（ランタイム）
 - `lombok`
-- テスト：`spring-boot-starter-test`, `mybatis-spring-boot-starter-test`, `spring-security-test`
+- `spring-boot-devtools`（開発時のみ）
+- テスト：`spring-boot-starter-test`, `mybatis-spring-boot-starter-test`, `spring-security-test`, `junit-platform-launcher`
+- コンパイルオプション：`-parameters`（`@Param`なしのパラメータ名解決に利用）
 
 ---
 
 ## 11. 今後の検討事項（現状のコード上の課題・TODO）
 
-- **権限（ロール）機能未実装**：`MemberUserDetails.getAuthorities()`は空リストを返しており、管理者／一般会員などの権限分離が今後の課題。
+###  ~~11.1 不具合の可能性が高いもの（早めの確認を推奨）~~ 修正済み
+
+- ~~`schema.sql`の構文エラー：`members`テーブルの`role VARCHAR(20) NOT NULL DEFAULT 'MEMBER'`の行末にカンマがなく、そのままでは次行の`created_at`と連結されてDDLが失敗する。~~
+- ~~会員検索SQLの`isApproved`条件：`MemberMapper.xml`の`search`に`<if test="isApproved != null">`があるが、Mapperメソッドに`isApproved`引数がない。MyBatisの複数引数（`ParamMap`）では未定義キー参照で`BindingException`となる可能性が高く、その場合`GET /api/members`が実行時エラーになる。意図は「承認済み会員のみ表示」と思われるため、条件を`is_approved = TRUE`の固定にするか引数を追加する必要がある。~~
+- ~~`GET /api/auth`（未承認一覧）のADMIN制限：`SecurityConfig`のパターンが末尾スラッシュ付きの`/api/auth/`であり、`/api/auth`にはマッチしない可能性がある。その場合は「認証必須」のルールのみが適用され、一般会員も未承認一覧を取得できる。~~
+- ~~備品詳細取得の未存在ID**：`ItemService.getItemDetail`は`findByIds(...).getFirst()`を用いるため、存在しないIDでは`ITEM_NOT_FOUND`ではなく`NoSuchElementException`（500）になる。~~
+- ~~**備品検索の`page=0`：`page<0`のみ1ページ目扱いにしているため、`page=0`でオフセットが負数になる（会員・お知らせ・技術は`<=0`で補正済み）。~~
+
+### 11.2 権限・セキュリティ
+
+- **ロール別の認可が限定的**：ADMIN限定は会員承認関連のみ。備品・お知らせ・技術の作成/更新/削除、会員情報更新（他人の更新を含む）、貸出・返却（`renterId`をパスで任意指定可能）は、ログイン済みであれば誰でも実行できる。ロールと本人確認に基づく認可の設計が必要。
+- **ADMINの付与手段がない**：`role`を`ADMIN`に変更するAPIがなく、現状はDBを直接更新する運用になる。
+- **お知らせの公開制御**：`GET /api/news`は認証不要だが公開フラグで絞り込んでおらず、非公開記事も一覧に含まれる。公開側は`is_published = TRUE`のみを返すなどの分離が必要。
 - **CSRF対策**：現状は無効化されており、コメントで「後で検討」とされている。本番運用前に方針決定が必要。
-- **削除系APIの一部非公開**：会員削除・備品削除はService層に実装済みだが、Controllerではコメントアウトされ未提供。
-- **フロントエンド未実装**：`static/`配下は雛形のみ（プレースホルダーファイル）で、実際の画面実装はこれから。
+- **パスワード変更のAPI設計**：パスワードをクエリパラメータで受け取っている（コード内コメントに「リクエストボディに変更」とあり）。URLに残るため、ボディ受け取りへの変更と`newPassword`の長さ検証追加が望ましい。
+
+### 11.3 その他
+
+- **削除系APIの一部非公開**：会員削除・備品削除・記事削除はService層に実装済みだが、Controllerではコメントアウトされ未提供。
+- **更新系DTOの`id`**：パス変数と二重指定になっている（4.0参照）。`id`を`@NotNull`から外すか、検証前にパスの値を設定する形への整理が望ましい。
+- ~~`updated_at`：`members.updated_at`は更新時に自動更新されない。`members.created_at`はINSERT時に設定されない。~~
+- ~~`items.rented_at`：貸出処理で更新されない（履歴テーブルで代替）。不要であればカラム整理を検討。~~
+- ~~`spring.application.name`：`application.yml`の`name:`の後が全角スペース（`name:　homepage`）になっており、設定として読み込まれていない可能性がある（半角スペースへ修正）。~~
+- **未使用コード**：`ItemRentRequest`、`ErrorCode.ITEM_ALREADY_RENTED` / `UNAUTHENTICATED`、8章記載の未使用Mapperメソッド。
+- **フロントエンド未実装**：公開画面は未実装で、`static/`配下はAPIテスター（旧エンドポイント定義）とプレースホルダーのみ。
+- **テスト**：`HomepageApplicationTests`（コンテキスト起動テスト）のみで、サービス・Mapperのテストは未整備。
