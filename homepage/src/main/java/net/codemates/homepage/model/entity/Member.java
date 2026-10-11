@@ -25,8 +25,8 @@ public class Member {
 	 *  		├─ password_hash (パスワードのハッシュ値)	/VARCHAR(255)	/NOT NULL
 	 *  		├─ isApproved (アカウントが承諾済みであるか)/BOOLEAN		/NOT NULL	/DEFAULT FALSE
 	 *  		├─ role (Auth用の役職)				/VARCHAR(20)	/NOT NULL	/DEFAULT 'MEMBER'
-	 *  		├─ created_at (登録日時)				/TIMESTAMP
-	 *			└─ updated_at (更新日時)				/TIMESTAMP					/DEFAULT CURRENT_TIMESTAMP
+	 *  		├─ created_at (登録日時)				/TIMESTAMP					/DEFAULT CURRENT_TIMESTAMP
+	 *			└─ updated_at (更新日時)				/TIMESTAMP					
 	 * 
 	 */
 	

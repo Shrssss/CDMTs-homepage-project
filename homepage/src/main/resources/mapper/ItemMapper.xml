@@ -113,6 +113,7 @@
 		UPDATE items 
 		SET renter_id = #{renterId}, 
 			quantity = quantity - 1,
+			rented_at = CURRENT_TIMESTAMP,
 			is_rentable = CASE
             	WHEN quantity - 1 = 0 THEN false
             	ELSE is_rentable
@@ -127,6 +128,7 @@
 	
 		UPDATE items 
 		SET renter_id = null, 
+			rented_at = null,
 			quantity = quantity + 1,
 			is_rentable = true
 		WHERE id = #{id}

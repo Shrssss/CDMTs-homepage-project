@@ -98,7 +98,11 @@ public class ItemService {
 	
 	public ItemDetailResponse getItemDetail(Long id) {
 		
-		return toItemDetailResponse(itemMapper.findByIds(List.of(id)).getFirst());
+		Item itemEntity=itemMapper.findByIds(List.of(id)).stream().findFirst()
+						.orElseThrow(()->new BusinessException(ErrorCode.ITEM_NOT_FOUND)
+						);
+		
+		return toItemDetailResponse(itemEntity);
 		
 	}
 	
@@ -108,7 +112,7 @@ public class ItemService {
 											Boolean isRentable,
 											Integer page){
 		
-		int currentPage=(page==null||page<0)?1:page;
+		int currentPage=(page==null||page<=0)?1:page;
 		int offset=(currentPage-1)*PAGE_SIZE;
 		
 		List<Item>itemEntities=itemMapper.search(
