@@ -1,6 +1,6 @@
 spring:
    application:
-      name:　homepage
+      name: homepage
       
    servlet:
       multipart:
