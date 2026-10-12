@@ -145,7 +145,7 @@ public class AuthController {
      * 
      */
 	@PatchMapping("/admin/{id}")
-	public Long updateMemberRole(Long id,String role) {
+	public Long updateMemberRole(@PathVariable Long id,@RequestParam String role) {
 		
 		return authService.updateMemberRole(id,role);
 		
