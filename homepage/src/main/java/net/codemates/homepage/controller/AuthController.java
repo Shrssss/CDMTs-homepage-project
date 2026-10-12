@@ -75,11 +75,10 @@ public class AuthController {
      * 
      */
 	
-	//リクエストボディに変更
 	@PostMapping("/{id}/passUpdate")
-	public Long updatePassword(@Valid MemberPasswordUpdateRequest memberDto) {
+	public Long updatePassword(@PathVariable Long id,@Valid @RequestBody MemberPasswordUpdateRequest memberDto) {
 		
-		return authService.updatePassword(memberDto);
+		return authService.updatePassword(id,memberDto);
 		
 	}
 	

@@ -10,9 +10,6 @@ import lombok.Setter;
 @Setter
 public class MemberPasswordUpdateRequest {
 	
-	@NotNull
-	private Long id;
-	
 	@NotBlank
 	@Size(min=10,max=72)
 	private String oldPassword;

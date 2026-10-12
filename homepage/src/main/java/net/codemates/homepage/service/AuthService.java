@@ -97,25 +97,25 @@ public class AuthService {
 	}
 	
 	@Transactional
-	public Long updatePassword(MemberPasswordUpdateRequest memberDto) {
+	public Long updatePassword(Long id,MemberPasswordUpdateRequest memberDto) {
 		
 		MemberUserDetails principal=(MemberUserDetails)SecurityContextHolder
 															.getContext()
 															.getAuthentication()
 															.getPrincipal();
 		
-		if(!principal.getMember().getId().equals(memberDto.getId()))throw new BusinessException(ErrorCode.ACCESS_DENIED);
+		if(!principal.getMember().getId().equals(id))throw new BusinessException(ErrorCode.ACCESS_DENIED);
 		
-		Member memberEntity=memberMapper.findByIds(List.of(memberDto.getId())).stream().findFirst()
+		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
 								.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 		
 		if(!passwordEncoder.matches(memberDto.getOldPassword(),memberEntity.getPasswordHash())) throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
 		
-		int updateCount=memberMapper.updatePassword(memberDto.getId(),passwordEncoder.encode(memberDto.getNewPassword()));
+		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(memberDto.getNewPassword()));
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
-		return memberDto.getId();
+		return id;
 		
 	}
 	
