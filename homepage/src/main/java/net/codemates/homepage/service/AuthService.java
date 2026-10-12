@@ -155,6 +155,8 @@ public class AuthService {
 	@Transactional
 	public Long updateMemberRole(Long id,String role) {
 		
+		if(!"ADMIN".equals(role)&&!"MEMBER".equals(role)) throw new BusinessException(ErrorCode.ROLE_MISMATCH);
+		
 		int updateCount=memberMapper.updateMemberRole(id,role);
 		
 		DbAssertions.requireAffected(1,updateCount);
