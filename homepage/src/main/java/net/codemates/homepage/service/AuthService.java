@@ -24,6 +24,7 @@ import net.codemates.homepage.mapper.MemberMapper;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
 import net.codemates.homepage.model.dto.member.MemberDetailResponse;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
+import net.codemates.homepage.model.dto.member.MemberPasswordUpdateRequest;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.entity.Member;
@@ -96,25 +97,25 @@ public class AuthService {
 	}
 	
 	@Transactional
-	public Long updatePassword(Long id,String oldPassword,String newPassword) {
+	public Long updatePassword(MemberPasswordUpdateRequest memberDto) {
 		
 		MemberUserDetails principal=(MemberUserDetails)SecurityContextHolder
 															.getContext()
 															.getAuthentication()
 															.getPrincipal();
 		
-		if(!principal.getMember().getId().equals(id))throw new BusinessException(ErrorCode.ACCESS_DENIED);
+		if(!principal.getMember().getId().equals(memberDto.getId()))throw new BusinessException(ErrorCode.ACCESS_DENIED);
 		
-		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
+		Member memberEntity=memberMapper.findByIds(List.of(memberDto.getId())).stream().findFirst()
 								.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 		
-		if(!passwordEncoder.matches(oldPassword,memberEntity.getPasswordHash())) throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
+		if(!passwordEncoder.matches(memberDto.getOldPassword(),memberEntity.getPasswordHash())) throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
 		
-		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(newPassword));
+		int updateCount=memberMapper.updatePassword(memberDto.getId(),passwordEncoder.encode(memberDto.getNewPassword()));
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
-		return id;
+		return memberDto.getId();
 		
 	}
 	

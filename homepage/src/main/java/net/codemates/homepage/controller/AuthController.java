@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
+import net.codemates.homepage.model.dto.member.MemberPasswordUpdateRequest;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.service.AuthService;
 
@@ -68,7 +69,7 @@ public class AuthController {
      * 
      * メソッド名 	: updatePassword
      * 戻り値		: Long id
-     * 引数		: Long id, String oldPassword, String newPassword
+     * 引数		: MemberPasswordUpdateRequest
      * 
      * 		POST /api/auth/{id}/passUpdate
      * 
@@ -76,9 +77,9 @@ public class AuthController {
 	
 	//リクエストボディに変更
 	@PostMapping("/{id}/passUpdate")
-	public Long updatePassword(@PathVariable Long id,@RequestParam String oldPassword,@RequestParam String newPassword) {
+	public Long updatePassword(@Valid MemberPasswordUpdateRequest memberDto) {
 		
-		return authService.updatePassword(id,oldPassword,newPassword);
+		return authService.updatePassword(memberDto);
 		
 	}
 	
