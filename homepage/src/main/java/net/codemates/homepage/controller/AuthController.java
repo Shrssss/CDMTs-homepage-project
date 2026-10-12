@@ -120,7 +120,7 @@ public class AuthController {
      * セッションに保存されているユーザのID取得
      * 
      * メソッド名 	: getCurrentMemberId
-     * 戻り値		: Long
+     * 戻り値		: Long id
      * 引数		: Authentication auth
      * 
      * 		GET /api/auth/me
@@ -130,6 +130,23 @@ public class AuthController {
 	public Long getCurrentMemberId(Authentication auth) {
 		
 		return authService.getCurrentMemberId(auth);
+		
+	}
+	
+    /*
+     * メンバーのroleを更新
+     * 
+     * メソッド名 	: updateMemberRole
+     * 戻り値		: Long id
+     * 引数		: Long id,String role
+     * 
+     * 		PATCH /api/auth/admin/{id}
+     * 
+     */
+	@PatchMapping("/admin/{id}")
+	public Long updateMemberRole(Long id,String role) {
+		
+		return authService.updateMemberRole(id,role);
 		
 	}
 	

@@ -151,4 +151,15 @@ public class AuthService {
 		
 	}
 	
+	@Transactional
+	public Long updateMemberRole(Long id,String role) {
+		
+		int updateCount=memberMapper.updateMemberRole(id,role);
+		
+		DbAssertions.requireAffected(1,updateCount);
+		
+		return id;
+		
+	}
+	
 }

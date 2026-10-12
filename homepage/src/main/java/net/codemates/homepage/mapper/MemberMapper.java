@@ -32,6 +32,8 @@ public interface MemberMapper {
 	
 	int updateByGrade(Short grade);	//transactional
 	
+	int updateMemberRole(Long id,String role);//transactional
+	
 	int deleteById(Long id);	//transactional
 	
 }

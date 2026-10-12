@@ -144,6 +144,14 @@
 	
 	</update>
 	
+	<update id="updateMemberRole" parameterType="net.codemates.homepage.model.entity.Member">
+	
+		UPDATE members 
+		SET role = #{role}
+		WHERE id = #{id}
+	
+	</update>
+	
 	
 	
 	<delete id="deleteById" parameterType="Long">

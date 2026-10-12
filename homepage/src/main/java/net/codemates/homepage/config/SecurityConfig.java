@@ -93,7 +93,8 @@ public class SecurityConfig {
 				).permitAll()
 				.requestMatchers(
 						HttpMethod.PATCH,
-						"/api/auth/*/approve"
+						"/api/auth/*/approve",
+						"/api/auth/admin/*"
 				).hasRole("ADMIN")
 				.requestMatchers(
 						HttpMethod.GET,
