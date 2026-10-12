@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,8 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 
 	private final AuthenticationManager authenticationManager;
+	
+	private final CsrfTokenRepository csrfTokenRepository;
 
 	private final SecurityContextRepository securityContextRepository=new HttpSessionSecurityContextRepository();
 	
@@ -91,6 +94,8 @@ public class AuthService {
 		
 		//SecurityContextをHttpSessionに保存
 		securityContextRepository.saveContext(context,request,response);
+		
+		csrfTokenRepository.saveToken(csrfTokenRepository.generateToken(request), request, response);
 		
 		return principal.getMember().getId();
 		

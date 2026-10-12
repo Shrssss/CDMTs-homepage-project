@@ -14,11 +14,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletResponse;
+import net.codemates.homepage.security.CsrfCookieFilter;
+import net.codemates.homepage.security.JsonAccessDeniedHandler;
+import net.codemates.homepage.security.SpaCsrfTokenRequestHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -26,6 +32,28 @@ public class SecurityConfig {
 	//許可するオリジン(環境変数)
 	@Value("${cors.allowed-origins}")
 	private String allowedOrigins;
+	
+	@Value("${csrf.cookie-secure:false}")
+	private boolean csrfCookieSecure;
+	
+	@Value("${csrf.cookie-domain:}")
+	private String csrfCookieDomain;
+	
+	@Bean
+	CsrfTokenRepository csrfTokenRepository() {
+		
+		CookieCsrfTokenRepository repository=CookieCsrfTokenRepository.withHttpOnlyFalse();
+		
+		repository.setCookieCustomizer(cookie->{
+			
+			cookie.secure(csrfCookieSecure).sameSite("Lav").path("/");
+			
+			if(!csrfCookieDomain.isBlank())cookie.domain(csrfCookieDomain);
+		});
+		
+		return repository;
+		
+	}
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -67,10 +95,13 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
+	SecurityFilterChain securityFilterChain(HttpSecurity http,CsrfTokenRepository csrfTokenRepository,JsonAccessDeniedHandler accessDeniedHandler)throws Exception{
 		
-		//CSRFについては後で検討
-		http.csrf(csrf->csrf.disable())
+		//CSRFおよびCORの設定
+		http.csrf(csrf->csrf.csrfTokenRepository(csrfTokenRepository)
+							.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+		.addFilterAfter(new CsrfCookieFilter(),BasicAuthenticationFilter.class)
+		.exceptionHandling(e->e.accessDeniedHandler(accessDeniedHandler))
 		.cors(cors->cors.configurationSource(corsConfigurationSource()))
 		//ログイン時に必要になったらセッションを作成する
 		.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
@@ -89,7 +120,8 @@ public class SecurityConfig {
 					HttpMethod.GET,
 					"/api/news",
 					"/api/members",
-					"/uploads/**"
+					"/uploads/**",
+					"/api/auth/csrf"
 				).permitAll()
 				.requestMatchers(
 						HttpMethod.PATCH,

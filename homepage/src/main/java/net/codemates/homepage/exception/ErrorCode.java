@@ -24,6 +24,7 @@ public enum ErrorCode {
 	
 	//403 Forbidden
 	ACCESS_DENIED(HttpStatus.FORBIDDEN,"この操作を行う権限がありません。"),
+	CSRF_TOKEN_INVALID(HttpStatus.FORBIDDEN,"CSRFトークンが正しくありません。"),
 	
 	//404 Not Found
 	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND,"指定された記事が見つかりません。"),

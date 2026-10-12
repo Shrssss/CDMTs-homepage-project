@@ -150,4 +150,21 @@ public class AuthController {
 		
 	}
 	
+    /*
+     * CSRFトークンの発行
+     * 
+     * メソッド名 	: getCsrfToken
+     * 戻り値		: void
+     * 
+     * 		GET /api/auth/csrf
+     * 
+     * 		レスポンスのSet-Cookie(XSRF-TOKEN)でトークンを発行する。
+     * 		アプリ起動時、ログイン後、ログアウト後に呼ぶ。
+     * 
+     */
+	@GetMapping("/csrf")
+	public void getCsrfToken() {
+		//CsrfCookieFilterがCookieを出力するため、処理は不要
+	}
+	
 }

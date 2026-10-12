@@ -23,3 +23,15 @@ cors:
   
 file:
    upload-dir: ${UPLOAD_DIR:./uploads}
+   
+server:
+   servlet:
+      session:
+         cookie:
+            http-only: true
+            same-site: lax
+            secure: ${SESSION_COOKIE_SECURE:false}
+
+csrf:
+   cookie-secure: ${CSRF_COOKIE_SECURE:false}
+   cookie-domain: ${CSRF_COOKIE_DOMAIN:}
