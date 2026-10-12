@@ -29,6 +29,8 @@
 			#{technologyId}
 		
 		</foreach>
+		
+		AND members.is_approved = TRUE
 	
 	</select>
 
