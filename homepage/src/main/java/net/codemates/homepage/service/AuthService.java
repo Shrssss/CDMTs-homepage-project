@@ -24,6 +24,7 @@ import net.codemates.homepage.mapper.MemberMapper;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
 import net.codemates.homepage.model.dto.member.MemberDetailResponse;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
+import net.codemates.homepage.model.dto.member.MemberPasswordUpdateRequest;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.entity.Member;
@@ -96,7 +97,7 @@ public class AuthService {
 	}
 	
 	@Transactional
-	public Long updatePassword(Long id,String oldPassword,String newPassword) {
+	public Long updatePassword(Long id,MemberPasswordUpdateRequest memberDto) {
 		
 		MemberUserDetails principal=(MemberUserDetails)SecurityContextHolder
 															.getContext()
@@ -108,9 +109,9 @@ public class AuthService {
 		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
 								.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 		
-		if(!passwordEncoder.matches(oldPassword,memberEntity.getPasswordHash())) throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
+		if(!passwordEncoder.matches(memberDto.getOldPassword(),memberEntity.getPasswordHash())) throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
 		
-		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(newPassword));
+		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(memberDto.getNewPassword()));
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
@@ -148,6 +149,19 @@ public class AuthService {
 		MemberUserDetails userDetails=(MemberUserDetails)auth.getPrincipal();
 		
 		return userDetails.getMember().getId();
+		
+	}
+	
+	@Transactional
+	public Long updateMemberRole(Long id,String role) {
+		
+		if(!"ADMIN".equals(role)&&!"MEMBER".equals(role)) throw new BusinessException(ErrorCode.ROLE_MISMATCH);
+		
+		int updateCount=memberMapper.updateMemberRole(id,role);
+		
+		DbAssertions.requireAffected(1,updateCount);
+		
+		return id;
 		
 	}
 	

@@ -129,7 +129,7 @@ public class ItemService {
 	
 	public List<ItemRentalHistoryResponse> getItemRentalHistories(Long id,Integer page){
 		
-		int currentPage=(page==null||page<0)?1:page;
+		int currentPage=(page==null||page<=0)?1:page;
 		int offset=(currentPage-1)*PAGE_SIZE;
 		
 		List<ItemRentalHistory> itemRentalHistoryEntities=itemRentalHistoryMapper.findByItemIds(List.of(id),offset,PAGE_SIZE);

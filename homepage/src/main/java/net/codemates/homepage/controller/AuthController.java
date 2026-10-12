@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
+import net.codemates.homepage.model.dto.member.MemberPasswordUpdateRequest;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.service.AuthService;
 
@@ -68,17 +69,16 @@ public class AuthController {
      * 
      * メソッド名 	: updatePassword
      * 戻り値		: Long id
-     * 引数		: Long id, String oldPassword, String newPassword
+     * 引数		: MemberPasswordUpdateRequest
      * 
      * 		POST /api/auth/{id}/passUpdate
      * 
      */
 	
-	//リクエストボディに変更
 	@PostMapping("/{id}/passUpdate")
-	public Long updatePassword(@PathVariable Long id,@RequestParam String oldPassword,@RequestParam String newPassword) {
+	public Long updatePassword(@PathVariable Long id,@Valid @RequestBody MemberPasswordUpdateRequest memberDto) {
 		
-		return authService.updatePassword(id,oldPassword,newPassword);
+		return authService.updatePassword(id,memberDto);
 		
 	}
 	
@@ -120,7 +120,7 @@ public class AuthController {
      * セッションに保存されているユーザのID取得
      * 
      * メソッド名 	: getCurrentMemberId
-     * 戻り値		: Long
+     * 戻り値		: Long id
      * 引数		: Authentication auth
      * 
      * 		GET /api/auth/me
@@ -130,6 +130,23 @@ public class AuthController {
 	public Long getCurrentMemberId(Authentication auth) {
 		
 		return authService.getCurrentMemberId(auth);
+		
+	}
+	
+    /*
+     * メンバーのroleを更新
+     * 
+     * メソッド名 	: updateMemberRole
+     * 戻り値		: Long id
+     * 引数		: Long id,String role
+     * 
+     * 		PATCH /api/auth/admin/{id}
+     * 
+     */
+	@PatchMapping("/admin/{id}")
+	public Long updateMemberRole(@PathVariable Long id,@RequestParam String role) {
+		
+		return authService.updateMemberRole(id,role);
 		
 	}
 	

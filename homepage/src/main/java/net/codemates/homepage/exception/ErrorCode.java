@@ -15,6 +15,7 @@ public enum ErrorCode {
 	ITEM_ALREADY_RENTED(HttpStatus.BAD_REQUEST,"この備品はすでに貸し出し中です。"),
 	NO_ACTIVE_RENTAL(HttpStatus.BAD_REQUEST,"有効な貸し出し記録が見つかりません。"),
 	INVALID_IMAGE_FILE(HttpStatus.BAD_REQUEST,"画像ファイルは(jpg/png/gif)を指定してください。"),
+	ROLE_MISMATCH(HttpStatus.BAD_REQUEST,"ロールの名前が正しくありません。"),
 	
 	//401 Unauthorized
 	LOGIN_FAILED(HttpStatus.UNAUTHORIZED,"学籍番号/メールアドレスまたはパスワードが間違っています。"),
