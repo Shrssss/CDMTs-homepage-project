@@ -65,6 +65,7 @@ const NewsDetailClient = () => {
 
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-6 md:gap-8">
+      <title>{newsDetail.data.title}</title>
       <nav
         aria-label="パンくず"
         className="flex items-center gap-2 font-mono text-xs font-bold tracking-wider"

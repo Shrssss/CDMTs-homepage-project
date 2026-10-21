@@ -39,7 +39,7 @@ const Page = () => {
         {/* ファーストビュー */}
         <section className="relative h-[640px] border-b-2 border-brand-black md:h-[calc(100svh-74px)] md:min-h-[560px]">
           <img
-            src={"/placeholder.jpg"}
+            src={"/images/placeholder.jpg"}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />

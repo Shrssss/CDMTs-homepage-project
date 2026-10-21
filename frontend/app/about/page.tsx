@@ -5,6 +5,11 @@ import Footer from "@/components/Footer";
 import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
 import TerminalWindow from "@/components/brand/TerminalWindow";
+import { Metadata } from "next";
+
+export const metadata:Metadata={
+  title:"CODE MATESとは"
+}
 
 const ACTIVITIES = [
   {

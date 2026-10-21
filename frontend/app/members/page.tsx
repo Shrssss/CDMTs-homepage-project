@@ -7,6 +7,11 @@ import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
 import Provider from "../QueryClientProvider";
 import MembersClient from "./MembersClient";
+import { Metadata } from "next/types";
+
+export const metadata:Metadata={
+  title:"メンバー"
+}
 
 // メンバー一覧ページ
 const Page = () => {

@@ -4,6 +4,11 @@ import SectionMarker from "@/components/brand/SectionMarker";
 import Provider from "../QueryClientProvider";
 import NewsClient from "./NewsClient";
 import { Suspense } from "react";
+import { Metadata } from "next";
+
+export const metadata:Metadata={
+  title:"記事一覧"
+}
 
 // 記事一覧ページ
 const page = () => {

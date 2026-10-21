@@ -5,6 +5,11 @@ import Footer from "@/components/Footer";
 import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
 import InfoGrid from "@/components/brand/InfoGrid";
+import { Metadata } from "next/types";
+
+export const metadata:Metadata={
+  title:"お問い合わせ"
+}
 
 const CONTACTS = [
   {

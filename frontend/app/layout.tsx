@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NuqsAdapter } from "nuqs/adapters/next";
+import { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,4 +26,11 @@ export default function RootLayout({
       <body className=""><NuqsAdapter>{children}</NuqsAdapter></body>
     </html>
   );
+}
+
+export const metadata:Metadata={
+  title:{
+    template:"%s - CODE MATES -",
+    default:"CODE MATES"
+  }
 }
