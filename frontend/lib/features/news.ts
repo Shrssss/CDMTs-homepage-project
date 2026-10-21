@@ -6,6 +6,9 @@ import {
 } from "../types/api";
 import { axiosInstance } from "./api";
 
+// TODO: 実際に運用するカテゴリに合わせる
+export const NEWS_CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会"];
+
 // GET /news （全体取得・検索）
 export const searchNews = async ({
   keyword,
@@ -90,4 +93,9 @@ export const uploadThumbnail = async (file: File) => {
   fd.append("file", file);
   const res = await axiosInstance.postForm("/news/thumbnail", fd);
   return ThumbnailUploadResponseSchema.parse(res.data).thumbnailPath;
+};
+
+// DELETE /news/{id} （記事削除）
+export const deleteNews = async ({ id }: { id: number }) => {
+  await axiosInstance.delete(`/news/${id}`);
 };

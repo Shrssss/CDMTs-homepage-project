@@ -196,6 +196,8 @@ export const FormDialog = ({
   submitLabel,
   isPending,
   onSubmit,
+  wide,
+  actions,
   children,
 }: {
   open: boolean;
@@ -205,11 +207,21 @@ export const FormDialog = ({
   submitLabel: string;
   isPending: boolean;
   onSubmit: () => void;
+  // 記事のように本文が長いフォーム用
+  wide?: boolean;
+  // 送信ボタンを差し替える（キャンセルは左端に寄せる）
+  actions?: React.ReactNode;
   children: React.ReactNode;
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-0 p-0 sm:max-w-140" showCloseButton={false}>
+      <DialogContent
+        className={cn(
+          "gap-0 p-0",
+          wide ? "max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-220" : "sm:max-w-140",
+        )}
+        showCloseButton={false}
+      >
         <form
           noValidate
           onSubmit={(e) => {
@@ -229,15 +241,17 @@ export const FormDialog = ({
             </DialogClose>
           </DialogHeader>
           <div className="flex flex-col gap-4 px-6 py-5">{children}</div>
-          <DialogFooter className="mx-0 mb-0 px-6 py-4">
+          <DialogFooter className="mx-0 mb-0 border-border px-6 py-4">
             <DialogClose asChild>
-              <Button type="button" variant={"outline"} className="h-11 px-4">
+              <Button type="button" variant={"outline"} className={cn("h-11 px-4", actions && "sm:mr-auto")}>
                 キャンセル
               </Button>
             </DialogClose>
-            <Button type="submit" className="h-11 px-4" disabled={isPending}>
-              {isPending ? "保存中..." : submitLabel}
-            </Button>
+            {actions ?? (
+              <Button type="submit" className="h-11 px-4" disabled={isPending}>
+                {isPending ? "保存中..." : submitLabel}
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
@@ -252,6 +266,7 @@ export const DeleteDialog = ({
   title,
   isPending,
   onConfirm,
+  extraAction,
   children,
 }: {
   open: boolean;
@@ -259,6 +274,8 @@ export const DeleteDialog = ({
   title: string;
   isPending: boolean;
   onConfirm: () => void;
+  // キャンセルと削除の間に置く操作（例：非公開にする）
+  extraAction?: React.ReactNode;
   children?: React.ReactNode;
 }) => {
   return (
@@ -269,8 +286,9 @@ export const DeleteDialog = ({
           <AlertDialogDescription>この操作は取り消せません。</AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col gap-4 px-6 py-5">{children}</div>
-        <AlertDialogFooter className="mx-0 mb-0 rounded-b-xl border-t bg-muted/50 px-6 py-4">
-          <AlertDialogCancel className="h-11 px-4">キャンセル</AlertDialogCancel>
+        <AlertDialogFooter className="mx-0 mb-0 rounded-b-xl border-t border-border bg-muted/50 px-6 py-4">
+          <AlertDialogCancel className={cn("h-11 px-4", extraAction && "sm:mr-auto")}>キャンセル</AlertDialogCancel>
+          {extraAction}
           <Button
             className="h-11 bg-destructive px-4 text-white hover:bg-destructive/90"
             disabled={isPending}

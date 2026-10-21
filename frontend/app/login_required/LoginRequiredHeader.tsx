@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { Code, LogOut, Package, Users } from "lucide-react";
+import { Code, FileText, LogOut, Package, Users } from "lucide-react";
 
 const NAV = [
   { href: "/login_required/items", label: "備品", Icon: Package },
   { href: "/login_required/members", label: "メンバー", Icon: Users },
   { href: "/login_required/technologies", label: "技術", Icon: Code },
+  { href: "/login_required/articles", label: "記事", Icon: FileText },
 ];
 
 // 管理ページのサイドバー（スマホでは上部に横並び）

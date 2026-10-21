@@ -8,9 +8,7 @@ import SearchField from "@/components/brand/SearchField";
 import Pagination from "@/components/brand/Pagination";
 import { EmptyPanel, ErrorPanel, LoadingCards } from "@/components/brand/StatusPanels";
 import { useNews } from "@/hooks/news";
-
-// TODO: 実際に運用するカテゴリに合わせる
-const CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会"];
+import { NEWS_CATEGORIES } from "@/lib/features/news";
 
 // バックエンドのNewsService.PAGE_SIZEと合わせる
 const PAGE_SIZE = 20;
@@ -55,7 +53,7 @@ const NewsClient = () => {
           label="CATEGORY"
           options={[
             { label: "すべて", value: null },
-            ...CATEGORIES.map((c) => ({ label: c, value: c })),
+            ...NEWS_CATEGORIES.map((c) => ({ label: c, value: c })),
           ]}
           value={category}
           onChange={(value) => {

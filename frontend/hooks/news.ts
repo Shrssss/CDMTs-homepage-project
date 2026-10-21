@@ -8,7 +8,7 @@ import {
   updateNews,
   uploadThumbnail,
 } from "@/lib/features/news";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useNews = ({
   categories,
@@ -27,6 +27,25 @@ export const useNews = ({
         keyword,
         page,
       });
+    },
+  });
+};
+
+export const useInfiniteNews = ({
+  categories,
+  keyword,
+}: {
+  keyword?: string;
+  categories?: string[];
+}) => {
+  return useInfiniteQuery({
+    queryKey: ["infiniteNews", categories, keyword],
+    queryFn: async ({ pageParam }) => {
+      return await searchNews({ categories, keyword, page: pageParam });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length === 0 ? undefined : lastPageParam + 1;
     },
   });
 };

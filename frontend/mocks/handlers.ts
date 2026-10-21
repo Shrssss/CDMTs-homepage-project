@@ -250,13 +250,20 @@ export const handlers = [
     return new HttpResponse(null, { status: 200 });
   }),
 
-  http.patch(api("/news/:id/published"), async ({ params, request }) => {
+  http.put(api("/news/:id/published"), async ({ params, request }) => {
     await delay(LATENCY_MS);
     const n = db.news.find((n) => n.id === Number(params.id));
     if (!n) return notFound();
 
     n.isPublished = new URL(request.url).searchParams.get("isPublished") === "true";
     n.updatedAt = now();
+    return new HttpResponse(null, { status: 200 });
+  }),
+
+  http.delete(api("/news/:id"), async ({ params }) => {
+    await delay(LATENCY_MS);
+    const id = Number(params.id);
+    db.news = db.news.filter((n) => n.id !== id);
     return new HttpResponse(null, { status: 200 });
   }),
 
