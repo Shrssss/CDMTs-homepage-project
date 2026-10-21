@@ -1,17 +1,18 @@
-import Provider from '@/app/QueryClientProvider';
-import Client from "./MemberClient"
-import LoginRequiredHeader from '../LoginRequiredHeader';
+import { Metadata } from "next";
+import { Suspense } from "react";
+import Client from "./MemberClient";
 
-// サークルメンバー一覧
+export const metadata: Metadata = {
+  title: "メンバー",
+};
+
+// サークルメンバー一覧（Provider とサイドバーは layout.tsx）
 const Page = () => {
   return (
-    <div className="">
-      <Provider>
-        <LoginRequiredHeader />
-        <Client/>
-      </Provider>
-    </div>
-  )
-}
+    <Suspense>
+      <Client />
+    </Suspense>
+  );
+};
 
-export default Page
+export default Page;

@@ -27,12 +27,12 @@ export const useInfiniteItemRentalHistories = ({ id }: { id: number }) => {
 };
 
 export const useInfiniteItems = ({name,isDisposable,isRentable,storageLocation}:{
-  name?:string,isDisposable:boolean,isRentable:boolean,storageLocation?:string
+  name?:string,isDisposable?:boolean,isRentable?:boolean,storageLocation?:string
 }) => {
   const debouncedName=useDebounce(name,500)
   const debouncedStorageLocation=useDebounce(storageLocation,500)
   return useInfiniteQuery({
-    queryKey: ["items", name, isDisposable, isRentable, storageLocation],
+    queryKey: ["items", debouncedName, isDisposable, isRentable, debouncedStorageLocation],
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       return await getSearchItems({

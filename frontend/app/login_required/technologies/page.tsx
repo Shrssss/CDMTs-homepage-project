@@ -1,17 +1,18 @@
-import Provider from '@/app/QueryClientProvider';
-import Client from "./TechnologiesClient"
-import LoginRequiredHeader from '../LoginRequiredHeader';
+import { Metadata } from "next";
+import { Suspense } from "react";
+import Client from "./TechnologiesClient";
 
-// 技術一覧
+export const metadata: Metadata = {
+  title: "技術",
+};
+
+// 技術一覧（Provider とサイドバーは layout.tsx）
 const Page = () => {
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <Provider>
-        <LoginRequiredHeader />
-        <Client/>
-      </Provider>
-    </div>
-  )
-}
+    <Suspense>
+      <Client />
+    </Suspense>
+  );
+};
 
-export default Page
+export default Page;
