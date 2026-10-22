@@ -7,7 +7,7 @@ import {
 import { axiosInstance } from "./api";
 
 // TODO: 実際に運用するカテゴリに合わせる
-export const NEWS_CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会"];
+export const NEWS_CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会","レクリエーション"];
 
 // GET /news （全体取得・検索）
 export const searchNews = async ({

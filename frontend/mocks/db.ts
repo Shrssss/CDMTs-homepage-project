@@ -51,7 +51,7 @@ const memberTechnologies: MemberTechnologies[] = members.flatMap((m) =>
     .map((t) => ({ memberId: m.id, technologyId: t.id })),
 );
 
-const NEWS_CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会"];
+const NEWS_CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会","レクリエーション"];
 
 const news: News[] = Array.from({ length: 25 }, (_, i) => {
   const category = NEWS_CATEGORIES[i % NEWS_CATEGORIES.length];
