@@ -39,7 +39,7 @@ import { toast } from "sonner";
 // バックエンドの PAGE_SIZE と合わせる
 const PAGE_SIZE = 20;
 const GRADES = [1, 2, 3, 4];
-const POSITIONS = ["部長", "副部長", "会計"];
+const POSITIONS = ["代表", "副代表", "会計","レク班長","企画班長","教育班長"];
 
 type Form = {
   name: string;
