@@ -46,7 +46,7 @@ public class SecurityConfig {
 		
 		repository.setCookieCustomizer(cookie->{
 			
-			cookie.secure(csrfCookieSecure).sameSite("Lav").path("/");
+			cookie.secure(csrfCookieSecure).sameSite("Lax").path("/");
 			
 			if(!csrfCookieDomain.isBlank())cookie.domain(csrfCookieDomain);
 		});
