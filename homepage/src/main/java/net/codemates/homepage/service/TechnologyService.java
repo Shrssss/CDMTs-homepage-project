@@ -2,10 +2,13 @@ package net.codemates.homepage.service;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.codemates.homepage.exception.BusinessException;
 import net.codemates.homepage.exception.DbAssertions;
 import net.codemates.homepage.exception.ErrorCode;
@@ -18,7 +21,9 @@ import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.dto.technology.TechnologyUpdateRequest;
 import net.codemates.homepage.model.entity.Member;
 import net.codemates.homepage.model.entity.Technology;
+import net.codemates.homepage.security.MemberUserDetails;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TechnologyService {
@@ -42,6 +47,12 @@ public class TechnologyService {
 				technology.getName(),
 				technology.getDescription());
 	}
+	
+	private Long currentMemberId(){
+	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
+	}
+	
 	@Transactional
 	public Long createTechnology(TechnologyCreateRequest technologyDto) {
 		
@@ -50,6 +61,8 @@ public class TechnologyService {
 		int insertCount=technologyMapper.insert(technologyEntity);
 		
 		DbAssertions.requireAffected(1, insertCount);
+		
+		log.info("technology created: id={} by={}",technologyEntity.getId(),currentMemberId());
 		
 		return technologyEntity.getId();
 		
@@ -63,6 +76,8 @@ public class TechnologyService {
 		int updateCount=technologyMapper.update(technologyDto.toEntity());
 		
 		DbAssertions.requireAffected(1, updateCount);
+		
+		log.info("technology updated: id={} by={}",technologyDto.getId(),currentMemberId());
 		
 		return updateCount;
 		
@@ -108,6 +123,8 @@ public class TechnologyService {
 		int deleteCount=technologyMapper.deleteById(id);
 		
 		DbAssertions.requireAffected(1, deleteCount);
+		
+		log.info("technology deleted: id={} by={}",id,currentMemberId());
 		
 		return deleteCount;
 		
