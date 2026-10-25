@@ -11,18 +11,28 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
 import net.codemates.homepage.exception.BusinessException;
 import net.codemates.homepage.exception.ErrorCode;
+import net.codemates.homepage.security.MemberUserDetails;
 
+@Slf4j
 @Service
 public class ThumbnailStorageService {
 
 	private static final Map<String,String> ALLOWED=Map.of("image/jpeg","jpg","image/png","png","image/gif","gif");
 	
 	private final Path root;
+	
+	private Long currentMemberId(){
+	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
+	}
 	
 	public ThumbnailStorageService(@Value("${file.upload-dir}")String uploadDir)throws IOException{
 		
@@ -61,6 +71,8 @@ public class ThumbnailStorageService {
 			throw new BusinessException(ErrorCode.FILE_UPLOAD_FAILED);
 			
 		}
+		
+		log.info("file created: filePath={} by={}","/uploads/news/"+filename,currentMemberId());
 		
 		return "/uploads/news/"+filename;
 		
