@@ -18,20 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.codemates.homepage.exception.BusinessException;
 import net.codemates.homepage.exception.DbAssertions;
 import net.codemates.homepage.exception.ErrorCode;
 import net.codemates.homepage.mapper.MemberMapper;
 import net.codemates.homepage.model.dto.member.MemberCreateRequest;
-import net.codemates.homepage.model.dto.member.MemberDetailResponse;
 import net.codemates.homepage.model.dto.member.MemberLoginRequest;
 import net.codemates.homepage.model.dto.member.MemberPasswordUpdateRequest;
 import net.codemates.homepage.model.dto.member.MemberResponse;
-import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.entity.Member;
-import net.codemates.homepage.model.entity.Technology;
 import net.codemates.homepage.security.MemberUserDetails;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -53,6 +52,16 @@ public class AuthService {
 				member.getGrade(),
 				member.getPosition());
 	}
+	
+	private static String mask(String s) {
+		if(s==null||s.length()<=3)return "***";
+		return s.substring(0,3)+"***";
+	}
+	
+	private Long currentMemberId(){
+	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
+	}
 
 	@Transactional
 	public Long createMember(MemberCreateRequest memberDto) {
@@ -66,6 +75,8 @@ public class AuthService {
 		int insertCount=memberMapper.insert(memberEntity);
 		
 		DbAssertions.requireAffected(1, insertCount);
+		
+		log.info("member registered: id={}",memberEntity.getId());
 		
 		return memberEntity.getId();
 		
@@ -81,21 +92,29 @@ public class AuthService {
 		try {
 			authResult=authenticationManager.authenticate(authRequest);
 		}catch(BadCredentialsException e) {
+			log.warn("login failed: identifier={}",mask(memberDto.getIdentifier()));
 			throw new BusinessException(ErrorCode.LOGIN_FAILED);
 		}
 		
 		MemberUserDetails principal=(MemberUserDetails)authResult.getPrincipal();
 		
-		if(!Boolean.TRUE.equals(principal.getMember().getIsApproved()))throw new BusinessException(ErrorCode.ACCOUNT_NOT_APPROVED);
+		if(!Boolean.TRUE.equals(principal.getMember().getIsApproved())) {
+			log.warn("login rejected: not approved id={}",principal.getMember().getId());
+			throw new BusinessException(ErrorCode.ACCOUNT_NOT_APPROVED);
+		}
 		
 		SecurityContext context=SecurityContextHolder.createEmptyContext();
 		context.setAuthentication(authResult);
 		SecurityContextHolder.setContext(context);
 		
+		if(request.getSession(false)!=null) request.changeSessionId();
+		
 		//SecurityContextをHttpSessionに保存
 		securityContextRepository.saveContext(context,request,response);
 		
 		csrfTokenRepository.saveToken(csrfTokenRepository.generateToken(request), request, response);
+		
+		log.info("login success: id={}",principal.getMember().getId());
 		
 		return principal.getMember().getId();
 		
@@ -109,7 +128,10 @@ public class AuthService {
 															.getAuthentication()
 															.getPrincipal();
 		
-		if(!principal.getMember().getId().equals(id))throw new BusinessException(ErrorCode.ACCESS_DENIED);
+		if(!principal.getMember().getId().equals(id)) {
+			log.warn("password change denied: target={} actor={}",id,principal.getMember().getId());
+			throw new BusinessException(ErrorCode.ACCESS_DENIED);
+		}
 		
 		Member memberEntity=memberMapper.findByIds(List.of(id)).stream().findFirst()
 								.orElseThrow(()->new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
@@ -119,6 +141,8 @@ public class AuthService {
 		int updateCount=memberMapper.updatePassword(id,passwordEncoder.encode(memberDto.getNewPassword()));
 		
 		DbAssertions.requireAffected(1, updateCount);
+		
+		log.info("member changed password: id={}",id);
 		
 		return id;
 		
@@ -133,6 +157,8 @@ public class AuthService {
 		int updateCount=memberMapper.updateApproval(id,true);
 		
 		DbAssertions.requireAffected(1,updateCount);
+		
+		log.info("member approved: id={} by={}",id,currentMemberId());
 		
 		return id;
 		
@@ -165,6 +191,8 @@ public class AuthService {
 		int updateCount=memberMapper.updateMemberRole(id,role);
 		
 		DbAssertions.requireAffected(1,updateCount);
+		
+		log.info("member updated role: id={} to={} by={}",id,role,currentMemberId());
 		
 		return id;
 		
