@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(BusinessException.class)
@@ -16,8 +19,20 @@ public class GlobalExceptionHandler {
 		
 		ErrorCode errorCode=e.getErrorCode();
 		
+		if(errorCode.getStatus().is5xxServerError()) log.error("業務例外(5xx): {}",errorCode,e);
+		else log.warn("業務例外: {} - {}",errorCode,errorCode.getMessage());
+		
 		return ResponseEntity.status(errorCode.getStatus())
 					.body(new ErrorResponse(errorCode.getMessage()));
+		
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponse> handleUnexpected(Exception e){
+		
+		log.error("想定外のエラー",e);
+		
+		return ResponseEntity.status(500).body(new ErrorResponse("サーバー内部でエラーが発生しました。"));
 		
 	}
 	
