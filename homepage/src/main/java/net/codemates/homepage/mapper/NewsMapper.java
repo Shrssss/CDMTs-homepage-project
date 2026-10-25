@@ -17,6 +17,8 @@ public interface NewsMapper {
 						@Param("offset") int offset,
 			            @Param("limit") int limit);
 	
+	List<News> getAllNews(@Param("offset")int offset,@Param("limit") int limit);
+	
 	int insert(News news);	//transactional
 	
 	int update(News news);	//transactional

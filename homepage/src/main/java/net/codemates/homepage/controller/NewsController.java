@@ -89,6 +89,21 @@ public class NewsController {
 	}
 	
     /*
+     * ニュース一覧取得（管理者向け）
+     *
+     * 		GET /api/news/allNews
+     *
+     * 			page　: ページ番号（指定がなければ1ページ目）
+     * 
+     */
+	@GetMapping("/allNews")
+	public List<NewsResponse> getAllNews(@RequestParam(defaultValue="1")Integer page){
+		
+		return newsService.getAllNews(page);
+		
+	}
+	
+    /*
      * ニュース作成
      *
      * 		POST /api/news

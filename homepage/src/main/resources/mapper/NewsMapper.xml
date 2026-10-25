@@ -44,6 +44,14 @@
 	
 	</select>
 	
+	<select id="getAllNews" resultType="net.codemates.homepage.model.entity.News">
+	
+		SELECT * FROM news 
+		ORDER BY created_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	
+	</select>
+	
 	
 	
 	<insert id="insert" parameterType="net.codemates.homepage.model.entity.News" useGeneratedKeys="true" keyProperty="id">

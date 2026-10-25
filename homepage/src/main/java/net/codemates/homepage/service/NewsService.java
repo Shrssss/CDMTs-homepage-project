@@ -88,6 +88,18 @@ public class NewsService {
 		
 	}
 	
+	/* ニュース一覧取得(管理者向け) */
+	public List<NewsResponse> getAllNews(Integer page){
+		
+		int currentPage=(page==null||page<=0)?1:page;
+		int offset=(currentPage-1)*PAGE_SIZE;
+		
+		List<News>newsEntities=newsMapper.getAllNews(offset,PAGE_SIZE);
+		
+		return newsEntities.stream().map(this::toResponse).toList();
+		
+	}
+	
 	/* ニュース作成 */
 	@Transactional
 	public Long createNews(NewsCreateRequest newsDto) {
