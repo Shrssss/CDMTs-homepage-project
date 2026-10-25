@@ -131,7 +131,7 @@ public class SecurityConfig {
 				.requestMatchers(
 						HttpMethod.GET,
 						"/api/auth",
-						"/api/news/getAllNews"
+						"/api/news/AllNews"
 				).hasRole("ADMIN")
 				.anyRequest().authenticated()
 				)
