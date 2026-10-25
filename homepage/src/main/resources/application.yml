@@ -43,7 +43,7 @@ logging:
       # net.codemates.homepage.mapper: DEBUG   #調査時有効
       # org.springframeword.security: DEBUG
    file:
-      name: ${LOG_FILE:.?logs?homepage.log}
+      name: ${LOG_FILE:./logs/homepage.log}
    logback:
       rollingpolicy:
          max-file-size: 10MB
