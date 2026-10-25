@@ -35,4 +35,10 @@ public class CurrentMember {
 		
 	}
 	
+	public static Long idOrNull() {
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth == null||!(auth.getPrincipal() instanceof MemberUserDetails d)) return null;
+	    return d.getMember().getId();
+	}
+	
 }

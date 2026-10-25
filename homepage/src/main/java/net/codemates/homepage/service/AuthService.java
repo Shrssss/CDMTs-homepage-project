@@ -28,6 +28,7 @@ import net.codemates.homepage.model.dto.member.MemberLoginRequest;
 import net.codemates.homepage.model.dto.member.MemberPasswordUpdateRequest;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.model.entity.Member;
+import net.codemates.homepage.security.CurrentMember;
 import net.codemates.homepage.security.MemberUserDetails;
 
 @Slf4j
@@ -56,11 +57,6 @@ public class AuthService {
 	private static String mask(String s) {
 		if(s==null||s.length()<=3)return "***";
 		return s.substring(0,3)+"***";
-	}
-	
-	private Long currentMemberId(){
-	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
 	}
 
 	@Transactional
@@ -158,7 +154,7 @@ public class AuthService {
 		
 		DbAssertions.requireAffected(1,updateCount);
 		
-		log.info("member approved: id={} by={}",id,currentMemberId());
+		log.info("member approved: id={} by={}",id,CurrentMember.idOrNull());
 		
 		return id;
 		
@@ -192,7 +188,7 @@ public class AuthService {
 		
 		DbAssertions.requireAffected(1,updateCount);
 		
-		log.info("member updated role: id={} to={} by={}",id,role,currentMemberId());
+		log.info("member updated role: id={} to={} by={}",id,role,CurrentMember.idOrNull());
 		
 		return id;
 		

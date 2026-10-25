@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +24,7 @@ import net.codemates.homepage.model.dto.item.ItemUpdateRequest;
 import net.codemates.homepage.model.entity.Item;
 import net.codemates.homepage.model.entity.ItemRentalHistory;
 import net.codemates.homepage.model.entity.Member;
-import net.codemates.homepage.security.MemberUserDetails;
+import net.codemates.homepage.security.CurrentMember;
 
 @Slf4j
 @Service
@@ -79,11 +77,6 @@ public class ItemService {
 		
 	}
 	
-	private Long currentMemberId(){
-	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
-	}
-	
 	@Transactional
 	public Long createItem(ItemCreateRequest itemDto) {
 		
@@ -93,7 +86,7 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, insertCount);
 		
-		log.info("item created: id={} by={}",itemEntity.getId(),currentMemberId());
+		log.info("item created: id={} by={}",itemEntity.getId(),CurrentMember.idOrNull());
 		
 		return itemEntity.getId();
 		
@@ -106,7 +99,7 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
-		log.info("item updated: id={} by={}",itemDto.getId(),currentMemberId());
+		log.info("item updated: id={} by={}",itemDto.getId(),CurrentMember.idOrNull());
 		
 	}
 	
@@ -228,7 +221,7 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
-		log.info("rentable changed: id={} by={}",id,currentMemberId());
+		log.info("rentable changed: id={} by={}",id,CurrentMember.idOrNull());
 		
 		return id;
 		
@@ -241,7 +234,7 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, deleteCount);
 		
-		log.info("item deleted: id={} by={}",id,currentMemberId());
+		log.info("item deleted: id={} by={}",id,CurrentMember.idOrNull());
 		
 	}
 	

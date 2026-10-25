@@ -2,8 +2,6 @@ package net.codemates.homepage.service;
 
 import java.util.List;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +20,6 @@ import net.codemates.homepage.model.entity.Member;
 import net.codemates.homepage.model.entity.MemberTechnology;
 import net.codemates.homepage.model.entity.Technology;
 import net.codemates.homepage.security.CurrentMember;
-import net.codemates.homepage.security.MemberUserDetails;
 
 @Slf4j
 @Service
@@ -31,6 +28,7 @@ public class MemberService {
 	
 	private final MemberMapper memberMapper;
 	private final MemberTechnologyMapper memberTechnologyMapper;
+	
 	private final CurrentMember currentMember;
 	
 	private static final int PAGE_SIZE=20;
@@ -53,11 +51,6 @@ public class MemberService {
 					.map(tech->new TechnologyResponse(tech.getId(),tech.getName()))
 					.toList()
 				);
-	}
-	
-	private Long currentMemberId(){
-	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
 	}
 	
 	public List<MemberResponse> searchMember(String name,List<Short> grades,List<String> positions,Integer page){
@@ -105,7 +98,7 @@ public class MemberService {
 			}
 		}
 		
-		log.info("member updated: id={} by={}",id,currentMemberId());
+		log.info("member updated: id={} by={}",id,CurrentMember.idOrNull());
 		
 		return updateCount;
 		
@@ -118,7 +111,7 @@ public class MemberService {
 		
 		DbAssertions.requireAffected(1, deleteCount);
 		
-		log.info("member deleted: id={} by={}",id,currentMemberId());
+		log.info("member deleted: id={} by={}",id,CurrentMember.idOrNull());
 		
 		return deleteCount;
 		

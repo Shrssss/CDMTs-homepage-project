@@ -2,8 +2,6 @@ package net.codemates.homepage.service;
 
 import java.util.List;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +19,7 @@ import net.codemates.homepage.model.dto.technology.TechnologyResponse;
 import net.codemates.homepage.model.dto.technology.TechnologyUpdateRequest;
 import net.codemates.homepage.model.entity.Member;
 import net.codemates.homepage.model.entity.Technology;
-import net.codemates.homepage.security.MemberUserDetails;
+import net.codemates.homepage.security.CurrentMember;
 
 @Slf4j
 @Service
@@ -48,11 +46,6 @@ public class TechnologyService {
 				technology.getDescription());
 	}
 	
-	private Long currentMemberId(){
-	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
-	}
-	
 	@Transactional
 	public Long createTechnology(TechnologyCreateRequest technologyDto) {
 		
@@ -62,7 +55,7 @@ public class TechnologyService {
 		
 		DbAssertions.requireAffected(1, insertCount);
 		
-		log.info("technology created: id={} by={}",technologyEntity.getId(),currentMemberId());
+		log.info("technology created: id={} by={}",technologyEntity.getId(),CurrentMember.idOrNull());
 		
 		return technologyEntity.getId();
 		
@@ -77,7 +70,7 @@ public class TechnologyService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
-		log.info("technology updated: id={} by={}",technologyDto.getId(),currentMemberId());
+		log.info("technology updated: id={} by={}",technologyDto.getId(),CurrentMember.idOrNull());
 		
 		return updateCount;
 		
@@ -124,7 +117,7 @@ public class TechnologyService {
 		
 		DbAssertions.requireAffected(1, deleteCount);
 		
-		log.info("technology deleted: id={} by={}",id,currentMemberId());
+		log.info("technology deleted: id={} by={}",id,CurrentMember.idOrNull());
 		
 		return deleteCount;
 		
