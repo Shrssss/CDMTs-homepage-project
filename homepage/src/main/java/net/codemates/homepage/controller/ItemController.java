@@ -137,7 +137,7 @@ public class ItemController {
      * 戻り値		: Long itemId
      * 引数		: Long id,Long renterId
      * 
-     * 		PUT /api/items/rent/{id}/{renterId}
+     * 		PUT /api/items/rent/{id}
      * 
      */
 	@PutMapping("/rent/{id}")
@@ -152,9 +152,9 @@ public class ItemController {
      * 
      * メソッド名 	: returnItems
      * 戻り値		: Long itemId
-     * 引数		: Long id,Long renterId
+     * 引数		: Long id
      * 
-     * 		PUT /api/items/return
+     * 		PUT /api/items/return/{id}
      * 
      */
 	@PutMapping("/return/{id}")
