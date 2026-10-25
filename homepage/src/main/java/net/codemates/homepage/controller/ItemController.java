@@ -20,6 +20,7 @@ import net.codemates.homepage.model.dto.item.ItemDetailResponse;
 import net.codemates.homepage.model.dto.item.ItemRentalHistoryResponse;
 import net.codemates.homepage.model.dto.item.ItemResponse;
 import net.codemates.homepage.model.dto.item.ItemUpdateRequest;
+import net.codemates.homepage.security.CurrentMember;
 import net.codemates.homepage.service.ItemService;
 
 
@@ -30,6 +31,8 @@ import net.codemates.homepage.service.ItemService;
 public class ItemController {
 	
 	private final ItemService itemService;
+	
+	private final CurrentMember currentMember;
 	
     /*
      * 備品作成
@@ -137,10 +140,10 @@ public class ItemController {
      * 		PUT /api/items/rent/{id}/{renterId}
      * 
      */
-	@PutMapping("/rent/{id}/{renterId}")
-	public Long rentItem(@PathVariable Long id,@PathVariable Long renterId){
+	@PutMapping("/rent/{id}")
+	public Long rentItem(@PathVariable Long id){
 		
-		return itemService.rentItem(id,renterId);
+		return itemService.rentItem(id,currentMember.get().getId());
 		
 	}
 	
@@ -154,10 +157,10 @@ public class ItemController {
      * 		PUT /api/items/return
      * 
      */
-	@PutMapping("/return/{id}/{renterId}")
-	public Long returnItem(@PathVariable Long id,@PathVariable Long renterId){
+	@PutMapping("/return/{id}")
+	public Long returnItem(@PathVariable Long id){
 		
-		return itemService.returnItem(id,renterId);
+		return itemService.returnItem(id,currentMember.get().getId());
 		
 	}
 	

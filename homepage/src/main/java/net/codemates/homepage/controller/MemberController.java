@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.model.dto.member.MemberDetailResponse;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.model.dto.member.MemberUpdateRequest;
+import net.codemates.homepage.security.CurrentMember;
 import net.codemates.homepage.service.MemberService;
 
 @RestController
@@ -27,6 +28,8 @@ import net.codemates.homepage.service.MemberService;
 public class MemberController {
 	
 	private final MemberService memberService;
+	
+	private final CurrentMember currentMember;
 	
     /*
      * メンバー検索
@@ -77,6 +80,8 @@ public class MemberController {
      */
 	@PutMapping("/{id}")
 	public void updateMember(@PathVariable Long id, @Valid @RequestBody MemberUpdateRequest memberDto) {
+		
+		currentMember.requireSelfOrAdmin(id);
 		
 		memberService.updateMember(id,memberDto);
 		
