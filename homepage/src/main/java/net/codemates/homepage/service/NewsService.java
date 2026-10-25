@@ -2,10 +2,13 @@ package net.codemates.homepage.service;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.codemates.homepage.exception.BusinessException;
 import net.codemates.homepage.exception.DbAssertions;
 import net.codemates.homepage.exception.ErrorCode;
@@ -15,7 +18,9 @@ import net.codemates.homepage.model.dto.news.NewsDetailResponse;
 import net.codemates.homepage.model.dto.news.NewsResponse;
 import net.codemates.homepage.model.dto.news.NewsUpdateRequest;
 import net.codemates.homepage.model.entity.News;
+import net.codemates.homepage.security.MemberUserDetails;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NewsService {
@@ -76,6 +81,11 @@ public class NewsService {
 		
 	}
 	
+	private Long currentMemberId(){
+	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
+	}
+	
 	/* キーワード・カテゴリ検索 */
 	public List<NewsResponse> searchNews(String keyword,List<String> categories,Integer page) {
 		
@@ -110,6 +120,8 @@ public class NewsService {
 		
 		DbAssertions.requireAffected(1, insertCount);
 		
+		log.info("news created: id={} by={}",newsEntity.getId(),currentMemberId());
+		
 		return newsEntity.getId();
 		
 	}
@@ -124,6 +136,8 @@ public class NewsService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
+		log.info("news updated: id={} by={}",newsDto.getId(),currentMemberId());
+		
 		return updateCount;
 	}
 	
@@ -135,6 +149,8 @@ public class NewsService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
+		log.info("publish changed: id={} by={}",id,currentMemberId());
+		
 		return updateCount;
 	}
 	
@@ -145,6 +161,8 @@ public class NewsService {
 		int deleteCount=newsMapper.deleteById(id);
 		
 		DbAssertions.requireAffected(1, deleteCount);
+		
+		log.info("news deleted: id={} by={}",id,currentMemberId());
 		
 		return deleteCount;
 	}
