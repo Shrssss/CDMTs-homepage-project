@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @TestPropertySource(properties= {
 									"DB_PASSWORD=test",
 									"spring.sql.init.mode=always",
-									"spring.sql.init.schema-location=classpath:db/schema.sql"
+									"spring.sql.init.schema-locations=classpath:db/schema.sql" 
 								}
 					)
 public abstract class IntegrationTestBase {
