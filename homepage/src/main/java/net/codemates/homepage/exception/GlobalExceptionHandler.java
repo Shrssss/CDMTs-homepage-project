@@ -1,6 +1,5 @@
 package net.codemates.homepage.exception;
 
-import java.net.http.HttpHeaders;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.TypeMismatchException;
@@ -13,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import lombok.extern.slf4j.Slf4j;

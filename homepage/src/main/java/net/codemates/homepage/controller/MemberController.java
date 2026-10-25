@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import net.codemates.homepage.model.dto.member.MemberDetailResponse;
 import net.codemates.homepage.model.dto.member.MemberResponse;
 import net.codemates.homepage.model.dto.member.MemberUpdateRequest;
-import net.codemates.homepage.security.CurrentMember;
 import net.codemates.homepage.service.MemberService;
 
 @RestController
