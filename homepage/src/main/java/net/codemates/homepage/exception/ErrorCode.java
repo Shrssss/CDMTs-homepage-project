@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
 
 	//400 Bad Request
+	INVALID_REQUEST(HttpStatus.BAD_REQUEST,"入力が正しくありません。"),
 	PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST,"パスワードが正しくありません。"),
 	ITEM_NOT_RENTABLE(HttpStatus.BAD_REQUEST,"この備品は貸し出しできません。"),
 	ITEM_ALREADY_RENTED(HttpStatus.BAD_REQUEST,"この備品はすでに貸し出し中です。"),
