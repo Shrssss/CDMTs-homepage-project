@@ -142,7 +142,7 @@ public class AuthService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
-		log.info("member changed password: id={}",id);
+		log.info("member updated password: id={}",id);
 		
 		return id;
 		

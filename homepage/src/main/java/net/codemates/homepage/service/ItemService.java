@@ -5,10 +5,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.codemates.homepage.exception.BusinessException;
 import net.codemates.homepage.exception.DbAssertions;
 import net.codemates.homepage.exception.ErrorCode;
@@ -23,7 +26,9 @@ import net.codemates.homepage.model.dto.item.ItemUpdateRequest;
 import net.codemates.homepage.model.entity.Item;
 import net.codemates.homepage.model.entity.ItemRentalHistory;
 import net.codemates.homepage.model.entity.Member;
+import net.codemates.homepage.security.MemberUserDetails;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -74,6 +79,11 @@ public class ItemService {
 		
 	}
 	
+	private Long currentMemberId(){
+	    Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+	    return ((MemberUserDetails)auth.getPrincipal()).getMember().getId();
+	}
+	
 	@Transactional
 	public Long createItem(ItemCreateRequest itemDto) {
 		
@@ -82,6 +92,8 @@ public class ItemService {
 		int insertCount=itemMapper.insert(itemEntity);
 		
 		DbAssertions.requireAffected(1, insertCount);
+		
+		log.info("item created: id={} by={}",itemEntity.getId(),currentMemberId());
 		
 		return itemEntity.getId();
 		
@@ -93,6 +105,8 @@ public class ItemService {
 		int updateCount=itemMapper.update(itemDto.toEntity());
 		
 		DbAssertions.requireAffected(1, updateCount);
+		
+		log.info("item updated: id={} by={}",itemDto.getId(),currentMemberId());
 		
 	}
 	
@@ -180,6 +194,8 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, historyInsertCount);
 		
+		log.info("item rented: id={} by={}",id,renterId);
+		
 		return id;
 		
 	}
@@ -199,6 +215,8 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, historyUpdateCount);
 		
+		log.info("item returned: id={} by={}",id,renterId);
+		
 		return id;
 		
 	}
@@ -210,6 +228,8 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, updateCount);
 		
+		log.info("rentable changed: id={} by={}",id,currentMemberId());
+		
 		return id;
 		
 	}
@@ -220,6 +240,8 @@ public class ItemService {
 		int deleteCount=itemMapper.deleteById(id);
 		
 		DbAssertions.requireAffected(1, deleteCount);
+		
+		log.info("item deleted id={} by={}",id,currentMemberId());
 		
 	}
 	
