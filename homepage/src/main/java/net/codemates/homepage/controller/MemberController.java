@@ -29,8 +29,6 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	
-	private final CurrentMember currentMember;
-	
     /*
      * メンバー検索
      * 
@@ -80,8 +78,6 @@ public class MemberController {
      */
 	@PutMapping("/{id}")
 	public void updateMember(@PathVariable Long id, @Valid @RequestBody MemberUpdateRequest memberDto) {
-		
-		currentMember.requireSelfOrAdmin(id);
 		
 		memberService.updateMember(id,memberDto);
 		

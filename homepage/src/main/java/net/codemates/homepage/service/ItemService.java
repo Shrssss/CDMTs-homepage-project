@@ -241,7 +241,7 @@ public class ItemService {
 		
 		DbAssertions.requireAffected(1, deleteCount);
 		
-		log.info("item deleted id={} by={}",id,currentMemberId());
+		log.info("item deleted: id={} by={}",id,currentMemberId());
 		
 	}
 	
