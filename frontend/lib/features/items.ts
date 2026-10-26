@@ -89,24 +89,20 @@ export const updateItem = async (request: ItemUpdateRequest) => {
 // PUT /items/rent/{id}/{renterId} （貸し出し）
 export const rentItem = async ({
   id,
-  renterId,
 }: {
   id: number;
-  renterId: number;
 }) => {
-  const res = await axiosInstance.put(`/items/rent/${id}/${renterId}`);
+  const res = await axiosInstance.put(`/items/rent/${id}`);
   return z.number().parse(res.data);
 };
 
 // PUT /items/return/{id}/{renterId} （返却）
 export const returnItem = async ({
   id,
-  renterId,
 }: {
   id: number;
-  renterId: number;
 }) => {
-  const res = await axiosInstance.put(`/items/return/${id}/${renterId}`);
+  const res = await axiosInstance.put(`/items/return/${id}`);
   return z.number().parse(res.data);
 };
 
