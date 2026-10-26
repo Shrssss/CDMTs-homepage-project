@@ -1,5 +1,6 @@
 import {
   createNews,
+  getAllNews,
   getNewsDetail,
   NewsCreateRequest,
   NewsUpdateRequest,
@@ -42,6 +43,20 @@ export const useInfiniteNews = ({
     queryKey: ["infiniteNews", categories, keyword],
     queryFn: async ({ pageParam }) => {
       return await searchNews({ categories, keyword, page: pageParam });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length === 0 ? undefined : lastPageParam + 1;
+    },
+  });
+};
+
+/** ★管理者向け★ 非公開を含むすべてのニュースを無限スクロールで取得します */
+export const useInfiniteAllNews = () => {
+  return useInfiniteQuery({
+    queryKey: ["infiniteAllNews"],
+    queryFn: async ({ pageParam }) => {
+      return await getAllNews({ page: pageParam });
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, _, lastPageParam) => {

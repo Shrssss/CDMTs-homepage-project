@@ -5,7 +5,6 @@ import {
   ThumbnailUploadResponseSchema,
 } from "../types/api";
 import { axiosInstance } from "./api";
-import axios from "axios";
 
 // TODO: 実際に運用するカテゴリに合わせる
 export const NEWS_CATEGORIES = ["お知らせ", "活動報告", "イベント", "LT会","レクリエーション"];
@@ -66,12 +65,12 @@ export type NewsUpdateRequest = {
 /** /news/allNews  
  * ★管理者向け★ すべてのニュースを取得します
  */
-export const getAllNew=async(page:number)=>{
-  const res=await axiosInstance.get("/news/allNews",{
-    params:{page}
-  })
-  return NewsResponseSchema.parse(res)
-}
+export const getAllNews = async ({ page }: { page?: number }) => {
+  const res = await axiosInstance.get("/news/allNews", {
+    params: { page },
+  });
+  return NewsResponseSchema.parse(res.data);
+};
 
 export const updateNews = async ({
   id,

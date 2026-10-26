@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  ActiveFilters,
-  ActiveTag,
   AdminCard,
   cellClass,
   controlClass,
@@ -16,7 +14,6 @@ import {
   PageHead,
   primaryBadgeClass,
   RowActions,
-  SearchInput,
   selectClass,
   Warn,
 } from "@/components/admin/AdminParts";
@@ -30,8 +27,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useInfiniteNews } from "@/hooks/news";
-import useDebounce from "@/hooks/useDebounce";
+import { useInfiniteAllNews } from "@/hooks/news";
 import {
   createNews,
   deleteNews,
@@ -98,15 +94,10 @@ const StatusBadge = ({ isPublished }: { isPublished: boolean }) => {
 
 const ArticlesClient = () => {
   const queryClient = useQueryClient();
-  const [q, setQ] = useQueryState("q", { defaultValue: "" });
-  const [category, setCategory] = useQueryState("category", { defaultValue: "" });
   const [status, setStatus] = useQueryState("status", parseAsStringLiteral(STATUSES));
   const [sort, setSort] = useQueryState("sort", parseAsStringLiteral(SORTS).withDefault("new"));
-  const debouncedQ = useDebounce(q.trim(), 500);
-  const news = useInfiniteNews({
-    keyword: debouncedQ || undefined,
-    categories: category ? [category] : undefined,
-  });
+  // 管理画面では非公開（下書き）の記事も含めて取得する
+  const news = useInfiniteAllNews();
   const list = news.data?.pages.flat(1) ?? [];
 
   // 本文と更新日は詳細APIにしかないので、行ごとに取得する
@@ -150,6 +141,7 @@ const ArticlesClient = () => {
   };
 
   const invalidate = (id?: number) => {
+    queryClient.invalidateQueries({ queryKey: ["infiniteAllNews"] });
     queryClient.invalidateQueries({ queryKey: ["infiniteNews"] });
     queryClient.invalidateQueries({ queryKey: ["news"] });
     if (id) queryClient.invalidateQueries({ queryKey: ["news-detail", id] });
@@ -219,21 +211,6 @@ const ArticlesClient = () => {
     },
   });
 
-  const clearAll = () => {
-    setQ(null);
-    setCategory(null);
-    setStatus(null);
-  };
-  const tags: ActiveTag[] = [];
-  if (q.trim()) tags.push({ label: `「${q.trim()}」`, aria: "キーワードを外す", onClear: () => setQ(null) });
-  if (category) tags.push({ label: category, aria: "カテゴリを外す", onClear: () => setCategory(null) });
-  if (status)
-    tags.push({
-      label: status === "published" ? "公開中" : "下書き",
-      aria: "公開状態を外す",
-      onClear: () => setStatus(null),
-    });
-
   const statusChips: { label: string; value: Status | null; count: number }[] = [
     { label: "すべて", value: null, count: counts.all },
     { label: "公開中", value: "published", count: counts.published },
@@ -255,33 +232,8 @@ const ArticlesClient = () => {
         }
       />
 
-      <AdminCard aria-label="検索条件" className="flex flex-col gap-4 p-5">
+      <AdminCard aria-label="表示条件" className="flex flex-col gap-4 p-5">
         <div className="grid gap-4 md:grid-cols-4">
-          <Field className="gap-1.5 md:col-span-2">
-            <FieldLabel htmlFor="q">キーワード</FieldLabel>
-            <SearchInput
-              id="q"
-              placeholder="タイトル・本文"
-              value={q}
-              onChange={(e) => setQ(e.target.value || null)}
-            />
-          </Field>
-          <Field className="gap-1.5">
-            <FieldLabel htmlFor="category">カテゴリ</FieldLabel>
-            <NativeSelect
-              id="category"
-              className={selectClass}
-              value={category}
-              onChange={(e) => setCategory(e.target.value || null)}
-            >
-              <NativeSelectOption value="">すべて</NativeSelectOption>
-              {NEWS_CATEGORIES.map((c) => (
-                <NativeSelectOption key={c} value={c}>
-                  {c}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
-          </Field>
           <Field className="gap-1.5">
             <FieldLabel htmlFor="sort">並び順</FieldLabel>
             <NativeSelect
@@ -321,7 +273,6 @@ const ArticlesClient = () => {
             })}
           </div>
         </Field>
-        <ActiveFilters tags={tags} onClearAll={clearAll} />
       </AdminCard>
 
       <AdminCard aria-label="記事一覧">
@@ -421,7 +372,7 @@ const ArticlesClient = () => {
             title="条件に合う記事がありません"
             description="条件を変えるか、新しく記事を書いてください。"
             action={
-              <Button variant={"outline"} className="h-11 px-4" onClick={clearAll}>
+              <Button variant={"outline"} className="h-11 px-4" onClick={() => setStatus(null)}>
                 条件をクリア
               </Button>
             }
@@ -442,7 +393,7 @@ const ArticlesClient = () => {
               {news.isFetchingNextPage ? <Spinner /> : "さらに読み込み"}
             </Button>
           ) : (
-            <span className="font-mono">GET /api/news</span>
+            <span className="font-mono">GET /api/news/allNews</span>
           )}
         </ListFoot>
       </AdminCard>

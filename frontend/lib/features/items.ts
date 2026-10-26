@@ -86,7 +86,7 @@ export const updateItem = async (request: ItemUpdateRequest) => {
   await axiosInstance.put(`/items/${id}`, request);
 };
 
-// PUT /items/rent/{id}/{renterId} （貸し出し）
+// PUT /items/rent/{id} （貸し出し）
 export const rentItem = async ({
   id,
 }: {
@@ -96,7 +96,7 @@ export const rentItem = async ({
   return z.number().parse(res.data);
 };
 
-// PUT /items/return/{id}/{renterId} （返却）
+// PUT /items/return/{id} （返却）
 export const returnItem = async ({
   id,
 }: {

@@ -60,11 +60,11 @@ export const useItemDetail = ({ id }: { id: number }) => {
   });
 };
 
-export const useRentItemMutation = ({id,renterId}:{id:number,renterId:number}) => {
+export const useRentItemMutation = ({id}:{id:number}) => {
   return useMutation({
     mutationFn:async()=>{
       return await rentItem({
-        id,renterId
+        id
       })
     }
   })
