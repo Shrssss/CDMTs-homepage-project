@@ -49,6 +49,18 @@ const parseBool = (value: string | null) =>
 
 const notFound = () => new HttpResponse(null, { status: 404 });
 
+const toNewsSummary = (n: (typeof db.news)[number]) => ({
+  id: n.id,
+  title: n.title,
+  thumbnailPath: n.thumbnailPath ?? null,
+  category: n.category,
+  isPublished: n.isPublished,
+  createdAt: n.createdAt ?? now(),
+});
+
+const byNewest = (a: { createdAt: string | null }, b: { createdAt: string | null }) =>
+  (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
+
 const toMemberSummary = (m: Members) => ({
   id: m.id,
   name: m.name,
@@ -168,6 +180,7 @@ export const handlers = [
 
   /* ---------- news ---------- */
 
+  // ホームページ用。公開中の記事のみ返す
   http.get(api("/news"), async ({ request }) => {
     await delay(LATENCY_MS);
     const params = new URL(request.url).searchParams;
@@ -175,17 +188,23 @@ export const handlers = [
     const categories = params.getAll("categories");
 
     const rows = db.news
+      .filter((n) => n.isPublished)
       .filter((n) => !keyword || n.title.includes(keyword) || n.content.includes(keyword))
       .filter((n) => categories.length === 0 || categories.includes(n.category))
-      .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""))
-      .map((n) => ({
-        id: n.id,
-        title: n.title,
-        thumbnailPath: n.thumbnailPath ?? null,
-        category: n.category,
-        isPublished: n.isPublished,
-        createdAt: n.createdAt ?? now(),
-      }));
+      .sort(byNewest)
+      .map(toNewsSummary);
+
+    return HttpResponse.json<z.input<typeof NewsResponseSchema>>(
+      paginate(rows, params.get("page")),
+    );
+  }),
+
+  // 管理画面用。下書きも含めてすべての記事を返す
+  // /news/:id より先に置かないと allNews が id として扱われる
+  http.get(api("/news/allNews"), async ({ request }) => {
+    await delay(LATENCY_MS);
+    const params = new URL(request.url).searchParams;
+    const rows = [...db.news].sort(byNewest).map(toNewsSummary);
 
     return HttpResponse.json<z.input<typeof NewsResponseSchema>>(
       paginate(rows, params.get("page")),
@@ -250,7 +269,7 @@ export const handlers = [
     return new HttpResponse(null, { status: 200 });
   }),
 
-  http.put(api("/news/:id/published"), async ({ params, request }) => {
+  http.patch(api("/news/:id/published"), async ({ params, request }) => {
     await delay(LATENCY_MS);
     const n = db.news.find((n) => n.id === Number(params.id));
     if (!n) return notFound();
@@ -407,15 +426,17 @@ export const handlers = [
     return HttpResponse.json(id);
   }),
 
-  http.put(api("/items/rent/:id/:renterId"), async ({ params }) => {
+  // 借りる人はログイン中のメンバー
+  http.put(api("/items/rent/:id"), async ({ params }) => {
     await delay(LATENCY_MS);
+    const renterId = db.session.memberId;
+    if (renterId === null) return new HttpResponse(null, { status: 401 });
     const item = db.items.find((i) => i.id === Number(params.id));
     if (!item) return notFound();
     if (!item.isRentable || item.renterId !== null) {
       return new HttpResponse(null, { status: 409 });
     }
 
-    const renterId = Number(params.renterId);
     const rentedAt = now();
     Object.assign(item, { renterId, rentedAt });
     db.itemRentalHistories.push({
@@ -428,12 +449,14 @@ export const handlers = [
     return HttpResponse.json(item.id);
   }),
 
-  http.put(api("/items/return/:id/:renterId"), async ({ params }) => {
+  // 返す人はログイン中のメンバー
+  http.put(api("/items/return/:id"), async ({ params }) => {
     await delay(LATENCY_MS);
+    const renterId = db.session.memberId;
+    if (renterId === null) return new HttpResponse(null, { status: 401 });
     const item = db.items.find((i) => i.id === Number(params.id));
     if (!item) return notFound();
 
-    const renterId = Number(params.renterId);
     const history = db.itemRentalHistories.find(
       (h) => h.itemId === item.id && h.renterId === renterId && h.returnedAt === null,
     );
