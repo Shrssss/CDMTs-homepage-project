@@ -20,6 +20,9 @@ public class NewsResponse {
 	
 	/*　記事を表示するためのObjectを定義するクラス */
 
+	@NotNull
+	private Long id;
+	
 	@NotBlank
 	@Size(max=100)
 	private String title;

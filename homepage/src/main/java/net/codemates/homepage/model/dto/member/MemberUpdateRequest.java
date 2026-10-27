@@ -1,5 +1,7 @@
 package net.codemates.homepage.model.dto.member;
 
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -7,8 +9,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import net.codemates.homepage.model.entity.Member;
 
+@Setter
+@Getter
 public class MemberUpdateRequest {
 	
 	/*	メンバー情報更新を行うためのObjectを定義するクラス */
@@ -36,20 +42,21 @@ public class MemberUpdateRequest {
 	@Size(max=50)
 	private String position;
 	
-	@NotBlank
-	@Size(min=10,max=72)
-	private String password;
-	
-	public Member toEntity(String passwordHash) {
+	public Member toEntity() {
 		return new Member(id,
 							name,
 							studentId,
 							email,
 							grade,
 							position,
-							passwordHash,
+							null,
+							null,
+							null,
 							null,
 							null);
 	}
+	
+	//以降TechnologyMap
+	List<Long> technologyIds; 
 
 }

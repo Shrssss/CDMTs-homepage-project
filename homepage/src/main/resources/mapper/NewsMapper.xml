@@ -33,6 +33,8 @@
 		
 				</foreach>
 				
+				AND is_published = true
+				
 			</if>
 		
 		</where>

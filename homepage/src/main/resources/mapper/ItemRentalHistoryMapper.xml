@@ -51,20 +51,34 @@
 	
 	</select>
 	
+	<select id="findActiveByItemIdAndRenterId" resultType="net.codemates.homepage.model.entity.ItemRentalHistory">
+
+    	SELECT *
+    	FROM item_rental_histories
+   		WHERE item_id = #{itemId}
+      		AND renter_id = #{renterId}
+      		AND returned_at IS NULL
+    	ORDER BY rented_at DESC
+    	LIMIT 1
+
+	</select>	
 	
 	
-	<insert id="insert" parameterType="net.codemates.homepage.model.entity.ItemRentalHistory">
+	
+	<insert id="insert" parameterType="net.codemates.homepage.model.entity.ItemRentalHistory" useGeneratedKeys="true" keyProperty="id">
 	
 		INSERT INTO 
 		item_rental_histories
 		(
 			item_id,
-			renter_id
+			renter_id,
+			rented_at
 		)
 		VALUES
 		(
 			#{itemId},
-			#{renterId}
+			#{renterId},
+			CURRENT_TIMESTAMP
 		)
 	
 	</insert>

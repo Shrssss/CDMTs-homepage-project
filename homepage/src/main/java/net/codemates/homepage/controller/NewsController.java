@@ -1,10 +1,13 @@
 package net.codemates.homepage.controller;
 
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.MediaType;
+//import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +24,11 @@ import net.codemates.homepage.model.dto.news.NewsDetailResponse;
 import net.codemates.homepage.model.dto.news.NewsResponse;
 import net.codemates.homepage.model.dto.news.NewsUpdateRequest;
 import net.codemates.homepage.service.NewsService;
+import net.codemates.homepage.service.ThumbnailStorageService;
 
 @RestController
 @RequestMapping("/api/news")
-@CrossOrigin(origins="")
+//@CrossOrigin(origins=" !! placeHolder !! ")
 @RequiredArgsConstructor
 public class NewsController {
 	
@@ -45,7 +50,9 @@ public class NewsController {
 	 */
 	
 	//Serviceの注入(DI:Dependency Injection)
-	private final NewsService service;
+	private final NewsService newsService;
+	
+	private final ThumbnailStorageService thumbnailStorageService;
 	
     /*
      * ニュース詳細取得	(記事を読むときに使用)
@@ -58,7 +65,7 @@ public class NewsController {
 	@GetMapping("/{id}")
 	public NewsDetailResponse getNewsDetail(@PathVariable Long id) {
 		
-		return service.findNewsDetailById(id);
+		return newsService.getNewsDetail(id);
 		
 	}
 	
@@ -77,7 +84,7 @@ public class NewsController {
 											@RequestParam(required=false)List<String> categories,
 											@RequestParam(defaultValue="1")Integer page){
 		
-		return service.searchNews(keyword,categories,page);
+		return newsService.searchNews(keyword,categories,page);
 		
 	}
 	
@@ -92,7 +99,7 @@ public class NewsController {
 	@PostMapping
 	public Long createNews(@Valid @RequestBody NewsCreateRequest newsDto) {
 		
-		return service.createNews(newsDto);
+		return newsService.createNews(newsDto);
 		
 	}
 	
@@ -110,38 +117,54 @@ public class NewsController {
 		
 		newsDto.setId(id);
 		
-		service.updateNews(newsDto);
+		newsService.updateNews(newsDto);
 		
 	}
 	
     /*
      * 公開・非公開の切り替え
      *
-     * 		PUT /api/news/{id}/published
+     * 		PATCH /api/news/{id}/published
      *
      * 			公開状態(isPublished)のみ更新する。
      * 
      */
-	@PutMapping("/{id}/published")
+	@PatchMapping("/{id}/published")
 	public void updateIspublishedById(@PathVariable Long id,@RequestParam Boolean isPublished) {
 		
-		service.updateIsPublishedById(id,isPublished);
+		newsService.updateIsPublishedById(id,isPublished);
 		
 	}
 	
     /*
-     * ニュース削除
+     * 画像の保存
      *
-     * 		DELETE /api/news/{id}
+     * 		POST /api/news/thumbnail
      *
-     * 			指定されたIDの記事を削除する。
+     * 			サムネ画像を保存する
+     * 			パスが返る
      * 
      */
-	@DeleteMapping("/{id}")
-	public void deleteNewsById(@PathVariable Long id) {
+	@PostMapping(value="/thumbnail",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Map<String,String> uploadThumbnail(@RequestParam MultipartFile file){
 		
-		service.deleteNewsById(id);
+		return Map.of("thumbnailPath",thumbnailStorageService.save(file));
 		
 	}
+	
+//    /*
+//     * ニュース削除
+//     *
+//     * 		DELETE /api/news/{id}
+//     *
+//     * 			指定されたIDの記事を削除する。
+//     * 
+//     */
+//	@DeleteMapping("/{id}")
+//	public void deleteNewsById(@PathVariable Long id) {
+//		
+//		newsService.deleteNewsById(id);
+//		
+//	}
 	
 }

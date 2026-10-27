@@ -2,8 +2,12 @@ package net.codemates.homepage.model.dto.technology;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import net.codemates.homepage.model.entity.Technology;
 
+@Getter
+@Setter
 public class TechnologyCreateRequest {
 
 	/*　技術の登録を行うためのObjectを定義するクラス　*/

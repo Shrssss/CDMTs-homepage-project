@@ -1,5 +1,5 @@
 package net.codemates.homepage.exception;
 
-public class exceptionHere {
+public record ErrorResponse(String message) {
 
 }

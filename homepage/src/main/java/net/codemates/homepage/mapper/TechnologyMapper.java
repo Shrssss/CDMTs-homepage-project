@@ -10,16 +10,16 @@ import net.codemates.homepage.model.entity.Technology;
 @Mapper
 public interface TechnologyMapper {
 
-	List<Technology> findByIds(@Param("ids")List<Long> ids);
+	Technology findById(Long id);
 	
-	List<Technology> findByName(String name);
+	List<Technology> findByName(@Param("name")String name,@Param("offset") int offset,@Param("limit") int limit);
 	
 	List<Technology> findAll();
 	
-	void insert(Technology technology);	//transactional
+	int insert(Technology technology);	//transactional
 	
-	void update(Technology technology);	//transactional
+	int update(Technology technology);	//transactional
 	
-	void deleteById(Long id);	//transactional
+	int deleteById(Long id);	//transactional
 	
 }

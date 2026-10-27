@@ -3,8 +3,13 @@ package net.codemates.homepage.model.dto.item;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import net.codemates.homepage.model.entity.Item;
 
-public class ItemCreateResponse {
+@Getter
+@Setter
+public class ItemCreateRequest {
 	
 	/* 備品追加を行うためのObjectを定義するクラス */
 	
@@ -28,5 +33,19 @@ public class ItemCreateResponse {
 	
 	@NotNull
 	private Boolean isRentable;
+	
+	public Item toEntity() {
+		return new Item(
+					null,
+					name,
+					description,
+					storageLocation,
+					quantity,
+					isDisposable,
+					isRentable,
+					null,
+					null
+				);
+	}
 	
 }

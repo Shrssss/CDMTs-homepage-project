@@ -18,12 +18,22 @@ public interface MemberMapper {
 							@Param("offset") int offset,
 				            @Param("limit") int limit);
 	
-	void insert(Member member);	//transactional
+	List<Member> findUnApprovedMember();
 	
-	void update(Member member);	//transactional
+	Member findByStudentIdOrEmail(@Param("identifier")String identifier);
 	
-	void updateByGrade(Short grade);	//transactional
+	int insert(Member member);	//transactional
 	
-	void deleteById(Long id);	//transactional
+	int update(Member member);	//transactional
+	
+	int updateApproval (@Param("id")Long id,@Param("isApproved")Boolean isApproved); //transactional
+	
+	int updatePassword(@Param("id")Long id,@Param("passwordHash")String passwordHash);	//transactional
+	
+	int updateByGrade(Short grade);	//transactional
+	
+	int updateMemberRole(Long id,String role);//transactional
+	
+	int deleteById(Long id);	//transactional
 	
 }

@@ -16,7 +16,10 @@ public interface MemberTechnologyMapper {
 	
 	List<Member> findByMembersByTechnologyIds(@Param("technologyIds")List<Long> technologyIds);
 	
-	void insert(MemberTechnology membertechnology);	//transactional
+	void insert(MemberTechnology memberTechnology);	//transactional
 	
-	void delete(Long memberId,Long technologyId);	//transactional
+	void delete(@Param("memberId")Long memberId,@Param("technologyId")Long technologyId);	//transactional
+	
+	void deleteByMemberId(@Param("memberId")Long memberId);	//transactional
+	
 }
