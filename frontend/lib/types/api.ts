@@ -72,3 +72,90 @@ export const TechnologiesSchema = z.object({
   description: z.string(),
 });
 export type Technologies = z.infer<typeof TechnologiesSchema>;
+
+// LocalDateTime（タイムゾーンなしの ISO 文字列。例: 2026-10-03T12:34:56）
+const LocalDateTimeSchema = z.iso
+  .datetime({ local: true })
+  .transform((s) => new Date(s));
+
+export const ItemsResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+  storageLocation: z.string(),
+  isDisposable: z.boolean(),
+  isRentable: z.boolean()
+}))
+
+export const ItemDetailResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  storageLocation: z.string(),
+  quantity: z.number(),
+  isDisposable: z.boolean(),
+  isRentable: z.boolean()
+})
+
+export const ItemRentalHistoryResponseSchema = z.object({
+  id: z.number(),
+  itemName: z.string(),
+  renterName: z.string(),
+  rentedAt: LocalDateTimeSchema,
+  returnedAt: LocalDateTimeSchema.nullable()
+})
+
+export const ItemRentalHistoriesResponseSchema = z.array(ItemRentalHistoryResponseSchema)
+
+export const MembersResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+  grade: z.number(),
+  position: z.string().nullable()
+}))
+
+export const TechnologiesResponseSchema = z.object({
+  id: z.number(),
+  name: z.string()
+})
+
+export const MemberDetailResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  grade: z.number(),
+  position: z.string().nullable(),
+  technologies: z.array(TechnologiesResponseSchema)
+})
+
+export const NewsResponseSchema = z.array(z.object({
+  id: z.number(),
+  title: z.string(),
+  thumbnailPath: z.string().nullable(),
+  category: z.string(),
+  isPublished: z.boolean(),
+  createdAt: LocalDateTimeSchema
+}))
+
+export const NewsDetailResponseSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  thumbnailPath: z.string().nullable(),
+  category: z.string(),
+  isPublished: z.boolean(),
+  createdAt: LocalDateTimeSchema,
+  updatedAt: LocalDateTimeSchema
+})
+
+export const TechnologyResponseSchema = z.array(z.object({
+  id: z.number(),
+  name: z.string(),
+}))
+
+export const TechnologyDetailResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string()
+})
+
+export const ThumbnailUploadResponseSchema = z.object({
+  thumbnailPath: z.string()
+})
