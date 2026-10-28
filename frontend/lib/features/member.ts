@@ -97,3 +97,32 @@ export const updatePassword = async (request: UpdatePasswordRequest) => {
   });
   return z.number().parse(res.data);
 };
+
+// GET /auth/me （ログイン中のメンバーID）
+export const getCurrentMemberId = async () => {
+  const res = await axiosInstance.get("/auth/me");
+  return z.number().parse(res.data);
+};
+
+// GET /auth （未承認メンバーの一覧・管理者のみ）
+export const getUnapprovedMembers = async () => {
+  const res = await axiosInstance.get("/auth");
+  return MembersResponseSchema.parse(res.data);
+};
+
+// PATCH /auth/{id}/approve （メンバーの承認・管理者のみ）
+export const approveMember = async ({ id }: { id: number }) => {
+  const res = await axiosInstance.patch(`/auth/${id}/approve`);
+  return z.number().parse(res.data);
+};
+
+// PATCH /auth/admin/{id}?role= （ロールの変更・管理者のみ）
+export const MEMBER_ROLES = ["MEMBER", "ADMIN"] as const;
+export type MemberRole = (typeof MEMBER_ROLES)[number];
+
+export const updateMemberRole = async ({ id, role }: { id: number; role: MemberRole }) => {
+  const res = await axiosInstance.patch(`/auth/admin/${id}`, undefined, {
+    params: { role },
+  });
+  return z.number().parse(res.data);
+};

@@ -27,12 +27,14 @@ import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useInfiniteItems, useItemDetail } from "@/hooks/item";
-import { createItem, ItemCreateRequest, updateItem } from "@/lib/features/items";
+import { errorMessage } from "@/lib/features/api";
+import { createItem, ItemCreateRequest, rentItem, updateItem } from "@/lib/features/items";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { History, Plus } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
 import { toast } from "sonner";
+import ItemRentalDialog from "./ItemRentalDialog";
 
 type Form = Omit<ItemCreateRequest, "quantity"> & { quantity: string };
 type Errors = Partial<Record<"name" | "storageLocation" | "quantity", string>>;
@@ -82,6 +84,7 @@ const ItemRow = ({
   isRentable,
   isDisposable,
   onEdit,
+  onShowRental,
 }: {
   id: number;
   name: string;
@@ -89,8 +92,23 @@ const ItemRow = ({
   isRentable: boolean;
   isDisposable: boolean;
   onEdit: (id: number, form: Form) => void;
+  onShowRental: (id: number) => void;
 }) => {
+  const queryClient = useQueryClient();
   const detail = useItemDetail({ id });
+  // 借りるのはログイン中のメンバー
+  const rent = useMutation({
+    mutationFn: rentItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["items"] });
+      queryClient.invalidateQueries({ queryKey: ["itemDetail", id] });
+      queryClient.invalidateQueries({ queryKey: ["itemRentalHistories", id] });
+      toast.success(`${name}を借りました`);
+    },
+    onError: (e) => {
+      toast.error(errorMessage(e, "借りられませんでした。もう一度お試しください。"));
+    },
+  });
   // 貸出可能でも消耗品でもない備品は、誰かが借りている
   const onLoan = !isRentable && !isDisposable;
 
@@ -125,7 +143,30 @@ const ItemRow = ({
               isDisposable: detail.data.isDisposable,
             })
           }
-        />
+        >
+          {isRentable && !isDisposable && (
+            <Button
+              variant={"outline"}
+              className="h-11 px-3"
+              aria-label={`${name}を借りる`}
+              disabled={rent.isPending}
+              onClick={() => rent.mutate({ id })}
+            >
+              {rent.isPending ? <Spinner /> : "借りる"}
+            </Button>
+          )}
+          {!isDisposable && (
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              className="size-11"
+              aria-label={`${name}の貸出状況・返却`}
+              onClick={() => onShowRental(id)}
+            >
+              <History className="size-4.5" />
+            </Button>
+          )}
+        </RowActions>
       </TableCell>
     </TableRow>
   );
@@ -151,6 +192,7 @@ const ItemsClient = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Form>(BLANK);
   const [errors, setErrors] = useState<Errors>({});
+  const [rentalId, setRentalId] = useState<number | null>(null);
 
   const openForm = (id: number | null, initial: Form = BLANK) => {
     setEditingId(id);
@@ -203,7 +245,7 @@ const ItemsClient = () => {
         number="03"
         label="Items"
         title="備品"
-        description="部室の備品を検索・追加・編集できます。"
+        description="部室の備品を検索・追加・編集し、貸出・返却ができます。"
         action={
           <Button className="h-11 gap-2 px-4" onClick={() => openForm(null)}>
             <Plus className="size-4.5" aria-hidden />
@@ -259,12 +301,12 @@ const ItemsClient = () => {
               <TableHead className={`${headCellClass} w-[16%]`}>保管場所</TableHead>
               <TableHead className={`${headCellClass} w-20`}>数量</TableHead>
               <TableHead className={`${headCellClass} w-[18%]`}>状態</TableHead>
-              <TableHead className={`${headCellClass} w-28 rounded-tr-xl text-right`}>操作</TableHead>
+              <TableHead className={`${headCellClass} w-52 rounded-tr-xl text-right`}>操作</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((item) => (
-              <ItemRow key={item.id} {...item} onEdit={openForm} />
+              <ItemRow key={item.id} {...item} onEdit={openForm} onShowRental={setRentalId} />
             ))}
           </TableBody>
         </Table>
@@ -297,6 +339,8 @@ const ItemsClient = () => {
           )}
         </ListFoot>
       </AdminCard>
+
+      <ItemRentalDialog id={rentalId} onOpenChange={(o) => !o && setRentalId(null)} />
 
       <FormDialog
         open={formOpen}

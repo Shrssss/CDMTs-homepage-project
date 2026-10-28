@@ -79,9 +79,10 @@ const NewsClient = () => {
         />
       ) : (
         <section aria-label="記事" className="grid grid-cols-1 gap-3 md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-2">
-          {published.map((item, idx) => (
+          {published.map((item) => (
             <News
-              key={idx}
+              key={item.id}
+              id={item.id}
               title={item.title}
               category={item.category}
               createdAt={item.createdAt}

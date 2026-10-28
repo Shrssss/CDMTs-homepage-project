@@ -20,8 +20,9 @@ export const useInfiniteItemRentalHistories = ({ id }: { id: number }) => {
     },
     initialPageParam: 1,
     queryKey: ["itemRentalHistories",id],
+    // 1ページ（20件）に満たなければ最後のページ
     getNextPageParam: (lastPage, _, lastPageParam) => {
-      return lastPage.length === 0 ? undefined : lastPageParam + 1;
+      return lastPage.length < 20 ? undefined : lastPageParam + 1;
     },
   });
 };

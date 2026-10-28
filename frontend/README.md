@@ -121,11 +121,11 @@ frontend/
 
 | リソース | エンドポイント |
 | --- | --- |
-| 認証 | `POST /auth`（作成）, `POST /auth/login`, `POST /auth/logout`, `POST /auth/{id}/passUpdate` |
+| 認証 | `POST /auth`（作成）, `POST /auth/login`, `POST /auth/logout`, `POST /auth/{id}/passUpdate`, `GET /auth/me`, `GET /auth`（未承認一覧）, `PATCH /auth/{id}/approve`, `PATCH /auth/admin/{id}?role=` |
 | メンバー | `GET /members`, `GET /members/{id}`, `PUT /members/{id}` |
 | 記事 | `GET /news`, `GET /news/{id}`, `POST /news`, `PUT /news/{id}`, `PATCH /news/{id}/published`, `POST /news/thumbnail` |
 | 技術 | `GET /technologies`, `GET /technologies/{id}`, `GET /technologies/{id}/members`, `POST /technologies`, `PUT /technologies/{id}`, `DELETE /technologies/{id}` |
-| 備品 | `GET /items`, `GET /items/{id}`, `GET /items/{id}/history`, `POST /items`, `PUT /items/{id}`, `PUT /items/rent/{id}/{renterId}`, `PUT /items/return/{id}/{renterId}`, `PUT /items/Availability/{id}/{isRentable}` |
+| 備品 | `GET /items`, `GET /items/{id}`, `GET /items/{id}/history`, `POST /items`, `PUT /items/{id}`, `PUT /items/rent/{id}`, `PUT /items/return/{id}`, `PUT /items/Availability/{id}/{isRentable}` |
 
 レスポンスの形は `lib/types/api.ts` の `*ResponseSchema` で定義しています。バックエンドの `LocalDateTime`（タイムゾーンなしのISO文字列）は `Date` に変換されます。
 
@@ -167,15 +167,16 @@ frontend/
 - `QueryClientProvider` が Service Worker の起動を待ってから描画するので、最初のリクエストも確実にモックされます。
 - データは `mocks/db.ts` のインメモリDBにあり、書き込み系のリクエストで更新されます。リロードすると初期状態に戻ります。
 - ログインは学籍番号（例: `24000001`）またはメールアドレス（例: `member1@example.com`）と、全員共通のパスワード `password` で行えます。
+- `member1@example.com` は管理者です。`member24`〜`member26` は承認待ちのため、承認するまでログインできません。
+- ログイン状態は `sessionStorage` に保存するので、リロードしてもタブを閉じるまでは残ります。
 - ハンドラーは `mocks/handlers.ts`。APIを追加・変更したら、ここも `lib/types/api.ts` のスキーマに合わせて更新してください。
 
 ## 現状と TODO
 
 - トップ・お問い合わせ・紹介ページに `TODO` コメントで未確定の文言（キャッチコピー・理念・FAQの回答など）が残っています。
 - 記事カテゴリは仮の値（`お知らせ / 活動報告 / イベント / LT会`）です。
-- 記事一覧APIが記事IDを返すようになったら、記事カードから詳細ページへリンクする予定です（`components/News.tsx`）。
-- `login_required/` 配下は作成途中で、デザイン未適用です。ログイン状態によるアクセス制御（未ログイン時のリダイレクト）もまだありません。
-- 記事・技術・備品・メンバーの作成/更新用の API 関数とフックはありますが、画面はまだありません。
+- `login_required/` 配下は `AuthGuard` が `GET /auth/me` でログイン状態を確認し、未ログインなら `/login` へ移動させます。
+- 管理者かどうかは `GET /auth`（管理者以外は403）が成功するかで判定しています。現在のロールを返すAPIはありません。
 - `app/MembersClient.tsx` は現在どこからも使われていません（メンバー一覧は `app/members/MembersClient.tsx`）。
 
 ## 参考

@@ -23,7 +23,11 @@ const POSITIONS = ["部長", "副部長", "会計", null, null, null];
 const FAMILY_NAMES = ["佐藤", "鈴木", "高橋", "田中", "伊藤", "渡辺", "山本", "中村", "小林", "加藤"];
 const GIVEN_NAMES = ["太郎", "花子", "健", "美咲", "翔太", "陽菜", "大輝", "結衣"];
 
-const members: Members[] = Array.from({ length: 26 }, (_, i) => ({
+// 承認状態とロールはテーブル型に含まれないためモック側で持つ
+export type MockMember = Members & { isApproved: boolean; role: "MEMBER" | "ADMIN" };
+
+// 1人目（24000001 / member1@example.com）は管理者。最後の3人は承認待ち
+const members: MockMember[] = Array.from({ length: 26 }, (_, i) => ({
   id: i + 1,
   name: `${FAMILY_NAMES[i % FAMILY_NAMES.length]} ${GIVEN_NAMES[i % GIVEN_NAMES.length]}`,
   studentId: 24000001 + i,
@@ -32,6 +36,8 @@ const members: Members[] = Array.from({ length: 26 }, (_, i) => ({
   position: i < POSITIONS.length ? POSITIONS[i] : null,
   createdAt: localDateTime(300 - i),
   updatedAt: localDateTime(30 - (i % 30)),
+  isApproved: i < 23,
+  role: i === 0 ? "ADMIN" : "MEMBER",
 }));
 
 const technologies: Technologies[] = [
@@ -82,7 +88,7 @@ const items: Items[] = Array.from({ length: 30 }, (_, i) => ({
   rentedAt: i % 6 === 0 ? localDateTime(2) : null,
 }));
 
-const itemRentalHistories: ItemRentalHistories[] = items.flatMap((item) =>
+const itemRentalHistories: ItemRentalHistories[] = items.flatMap<ItemRentalHistories>((item) =>
   Array.from({ length: item.id % 4 }, (_, j) => ({
     id: item.id * 10 + j,
     itemId: item.id,
@@ -90,7 +96,40 @@ const itemRentalHistories: ItemRentalHistories[] = items.flatMap((item) =>
     rentedAt: localDateTime(60 - j * 10),
     returnedAt: localDateTime(55 - j * 10),
   })),
+).concat(
+  // 貸出中の備品には返却前の記録を付ける
+  items
+    .filter((item) => item.renterId !== null)
+    .map((item) => ({
+      id: item.id * 10 + 9,
+      itemId: item.id,
+      renterId: item.renterId!,
+      rentedAt: item.rentedAt,
+      returnedAt: null,
+    })),
 );
+
+// ログイン中のメンバーID（Cookieの代わり）
+// MSWのDBはリロードで初期化されるが、ログイン状態はタブを閉じるまで残す
+const SESSION_KEY = "msw-session-member-id";
+const session = {
+  get memberId(): number | null {
+    try {
+      const v = sessionStorage.getItem(SESSION_KEY);
+      return v === null ? null : Number(v);
+    } catch {
+      return null;
+    }
+  },
+  set memberId(id: number | null) {
+    try {
+      if (id === null) sessionStorage.removeItem(SESSION_KEY);
+      else sessionStorage.setItem(SESSION_KEY, String(id));
+    } catch {
+      // sessionStorage が使えない環境ではログイン状態を保持しない
+    }
+  },
+};
 
 export const db = {
   members,
@@ -99,8 +138,7 @@ export const db = {
   news,
   items,
   itemRentalHistories,
-  // ログイン中のメンバーID（Cookieの代わり）
-  session: { memberId: null as number | null },
+  session,
 };
 
 export const nextId = (rows: { id: number }[]) =>

@@ -25,13 +25,21 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useMemberDetail, useMembers } from "@/hooks/member";
+import { useIsAdmin, useMemberDetail, useMembers, useUnapprovedMembers } from "@/hooks/member";
 import { useInfiniteTechnologies } from "@/hooks/technology";
 import useDebounce from "@/hooks/useDebounce";
-import { createMember, updateMember } from "@/lib/features/member";
+import { errorMessage } from "@/lib/features/api";
+import {
+  approveMember,
+  createMember,
+  MEMBER_ROLES,
+  MemberRole,
+  updateMember,
+  updateMemberRole,
+} from "@/lib/features/member";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Plus, ShieldUser } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -51,6 +59,8 @@ type Form = {
   technologyIds: number[];
 };
 type Errors = Partial<Record<"name" | "studentId" | "email" | "password", string>>;
+
+const ROLE_LABELS: Record<MemberRole, string> = { MEMBER: "一般メンバー", ADMIN: "管理者" };
 
 const BLANK: Form = { name: "", studentId: "", email: "", grade: "1", position: "", password: "", technologyIds: [] };
 
@@ -88,12 +98,15 @@ const MemberRow = ({
   grade,
   position,
   onEdit,
+  onRole,
 }: {
   id: number;
   name: string;
   grade: number;
   position: string | null;
   onEdit: (id: number, form: Form) => void;
+  // 管理者のときだけ渡される
+  onRole?: (member: { id: number; name: string }) => void;
 }) => {
   const detail = useMemberDetail({ id });
   const technologies = detail.data?.technologies ?? [];
@@ -132,9 +145,79 @@ const MemberRow = ({
               technologyIds: technologies.map((t) => t.id),
             })
           }
-        />
+        >
+          {onRole && (
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              className="size-11"
+              aria-label={`${name}の権限を変更`}
+              onClick={() => onRole({ id, name })}
+            >
+              <ShieldUser className="size-4.5" />
+            </Button>
+          )}
+        </RowActions>
       </TableCell>
     </TableRow>
+  );
+};
+
+// 承認待ちのメンバー（管理者のみ表示）
+const PendingMembers = () => {
+  const queryClient = useQueryClient();
+  const pending = useUnapprovedMembers();
+  const approve = useMutation({
+    mutationFn: approveMember,
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["unapprovedMembers"] });
+      queryClient.invalidateQueries({ queryKey: ["searchMember"] });
+      const name = pending.data?.find((m) => m.id === id)?.name;
+      toast.success(`${name ?? "メンバー"}さんを承認しました`);
+    },
+    onError: (e) => {
+      toast.error(errorMessage(e, "承認できませんでした。もう一度お試しください。"));
+    },
+  });
+
+  // 管理者でなければ 403 になるので何も出さない
+  if (!pending.isSuccess || pending.data.length === 0) return null;
+
+  return (
+    <AdminCard aria-label="承認待ちのメンバー">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 px-5 pt-4 pb-3">
+        <h2 className="text-base font-semibold">承認待ち</h2>
+        <span className="text-xs text-muted-foreground">承認するとログインできるようになります。</span>
+      </div>
+      <Table className={`min-w-140 ${tableClass}`}>
+        <TableHeader>
+          <TableRow className={headRowClass}>
+            <TableHead className={headCellClass}>名前</TableHead>
+            <TableHead className={`${headCellClass} w-20`}>学年</TableHead>
+            <TableHead className={`${headCellClass} w-32 text-right`}>操作</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {pending.data.map((member) => (
+            <TableRow key={member.id}>
+              <TableCell className={`${cellClass} font-semibold`}>{member.name}</TableCell>
+              <TableCell className={cellClass}>{member.grade}年</TableCell>
+              <TableCell className={`${cellClass} text-right`}>
+                <Button
+                  className="h-11 gap-2 px-4"
+                  aria-label={`${member.name}さんを承認`}
+                  disabled={approve.isPending && approve.variables?.id === member.id}
+                  onClick={() => approve.mutate({ id: member.id })}
+                >
+                  <Check className="size-4.5" aria-hidden />
+                  承認
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </AdminCard>
   );
 };
 
@@ -159,6 +242,20 @@ const MemberClient = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Form>(BLANK);
   const [errors, setErrors] = useState<Errors>({});
+  const isAdmin = useIsAdmin();
+  const [roleTarget, setRoleTarget] = useState<{ id: number; name: string } | null>(null);
+  const [role, setRole] = useState<MemberRole>("MEMBER");
+
+  const saveRole = useMutation({
+    mutationFn: updateMemberRole,
+    onSuccess: (_, { role }) => {
+      toast.success(`${roleTarget?.name}さんを${ROLE_LABELS[role]}にしました`);
+      setRoleTarget(null);
+    },
+    onError: (e) => {
+      toast.error(errorMessage(e, "変更できませんでした。もう一度お試しください。"));
+    },
+  });
 
   const openForm = (id: number | null, initial: Form = BLANK) => {
     setEditingId(id);
@@ -221,6 +318,8 @@ const MemberClient = () => {
         }
       />
 
+      <PendingMembers />
+
       <AdminCard aria-label="検索条件" className="flex flex-col gap-4 p-5">
         <div className="grid gap-4 md:grid-cols-4">
           <Field className="gap-1.5 md:col-span-2">
@@ -271,12 +370,24 @@ const MemberClient = () => {
               <TableHead className={`${headCellClass} w-20`}>学年</TableHead>
               <TableHead className={`${headCellClass} w-28`}>役職</TableHead>
               <TableHead className={headCellClass}>使える技術</TableHead>
-              <TableHead className={`${headCellClass} w-24 rounded-tr-xl text-right`}>操作</TableHead>
+              <TableHead className={`${headCellClass} ${isAdmin ? "w-36" : "w-24"} rounded-tr-xl text-right`}>操作</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((member) => (
-              <MemberRow key={member.id} {...member} onEdit={openForm} />
+              <MemberRow
+                key={member.id}
+                {...member}
+                onEdit={openForm}
+                onRole={
+                  isAdmin
+                    ? (m) => {
+                        setRole("MEMBER");
+                        setRoleTarget(m);
+                      }
+                    : undefined
+                }
+              />
             ))}
           </TableBody>
         </Table>
@@ -458,6 +569,34 @@ const MemberClient = () => {
             )}
           </Field>
         )}
+      </FormDialog>
+
+      <FormDialog
+        open={roleTarget !== null}
+        onOpenChange={(o) => !o && setRoleTarget(null)}
+        title="権限を変更"
+        description={`${roleTarget?.name ?? ""}さんの権限を選んでください。`}
+        submitLabel="変更する"
+        isPending={saveRole.isPending}
+        onSubmit={() => roleTarget && saveRole.mutate({ id: roleTarget.id, role })}
+      >
+        <Field className="gap-1.5">
+          <FieldLabel htmlFor="fRole">権限</FieldLabel>
+          <NativeSelect
+            id="fRole"
+            className={selectClass}
+            value={role}
+            onChange={(e) => setRole(e.target.value as MemberRole)}
+          >
+            {MEMBER_ROLES.map((r) => (
+              <NativeSelectOption key={r} value={r}>
+                {ROLE_LABELS[r]}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+          {/* 現在の権限を返すAPIがないため、変更後の値を選んでもらう */}
+          <FieldDescription className="text-xs">管理者はメンバーの承認と権限の変更ができます。</FieldDescription>
+        </Field>
       </FormDialog>
     </>
   );

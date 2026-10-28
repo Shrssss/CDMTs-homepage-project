@@ -31,9 +31,10 @@ const NewsClient = () => {
     <>
       {/* スマホではコンパクトな一覧 */}
       <div className="flex flex-col border-t-2 border-brand-black md:hidden">
-        {latest.map((n, idx) => (
+        {latest.map((n) => (
           <NewsListItem
-            key={idx}
+            key={n.id}
+            id={n.id}
             title={n.title}
             category={n.category}
             createdAt={n.createdAt}
@@ -42,9 +43,10 @@ const NewsClient = () => {
         ))}
       </div>
       <div className="hidden gap-2 md:grid md:grid-cols-3">
-        {latest.map((n, idx) => (
+        {latest.map((n) => (
           <News
-            key={idx}
+            key={n.id}
+            id={n.id}
             title={n.title}
             category={n.category}
             createdAt={n.createdAt}

@@ -1,4 +1,4 @@
-import { createMember, getMemberDetail, loginMember, logoutMember, MemberCreateRequest, MemberLoginRequest, MemberUpdateRequest, searchMember, updateMember, updatePassword, UpdatePasswordRequest } from "@/lib/features/member";
+import { createMember, getCurrentMemberId, getMemberDetail, getUnapprovedMembers, loginMember, logoutMember, MemberCreateRequest, MemberLoginRequest, MemberUpdateRequest, searchMember, updateMember, updatePassword, UpdatePasswordRequest } from "@/lib/features/member";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useMembers = ({
@@ -70,3 +70,25 @@ export const useUpdatePasswordMutatioin=(request:UpdatePasswordRequest)=>{
     }
   })
 }
+
+// ログイン中のメンバーID。未ログインなら 401/403 のエラーになる
+export const useCurrentMemberId = () => {
+  return useQuery({
+    queryFn: getCurrentMemberId,
+    queryKey: ["currentMemberId"],
+    retry: false,
+  });
+};
+
+// 未承認メンバー。管理者以外は 403 になるので、成功したかどうかで管理者かを判定する
+export const useUnapprovedMembers = () => {
+  return useQuery({
+    queryFn: getUnapprovedMembers,
+    queryKey: ["unapprovedMembers"],
+    retry: false,
+  });
+};
+
+export const useIsAdmin = () => {
+  return useUnapprovedMembers().isSuccess;
+};

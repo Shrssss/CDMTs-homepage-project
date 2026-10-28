@@ -17,7 +17,6 @@ import type {
   ItemRentalHistoriesResponseSchema,
   ItemsResponseSchema,
   MemberDetailResponseSchema,
-  Members,
   MembersResponseSchema,
   NewsDetailResponseSchema,
   NewsResponseSchema,
@@ -25,7 +24,7 @@ import type {
   TechnologyResponseSchema,
   ThumbnailUploadResponseSchema,
 } from "@/lib/types/api";
-import { db, MOCK_PASSWORD, nextId, now } from "./db";
+import { db, MockMember, MOCK_PASSWORD, nextId, now } from "./db";
 
 /* MSWのリクエストハンドラー
    レスポンスの型は lib/types/api.ts のレスポンススキーマ（parse前の形）に合わせる */
@@ -49,6 +48,19 @@ const parseBool = (value: string | null) =>
 
 const notFound = () => new HttpResponse(null, { status: 404 });
 
+// バックエンドの ErrorResponse と同じ { message } を返す
+const error = (status: number, message: string) => HttpResponse.json({ message }, { status });
+
+const currentMember = () => db.members.find((m) => m.id === db.session.memberId);
+
+// 未ログインなら401、管理者でなければ403を返す。問題なければ null
+const requireAdmin = () => {
+  const member = currentMember();
+  if (!member) return error(401, "ログインが必要です。");
+  if (member.role !== "ADMIN") return error(403, "この操作を行う権限がありません。");
+  return null;
+};
+
 const toNewsSummary = (n: (typeof db.news)[number]) => ({
   id: n.id,
   title: n.title,
@@ -61,7 +73,7 @@ const toNewsSummary = (n: (typeof db.news)[number]) => ({
 const byNewest = (a: { createdAt: string | null }, b: { createdAt: string | null }) =>
   (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
 
-const toMemberSummary = (m: Members) => ({
+const toMemberSummary = (m: MockMember) => ({
   id: m.id,
   name: m.name,
   grade: m.grade,
@@ -79,6 +91,7 @@ export const handlers = [
     const positions = params.getAll("positions");
 
     const rows = db.members
+      .filter((m) => m.isApproved)
       .filter((m) => !name || m.name.includes(name))
       .filter((m) => grades.length === 0 || grades.includes(m.grade))
       .filter(
@@ -145,6 +158,8 @@ export const handlers = [
       position: null,
       createdAt: now(),
       updatedAt: now(),
+      isApproved: false,
+      role: "MEMBER",
     });
     return HttpResponse.json(id);
   }),
@@ -157,8 +172,9 @@ export const handlers = [
       (m) => String(m.studentId) === identifier || m.email === identifier,
     );
     if (!member || password !== MOCK_PASSWORD) {
-      return new HttpResponse(null, { status: 401 });
+      return error(401, "学籍番号/メールアドレスまたはパスワードが間違っています。");
     }
+    if (!member.isApproved) return error(401, "アカウントが承認されていません。");
     db.session.memberId = member.id;
     return HttpResponse.json(member.id);
   }),
@@ -173,9 +189,47 @@ export const handlers = [
     await delay(LATENCY_MS);
     const oldPassword = new URL(request.url).searchParams.get("oldPassword");
     if (oldPassword !== MOCK_PASSWORD) {
-      return new HttpResponse(null, { status: 400 });
+      return error(400, "パスワードが正しくありません。");
     }
     return HttpResponse.json(Number(params.id));
+  }),
+
+  http.get(api("/auth/me"), async () => {
+    await delay(LATENCY_MS);
+    const member = currentMember();
+    if (!member) return error(401, "ログインが必要です。");
+    return HttpResponse.json(member.id);
+  }),
+
+  http.get(api("/auth"), async () => {
+    await delay(LATENCY_MS);
+    const denied = requireAdmin();
+    if (denied) return denied;
+    return HttpResponse.json<z.input<typeof MembersResponseSchema>>(
+      db.members.filter((m) => !m.isApproved).map(toMemberSummary),
+    );
+  }),
+
+  http.patch(api("/auth/:id/approve"), async ({ params }) => {
+    await delay(LATENCY_MS);
+    const denied = requireAdmin();
+    if (denied) return denied;
+    const member = db.members.find((m) => m.id === Number(params.id));
+    if (!member) return error(404, "指定されたメンバーが見つかりません。");
+    member.isApproved = true;
+    return HttpResponse.json(member.id);
+  }),
+
+  http.patch(api("/auth/admin/:id"), async ({ params, request }) => {
+    await delay(LATENCY_MS);
+    const denied = requireAdmin();
+    if (denied) return denied;
+    const role = new URL(request.url).searchParams.get("role");
+    if (role !== "ADMIN" && role !== "MEMBER") return error(400, "ロールの名前が正しくありません。");
+    const member = db.members.find((m) => m.id === Number(params.id));
+    if (!member) return error(404, "指定されたメンバーが見つかりません。");
+    member.role = role;
+    return HttpResponse.json(member.id);
   }),
 
   /* ---------- news ---------- */
@@ -426,19 +480,20 @@ export const handlers = [
     return HttpResponse.json(id);
   }),
 
-  // 借りる人はログイン中のメンバー
+  // 借りる人はログイン中のメンバー。在庫を1つ減らし、0になったら貸出不可にする
   http.put(api("/items/rent/:id"), async ({ params }) => {
     await delay(LATENCY_MS);
     const renterId = db.session.memberId;
-    if (renterId === null) return new HttpResponse(null, { status: 401 });
+    if (renterId === null) return error(401, "ログインが必要です。");
     const item = db.items.find((i) => i.id === Number(params.id));
-    if (!item) return notFound();
-    if (!item.isRentable || item.renterId !== null) {
-      return new HttpResponse(null, { status: 409 });
+    if (!item) return error(404, "指定された備品が見つかりません。");
+    if (!item.isRentable || item.quantity < 1) {
+      return error(400, "この備品は貸し出しできません。");
     }
 
     const rentedAt = now();
-    Object.assign(item, { renterId, rentedAt });
+    item.quantity -= 1;
+    Object.assign(item, { renterId, rentedAt, isRentable: item.quantity > 0 });
     db.itemRentalHistories.push({
       id: nextId(db.itemRentalHistories),
       itemId: item.id,
@@ -449,19 +504,21 @@ export const handlers = [
     return HttpResponse.json(item.id);
   }),
 
-  // 返す人はログイン中のメンバー
+  // 返す人はログイン中のメンバー。本人の貸出記録がなければ400
   http.put(api("/items/return/:id"), async ({ params }) => {
     await delay(LATENCY_MS);
     const renterId = db.session.memberId;
-    if (renterId === null) return new HttpResponse(null, { status: 401 });
+    if (renterId === null) return error(401, "ログインが必要です。");
     const item = db.items.find((i) => i.id === Number(params.id));
-    if (!item) return notFound();
+    if (!item) return error(404, "指定された備品が見つかりません。");
 
     const history = db.itemRentalHistories.find(
       (h) => h.itemId === item.id && h.renterId === renterId && h.returnedAt === null,
     );
-    if (history) history.returnedAt = now();
-    Object.assign(item, { renterId: null, rentedAt: null });
+    if (!history) return error(400, "有効な貸し出し記録が見つかりません。");
+    history.returnedAt = now();
+    item.quantity += 1;
+    Object.assign(item, { renterId: null, rentedAt: null, isRentable: true });
     return HttpResponse.json(item.id);
   }),
 

@@ -3,8 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 
 type Props = {
-  // 一覧APIがIDを返すようになったら詳細ページへリンクする
-  id?: number;
+  id: number;
   title: string;
   createdAt: Date;
   category: string;
@@ -45,23 +44,19 @@ const News = ({ id, title, createdAt, category, thumbnailPath }: Props) => {
           </time>
         </div>
         <h3 className="text-lg leading-normal font-bold md:text-xl">{title}</h3>
-        {id !== undefined && (
-          <span className="mt-auto flex items-center gap-1.5 pt-4 font-mono text-xs font-bold">
-            READ MORE
-            <ArrowRight className="size-3.5" />
-          </span>
-        )}
+        <span className="mt-auto flex items-center gap-1.5 pt-4 font-mono text-xs font-bold">
+          READ MORE
+          <ArrowRight className="size-3.5" />
+        </span>
       </div>
     </>
   );
 
-  const className = "flex flex-col border-2 border-brand-black bg-white/50 text-gray-900";
-
-  if (id === undefined) {
-    return <article className={className}>{body}</article>;
-  }
   return (
-    <Link href={`/news-detail?id=${id}`} className={`${className} hover:bg-white/80`}>
+    <Link
+      href={`/news-detail?id=${id}`}
+      className="flex flex-col border-2 border-brand-black bg-white/50 text-gray-900 hover:bg-white/80"
+    >
       {body}
     </Link>
   );
@@ -82,13 +77,8 @@ export const NewsListItem = ({ id, title, createdAt, category, thumbnailPath }: 
       </div>
     </>
   );
-  const className = "flex gap-3 border-b-2 border-brand-black py-4 text-gray-900";
-
-  if (id === undefined) {
-    return <article className={className}>{body}</article>;
-  }
   return (
-    <Link href={`/news-detail?id=${id}`} className={className}>
+    <Link href={`/news-detail?id=${id}`} className="flex gap-3 border-b-2 border-brand-black py-4 text-gray-900">
       {body}
     </Link>
   );

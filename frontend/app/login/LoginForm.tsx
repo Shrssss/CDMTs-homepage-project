@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessage } from "@/lib/features/api";
 import { loginMember } from "@/lib/features/member";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
@@ -74,7 +75,7 @@ const LoginForm = () => {
           role="alert"
           className="border-2 border-brand-black bg-brand-black p-3 font-mono text-sm text-brand-beige"
         >
-          ✕ ログインに失敗しました。入力内容を確認してください。
+          ✕ {errorMessage(loginMutation.error, "ログインに失敗しました。入力内容を確認してください。")}
         </p>
       )}
 

@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { Code, FileText, LogOut, Package, Users } from "lucide-react";
+import { Code, FileText, KeyRound, LogOut, Package, Users } from "lucide-react";
+import { useState } from "react";
+import PasswordDialog from "./PasswordDialog";
 
 const NAV = [
   { href: "/login_required/items", label: "備品", Icon: Package },
@@ -19,6 +21,7 @@ const NAV = [
 const LoginRequiredHeader = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const [passwordOpen, setPasswordOpen] = useState(false);
   const logout = useMutation({
     mutationFn: logoutMember,
     onSettled: () => {
@@ -52,6 +55,11 @@ const LoginRequiredHeader = () => {
           );
         })}
       </nav>
+      <Button variant={"ghost"} className="h-11 justify-start gap-2 px-3" onClick={() => setPasswordOpen(true)}>
+        <KeyRound className="size-4.5" aria-hidden />
+        パスワード変更
+      </Button>
+      <PasswordDialog open={passwordOpen} onOpenChange={setPasswordOpen} />
       <Button
         variant={"outline"}
         className="h-11 gap-2 px-4"
