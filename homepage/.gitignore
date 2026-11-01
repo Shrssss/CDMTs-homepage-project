@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Claudeが生成する設定ファイルを無視する
+.claude/*

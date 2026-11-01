@@ -1,0 +1,81 @@
+import { createItem, getItemDetail, getItemRentalHistories, getSearchItems, ItemCreateRequest, ItemUpdateRequest, rentItem, updateItem } from "@/lib/features/items";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import useDebounce from "./useDebounce";
+
+export const useCreateItemMutation = (request:ItemCreateRequest) => {
+  return useMutation({
+    mutationFn:async()=>{
+      return await createItem(request)
+    }
+  })
+}
+
+export const useInfiniteItemRentalHistories = ({ id }: { id: number }) => {
+  return useInfiniteQuery({
+    queryFn: async ({ pageParam }) => {
+      return await getItemRentalHistories({
+        id,
+        page: pageParam,
+      });
+    },
+    initialPageParam: 1,
+    queryKey: ["itemRentalHistories",id],
+    // 1ページ（20件）に満たなければ最後のページ
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length < 20 ? undefined : lastPageParam + 1;
+    },
+  });
+};
+
+export const useInfiniteItems = ({name,isDisposable,isRentable,storageLocation}:{
+  name?:string,isDisposable?:boolean,isRentable?:boolean,storageLocation?:string
+}) => {
+  const debouncedName=useDebounce(name,500)
+  const debouncedStorageLocation=useDebounce(storageLocation,500)
+  return useInfiniteQuery({
+    queryKey: ["items", debouncedName, isDisposable, isRentable, debouncedStorageLocation],
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) => {
+      return await getSearchItems({
+        name: debouncedName,
+        isDisposable,
+        isRentable,
+        storageLocation: debouncedStorageLocation ? [debouncedStorageLocation] : undefined,
+        page: pageParam,
+      });
+    },
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length === 0 ? undefined : lastPageParam + 1;
+    },
+  });
+}
+
+export const useItemDetail = ({ id }: { id: number }) => {
+  return useQuery({
+    queryKey: ["itemDetail", id],
+    queryFn: async () => {
+      return await getItemDetail({
+        id,
+      });
+    },
+  });
+};
+
+export const useRentItemMutation = ({id}:{id:number}) => {
+  return useMutation({
+    mutationFn:async()=>{
+      return await rentItem({
+        id
+      })
+    }
+  })
+}
+
+
+export const useUpdateItemMutation = (request:ItemUpdateRequest) => {
+  return useMutation({
+    mutationFn:async()=>{
+      return await updateItem(request)
+    }
+  })
+}
