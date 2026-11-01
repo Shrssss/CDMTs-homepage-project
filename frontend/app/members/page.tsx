@@ -7,7 +7,7 @@ import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
 import Provider from "../QueryClientProvider";
 import MembersClient from "./MembersClient";
-import { Metadata } from "next/types";
+import { Metadata } from "next";
 
 export const metadata:Metadata={
   title:"メンバー"

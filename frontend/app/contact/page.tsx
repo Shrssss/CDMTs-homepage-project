@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
 import InfoGrid from "@/components/brand/InfoGrid";
-import { Metadata } from "next/types";
+import { Metadata } from "next";
 
 export const metadata:Metadata={
   title:"お問い合わせ"
@@ -38,9 +38,9 @@ const FAQ = [
     q: "プログラミング未経験でも参加できますか？",
     a: "はい。メンバーのほとんどが未経験で入部しています。初心者向けの勉強会や先輩の個別サポートがあるので、ゼロから始められます。",
   },
-  { q: "見学はできますか？", a: "[見学の受付方法を記入]" },
-  { q: "途中からでも入部できますか？", a: "[入部受付の時期を記入]" },
-  { q: "パソコンは必要ですか？", a: "[必要な機材・貸出の有無を記入]" },
+  { q: "見学はできますか？", a: "公式新歓用LINEよりご案内いたします。" },
+  { q: "途中からでも入部できますか？", a: "はい。楽器の途中でも入部いただけます。" },
+  { q: "パソコンは必要ですか？", a: "はい。各自でノートパソコンを持参する必要があります。" },
 ];
 
 const Page = () => {

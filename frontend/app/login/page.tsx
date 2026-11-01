@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
 import TerminalWindow from "@/components/brand/TerminalWindow";
-import { Metadata } from "next/types";
+import { Metadata } from "next";
 import LoginForm from "./LoginForm";
 import Provider from "../QueryClientProvider";
 

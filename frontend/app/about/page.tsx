@@ -11,11 +11,12 @@ export const metadata:Metadata={
   title:"CODE MATESとは"
 }
 
+// TODO: 文章を決める
 const ACTIVITIES = [
   {
     eyebrow: "01 / DEVELOP",
     title: "開発",
-    text: "Webアプリ・LINE Bot・ゲーム制作。チームで企画からリリースまでを経験し、GitHubでの共同開発も行います。",
+    text: "Webアプリ・ゲーム制作など。チームで企画からリリースまでを経験し、GitHubでの共同開発も行います。",
     keywords: "WEB / LINE BOT / GAME",
   },
   {
@@ -29,12 +30,6 @@ const ACTIVITIES = [
     title: "レクリエーション",
     text: "BBQやボードゲーム会を定期的に開催。「作ること」と同じくらい「楽しむこと」も大切にしています。",
     keywords: "BBQ / BOARD GAMES",
-  },
-  {
-    eyebrow: "04 / SHOWCASE",
-    title: "文化祭出展",
-    text: "チームで作った作品を文化祭で展示。実際に人に触ってもらう経験を積みます。",
-    keywords: "EXHIBIT / DEMO",
   },
 ];
 
@@ -52,7 +47,7 @@ const Page = () => {
             とは
           </h1>
           <p className="leading-loose md:max-w-3xl md:text-lg">
-            CODE MATESは法政大学多摩キャンパスの文系学部生だけで活動するプログラミングサークルです。「開発」と「レクリエーション」の両方に本気で取り組んでいます。
+            ★文章★CODE MATESは法政大学多摩キャンパスの文系学部生だけで活動するプログラミングサークルです。「開発」と「レクリエーション」の両方に本気で取り組んでいます。
           </p>
           <p className="font-mono text-sm font-bold md:text-base">DEVELOP / LEARN / PLAY</p>
         </section>
@@ -60,17 +55,17 @@ const Page = () => {
         <section className="grid items-start md:grid-cols-2 md:gap-12 md:px-16 md:pb-20">
           {/* TODO: 活動風景の写真に差し替える */}
           <div className="aspect-4/3 border-y-2 border-brand-black md:order-last md:aspect-4/5 md:border-2">
-            <img src="/placeholder.jpg" alt="活動の様子" className="h-full w-full object-cover" />
+            <img src="/placeholder.jpg" alt="★画像を決める★" className="h-full w-full object-cover" />
           </div>
           <div className="flex flex-col gap-4 px-4 pt-8 pb-12 leading-loose md:p-0">
             <h2 className="text-[22px] leading-normal font-bold md:text-3xl">
-              「エンジニアになりたい」より
+              ★文章★「エンジニアになりたい」より
               <br />
               「なにかを作れるようになりたい」
             </h2>
             {/* TODO: 正しい文章に書き換える */}
             <p>
-              経済・法・経営・国際文化など、文系学部生だけで構成されているのが最大の特徴です。プログラミング未経験で入部するメンバーがほとんどで、「エンジニアになりたい」というより「なにかを作れるようになりたい」という気持ちで集まっています。
+              ★文章★経済・法・経営・国際文化など、文系学部生だけで構成されているのが最大の特徴です。プログラミング未経験で入部するメンバーがほとんどで、「エンジニアになりたい」というより「なにかを作れるようになりたい」という気持ちで集まっています。
             </p>
             <p>
               週1回の活動日には、初心者向けの勉強会やチーム開発の進行、先輩による個別サポートなどを実施。学年やスキルに関係なくフラットに交流できる雰囲気を大切にしています。
@@ -102,7 +97,7 @@ const Page = () => {
           <div className="flex flex-col gap-4 bg-brand-black px-4 py-10 md:flex-2 md:p-16">
             <SectionMarker number="03" label="JOIN US" tone="dark" />
             <h2 className="mt-2 text-4xl leading-tight font-bold md:text-6xl">
-              未経験から、
+              ★文章★未経験から、
               <br />
               はじめよう。
             </h2>

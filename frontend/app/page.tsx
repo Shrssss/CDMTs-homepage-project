@@ -50,14 +50,14 @@ const Page = () => {
             </span>
             {/* TODO: キャッチコピーを確定させる */}
             <h1 className="text-[34px] leading-snug font-bold md:text-6xl md:leading-tight">
-              「作ること」と
+              ★文章★「作ること」と
               <br />
               「楽しむこと」、
               <br />
               どちらも本気で。
             </h1>
             <p className="leading-relaxed text-white/85 md:text-lg">
-              法政大学多摩キャンパス、文系学部生だけのプログラミングサークル CODE MATES
+              法政大学多摩キャンパス、文系学部生だけのプログラミングサークル<br/>CODE MATES
             </p>
             <div className="mt-2 flex flex-col gap-2 md:flex-row md:gap-3">
               <Link
@@ -100,7 +100,7 @@ const Page = () => {
           <div className="flex flex-col gap-4 bg-brand-black px-4 py-10 md:col-span-2 md:p-16">
             <SectionMarker number="02" label="BEGINNER FRIENDLY" tone="dark" />
             <h2 className="mt-2 text-3xl leading-snug font-bold md:text-5xl md:leading-tight">
-              「エンジニアになりたい」より
+              ★文章★「エンジニアになりたい」より
               <br className="hidden md:block" />
               「なにかを作れるようになりたい」
             </h2>
@@ -132,7 +132,7 @@ const Page = () => {
               { label: "TIME SCHEDULE", value: "月・火　15:30～" },
               { label: "LOCATION", value: "エッグドーム5F" },
               // TODO: そのほかの事項を確定させる
-              { label: "OTHERS", value: "[そのほかの事項]" },
+              { label: "OTHERS", value: "★文章★[そのほかの事項]" },
             ]}
           />
         </section>

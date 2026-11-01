@@ -3,8 +3,9 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer className="flex flex-col bg-brand-black px-4 py-10 text-brand-beige md:p-16">
+      {/* TODO: キャッチコピーを確定させる */}
       <p className="text-3xl leading-snug font-bold md:text-5xl">
-        なにかを、
+        ★文章★なにかを、
         <br className="md:hidden" />
         作れるようになろう。
       </p>
