@@ -7,7 +7,6 @@ import Footer from "@/components/Footer";
 import SectionMarker from "@/components/brand/SectionMarker";
 import TerminalWindow from "@/components/brand/TerminalWindow";
 import InfoGrid from "@/components/brand/InfoGrid";
-import Provider from "./QueryClientProvider";
 import NewsClient from "./NewsClient";
 
 const PILLARS = [
@@ -141,11 +140,9 @@ const Page = () => {
         <section className="flex flex-col gap-4 px-4 pt-2 pb-14 md:px-16 md:pt-0 md:pb-16">
           <SectionMarker number="04" label="LATEST NEWS" />
           <h2 className="mt-3 text-2xl font-bold">最新のお知らせ</h2>
-          <Provider>
-            <Suspense>
-              <NewsClient />
-            </Suspense>
-          </Provider>
+          <Suspense>
+            <NewsClient />
+          </Suspense>
           <Link
             href="/news"
             className="flex min-h-13 items-center justify-center gap-2 self-stretch bg-brand-black px-7 font-bold text-white md:self-start"

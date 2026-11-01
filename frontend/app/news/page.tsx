@@ -1,7 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/header";
 import SectionMarker from "@/components/brand/SectionMarker";
-import Provider from "../QueryClientProvider";
 import NewsClient from "./NewsClient";
 import { Suspense } from "react";
 import { Metadata } from "next";
@@ -21,11 +20,9 @@ const page = () => {
           <h1 className="mt-3 text-5xl leading-none font-bold md:mt-4 md:text-8xl">NEWS / LOG</h1>
           <p className="text-xl font-bold md:text-2xl">お知らせと活動記録</p>
         </section>
-        <Provider>
-          <Suspense>
-            <NewsClient />
-          </Suspense>
-        </Provider>
+        <Suspense>
+          <NewsClient />
+        </Suspense>
       </main>
       <Footer />
     </div>

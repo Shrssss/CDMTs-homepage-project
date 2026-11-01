@@ -6,7 +6,8 @@ import { enableMocking, isMockingEnabled } from '@/mocks/enableMocking'
 export default function Provider(
   { children } : { children: React.ReactNode }
 ) {
-  const queryClient = new QueryClient()
+  // レンダーのたびに作り直すとキャッシュが消えるので、最初の1回だけ作る
+  const [queryClient] = useState(() => new QueryClient())
   // MSW を使う場合は worker の起動を待ってから描画する（最初のリクエストが実際のAPIに飛ばないように）
   const [isReady, setIsReady] = useState(!isMockingEnabled)
 

@@ -50,7 +50,7 @@ http://localhost:3000 で開発サーバーが起動します。
 ```
 frontend/
 ├── app/                    # ページ（App Router）
-│   ├── layout.tsx          # ルートレイアウト（フォント・NuqsAdapter・タイトルテンプレート）
+│   ├── layout.tsx          # ルートレイアウト（フォント・NuqsAdapter・QueryClientProvider・タイトルテンプレート）
 │   ├── globals.css         # Tailwind / shadcn のテーマ・ブランドカラー
 │   ├── QueryClientProvider.tsx  # TanStack Query の Provider（MSW の起動待ちも担当）
 │   ├── page.tsx            # トップページ
@@ -104,12 +104,15 @@ frontend/
 ### データ取得の流れ
 
 ```
-ページ (page.tsx, サーバーコンポーネント)
-  └─ Provider (QueryClientProvider)
-       └─ *Client.tsx ("use client")
-            └─ hooks/*.ts           … useQuery / useInfiniteQuery / useMutation
-                 └─ lib/features/*.ts  … axiosInstance でAPIを呼び、zod で parse
+ルートレイアウト (app/layout.tsx)
+  └─ Provider (QueryClientProvider)  … アプリ全体で1つの QueryClient を共有
+       └─ ページ (page.tsx, サーバーコンポーネント)
+            └─ *Client.tsx ("use client")
+                 └─ hooks/*.ts           … useQuery / useInfiniteQuery / useMutation
+                      └─ lib/features/*.ts  … axiosInstance でAPIを呼び、zod で parse
 ```
+
+- `Provider` はルートレイアウトで1回だけ使っています。ページ側で `<Provider>` を囲む必要はありません。
 
 - `page.tsx` はレイアウトとメタデータだけを持ち、データを使う部分は `*Client.tsx` に分けています。
 - `useQueryState`（nuqs）や `useSearchParams` を使うコンポーネントは `<Suspense>` で囲みます（静的エクスポートのビルドに必要）。

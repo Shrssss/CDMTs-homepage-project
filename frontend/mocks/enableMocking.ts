@@ -5,7 +5,7 @@ export const isMockingEnabled =
   process.env.NODE_ENV === "development" ||
   process.env.NEXT_PUBLIC_API_MOCKING === "enabled";
 
-// ページごとに Provider がマウントされても worker の起動は1回だけにする
+// Provider が再マウントされても（StrictMode の二重実行など）worker の起動は1回だけにする
 let started: Promise<unknown> | null = null;
 
 export const enableMocking = () => {

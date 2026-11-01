@@ -1,4 +1,3 @@
-import Provider from "@/app/QueryClientProvider";
 import { Toaster } from "@/components/ui/sonner";
 import AuthGuard from "./AuthGuard";
 import LoginRequiredHeader from "./LoginRequiredHeader";
@@ -6,7 +5,7 @@ import LoginRequiredHeader from "./LoginRequiredHeader";
 // 管理ページ共通のレイアウト（サイドバー＋本文）
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Provider>
+    <>
       <AuthGuard>
         <div className="flex min-h-svh flex-col bg-background text-sm text-foreground md:flex-row">
           <LoginRequiredHeader />
@@ -16,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </AuthGuard>
       <Toaster position="bottom-right" />
-    </Provider>
+    </>
   );
 };
 

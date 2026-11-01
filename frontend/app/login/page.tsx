@@ -4,7 +4,6 @@ import SectionMarker from "@/components/brand/SectionMarker";
 import TerminalWindow from "@/components/brand/TerminalWindow";
 import { Metadata } from "next";
 import LoginForm from "./LoginForm";
-import Provider from "../QueryClientProvider";
 
 export const metadata: Metadata = {
   title: "ログイン",
@@ -39,9 +38,7 @@ const Page = () => {
         <section className="flex flex-col gap-6 px-4 pt-10 pb-14 md:col-span-3 md:justify-center md:p-16">
           <SectionMarker number="02" label="SIGN IN" />
           <div className="border-2 border-brand-black bg-white/50 p-4 md:max-w-xl md:p-8">
-            <Provider>
-              <LoginForm />
-            </Provider>
+            <LoginForm />
           </div>
         </section>
       </main>
